@@ -2,6 +2,8 @@ import { Box, Divider, Modal } from "@mui/material"
 import AdminDashboard from "../Dashboard/AdminDashboard"
 import { FaPlus } from "react-icons/fa6";
 import { useState } from "react";
+import { CiEdit } from "react-icons/ci";
+import { MdDelete } from "react-icons/md";
 
 
 const CourseList = () => {
@@ -73,7 +75,7 @@ const CourseList = () => {
                         <div >
                             <div className="flex justify-between items-center">
                                 <p>Total 5 video courses are available</p>
-                                <button className="p-2 border-2 border-pink-600 bg-pink-600 flex justify-center items-center gap-3  text-white hover:bg-pink-800" onClick={handleOpenModal}><FaPlus />Add Course</button>
+                                <button className="p-2 border-2 border-[#B32073] bg-[#B32073] flex justify-center items-center gap-3  text-white hover:bg-pink-800" onClick={handleOpenModal}><FaPlus />Add Course</button>
                             </div>
                         </div>
 
@@ -100,15 +102,15 @@ const CourseList = () => {
                                 <h1 className="text-gray-600">Advaya FM Introduction</h1>
                                 <p className="text-gray-400">Source:Youtube</p>
                             </div>
-                            <div className="flex gap-2 text-gray-400 ">
-                                <p onClick={handleOpenSubModal}>Edit</p>
-                                <p>Delete</p>
+                            <div className="flex gap-2 text-gray-400 text-2xl">
+                                <p onClick={handleOpenSubModal}><CiEdit /></p>
+                                <p><MdDelete/></p>
                             </div>
                         </div>
                         <Divider />
-                        <div className="flex justify-between items-center">
-                            <button className="text-blue-400">Edit</button>
-                            <button className="text-red-600">Delete</button>
+                        <div className="flex justify-between items-center text-2xl">
+                            <button className="text-blue-400"><CiEdit /></button>
+                            <button className="text-red-600"><MdDelete/></button>
                         </div>
                     </div>
 
@@ -132,15 +134,15 @@ const CourseList = () => {
                                 <h1 className="text-gray-600">Advaya FM Introduction</h1>
                                 <p className="text-gray-400">Source:Youtube</p>
                             </div>
-                            <div className="flex gap-2 text-gray-400 ">
-                                <p>Edit</p>
-                                <p>Delete</p>
+                            <div className="flex gap-2 text-gray-400 text-2xl">
+                                <p><CiEdit /></p>
+                                <p><MdDelete/></p>
                             </div>
                         </div>
                         <Divider />
-                        <div className="flex justify-between items-center">
-                            <button className="text-blue-400">Edit</button>
-                            <button className="text-red-600">Delete</button>
+                        <div className="flex justify-between items-center text-2xl">
+                            <button className="text-blue-400"><CiEdit /></button>
+                            <button className="text-red-600"><MdDelete/></button>
                         </div>
                     </div>
 
@@ -163,15 +165,15 @@ const CourseList = () => {
                                 <h1 className="text-gray-600">Advaya FM Introduction</h1>
                                 <p className="text-gray-400">Source:Youtube</p>
                             </div>
-                            <div className="flex gap-2 text-gray-400 ">
-                                <p>Edit</p>
-                                <p>Delete</p>
+                            <div className="flex gap-2 text-gray-400 text-2xl">
+                                <p><CiEdit /></p>
+                                <p><MdDelete/></p>
                             </div>
                         </div>
                         <Divider />
-                        <div className="flex justify-between items-center">
-                            <button className="text-blue-400">Edit</button>
-                            <button className="text-red-600">Delete</button>
+                        <div className="flex justify-between items-center text-2xl">
+                            <button className="text-blue-400"><CiEdit /></button>
+                            <button className="text-red-600"><MdDelete/></button>
                         </div>
                     </div>
 
@@ -194,15 +196,15 @@ const CourseList = () => {
                                 <h1 className="text-gray-600">Advaya FM Introduction</h1>
                                 <p className="text-gray-400">Source:Youtube</p>
                             </div>
-                            <div className="flex gap-2 text-gray-400 ">
-                                <p>Edit</p>
-                                <p>Delete</p>
+                            <div className="flex gap-2 text-gray-400 text-2xl">
+                                <p><CiEdit /></p>
+                                <p><MdDelete/></p>
                             </div>
                         </div>
                         <Divider />
-                        <div className="flex justify-between items-center">
-                            <button className="text-blue-400">Edit</button>
-                            <button className="text-red-600">Delete</button>
+                        <div className="flex justify-between items-center text-2xl">
+                            <button className="text-blue-400"><CiEdit /></button>
+                            <button className="text-red-600"><MdDelete/></button>
                         </div>
                     </div>
 
@@ -225,15 +227,15 @@ const CourseList = () => {
                                 <h1 className="text-gray-600">Advaya FM Introduction</h1>
                                 <p className="text-gray-400">Source:Youtube</p>
                             </div>
-                            <div className="flex gap-2 text-gray-400 ">
-                                <p>Edit</p>
-                                <p>Delete</p>
+                            <div className="flex gap-2 text-gray-400 text-2xl">
+                                <p><CiEdit /></p>
+                                <p><MdDelete/></p>
                             </div>
                         </div>
                         <Divider />
-                        <div className="flex justify-between items-center">
-                            <button className="text-blue-400">Edit</button>
-                            <button className="text-red-600">Delete</button>
+                        <div className="flex justify-between items-center text-2xl">
+                            <button className="text-blue-400"><CiEdit /></button>
+                            <button className="text-red-600"><MdDelete/></button>
                         </div>
                     </div>
 
@@ -248,27 +250,27 @@ const CourseList = () => {
                         <div className="text-xs overflow-y-visible font-semibold text-gray-600">
                             <div className="flex justify-between items-center w-full text-black">
                                 <h1 className="text-2xl">Add Course</h1>
-                                <button className="border-pink-600 text-white bg-pink-600 p-2 rounded-lg w-20" onClick={handleCloseModal}>Close</button>
+                                <button className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-20" onClick={handleCloseModal}>Close</button>
                             </div>
                             <div>
                                 <div className="grid grid-cols-2">
                                     <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">First Name</label>
+                                        <label htmlFor="">Course Name</label>
                                         <input type="text" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
                                     </div>
 
                                     <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">First Name</label>
+                                        <label htmlFor="">Category</label>
                                         <input type="text" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
                                     </div>
 
                                     <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">First Name</label>
+                                        <label htmlFor="">Enrolled Users</label>
                                         <input type="text" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
                                     </div>
 
                                     <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">First Name</label>
+                                        <label htmlFor="">Vedios</label>
                                         <input type="text" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
                                     </div>
                                 </div>
@@ -313,44 +315,50 @@ const CourseList = () => {
                                     </div>
 
                                     <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">Video/Chapters</label>
+                                        <label htmlFor="">Link</label>
                                         <input type="text" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
                                     </div>
 
                                     <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">Video/Chapters</label>
+                                        <label htmlFor="">Description</label>
                                         <textarea name="" id="" cols="10" rows="5" className="p-3 border-2 border-gray-600 rounded-lg" ></textarea>
                                     </div>
 
                                     <div className="flex justify-start items-center py-4 px-2">
-                                        <button className="p-2 border-2 border-pink-600 bg-pink-600 hover:bg-white hover:text-pink-600 text-white  flex justify-center items-center gap-3 w-36"><FaPlus /> Add Subcategory</button>
+                                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-36"><FaPlus /> Add Chapters</button>
                                     </div>
 
 
-                                    <div className="flex p-2 gap-3">
-                                        <div className="flex justify-center items-center p-2 gap-3">
-                                            <input type="radio" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
-                                            <label htmlFor="">Youtube</label>
+                                    <div className="flex flex-col justify-center items-start p-2 gap-3">
 
+                                        <div>
+                                            <label htmlFor=""> Status </label>
                                         </div>
+                                        <div className="flex">
+                                            <div className="flex justify-center items-center p-2 gap-3">
+                                                <input type="radio" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
+                                                <label htmlFor="">Youtube</label>
 
-                                        <div className="flex justify-center items-center p-2 gap-3">
-                                            <input type="radio" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
-                                            <label htmlFor="">Vimeo</label>
+                                            </div>
 
-                                        </div>
+                                            <div className="flex justify-center items-center p-2 gap-3">
+                                                <input type="radio" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
+                                                <label htmlFor="">Vimeo</label>
 
-                                        <div className="flex justify-center items-center p-2 gap-3">
-                                            <input type="radio" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
-                                            <label htmlFor="">Drop Box</label>
+                                            </div>
 
+                                            <div className="flex justify-center items-center p-2 gap-3">
+                                                <input type="radio" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
+                                                <label htmlFor="">Drop Box</label>
+
+                                            </div>
                                         </div>
 
 
                                     </div>
                                     <div className="w-full flex justify-center items-center gap-5 p-2">
-                                        <button className="p-2 border-2 border-pink-600 bg-white text-pink-600 hover:text-white hover:bg-pink-600 flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button>
-                                        <button className="p-2 border-2 border-pink-600 bg-pink-600 hover:bg-white hover:text-pink-600 text-white  flex justify-center items-center gap-3 w-32 rounded-lg">Add Category</button>
+                                        <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button>
+                                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg">Add Category</button>
                                     </div>
                                 </div>
                             </div>
@@ -366,7 +374,7 @@ const CourseList = () => {
                         <div className="text-xs overflow-y-visible font-semibold text-gray-600">
                             <div className="flex justify-between items-center w-full text-black">
                                 <h1 className="text-2xl">Edit / Video Chapter</h1>
-                                <button className="border-pink-600 text-white bg-pink-600 p-2 rounded-lg w-20" onClick={handleCloseSubModal}>Close</button>
+                                <button className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-20" onClick={handleCloseSubModal}>Close</button>
                             </div>
                             <div className="mt-10">
                                 <div className="grid grid-cols-2">
@@ -431,8 +439,8 @@ const CourseList = () => {
                                     </div>
 
                                     <div className="w-full flex justify-center items-center gap-5 p-2">
-                                        <button className="p-2 border-2 border-pink-600 bg-white text-pink-600 hover:text-white hover:bg-pink-600 flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button>
-                                        <button className="p-2 border-2 border-pink-600 bg-pink-600 hover:bg-white hover:text-pink-600 text-white  flex justify-center items-center gap-3 w-32 rounded-lg">Upload</button>
+                                        <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button>
+                                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg">Update Video</button>
                                     </div>
                                 </div>
                             </div>

@@ -2,6 +2,8 @@ import { Box, Modal, TablePagination } from "@mui/material"
 import AdminDashboard from "../Dashboard/AdminDashboard"
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
+import { CiEdit } from "react-icons/ci";
+import { MdDelete } from "react-icons/md";
 
 
 const AssessmentList = () => {
@@ -61,7 +63,7 @@ const AssessmentList = () => {
         </div>
         <div className="flex justify-between items-center p-2">
           <h1>Question List</h1>
-          <button className="p-2 border-2 border-pink-600 bg-pink-600 text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-38" onClick={handleOpen}><FaPlus />Add Question</button>
+          <button className="p-2 border-2 border-[#B32073] bg-[#B32073] text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-38" onClick={handleOpen}><FaPlus />Add Question</button>
         </div>
         <div className="w-full mt-5">
           <table className="w-[100%]">
@@ -85,7 +87,7 @@ const AssessmentList = () => {
                 <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
                   <h1 className="flex items-center justify-center">Action</h1>
                 </th>
-               
+
 
               </tr>
             </thead>
@@ -101,11 +103,11 @@ const AssessmentList = () => {
                   <option value="4">OPtion 4</option>
                 </td>
                 <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">21/02/2024</td>
-                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                  <p>edit</p>
-                  <p>delete</p>
+                <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
+                  <p><CiEdit /></p>
+                  <p><MdDelete /></p>
                 </td>
-      
+
               </tr>
 
 
@@ -120,11 +122,11 @@ const AssessmentList = () => {
                   <option value="4">OPtion 4</option>
                 </td>
                 <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">21/02/2024</td>
-                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                  <p>edit</p>
-                  <p>delete</p>
+                <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
+                  <p><CiEdit /></p>
+                  <p><MdDelete /></p>
                 </td>
-      
+
               </tr>
 
 
@@ -139,11 +141,11 @@ const AssessmentList = () => {
                   <option value="4">OPtion 4</option>
                 </td>
                 <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">21/02/2024</td>
-                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                  <p>edit</p>
-                  <p>delete</p>
+                <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
+                  <p><CiEdit /></p>
+                  <p><MdDelete /></p>
                 </td>
-      
+
               </tr>
 
 
@@ -158,11 +160,11 @@ const AssessmentList = () => {
                   <option value="4">OPtion 4</option>
                 </td>
                 <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">21/02/2024</td>
-                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                  <p>edit</p>
-                  <p>delete</p>
+                <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
+                  <p><CiEdit /></p>
+                  <p><MdDelete /></p>
                 </td>
-      
+
               </tr>
             </tbody>
           </table>
@@ -195,7 +197,7 @@ const AssessmentList = () => {
               <div className="w-full font-semibold text-gray-600 flex flex-col gap-5">
                 <div className="flex justify-between items-center w-full text-black">
                   <h1 className="text-2xl">Add/Edit User</h1>
-                  <button className="border-pink-600 text-white bg-pink-600 p-2 rounded-lg w-20" onClick={handleClose}>Close</button>
+                  <button className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-20" onClick={handleClose}>Close</button>
                 </div>
                 <div className="grid grid-cols-2">
                   <div className="flex flex-col p-2 gap-3">
@@ -252,8 +254,8 @@ const AssessmentList = () => {
 
 
                 <div className="w-full flex justify-center items-center gap-5">
-                  <button className="p-2 border-2 border-pink-600 bg-white text-pink-600 hover:text-white hover:bg-pink-600 flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button>
-                  <button className="p-2 border-2 border-pink-600 bg-pink-600 hover:bg-white hover:text-pink-600 text-white  flex justify-center items-center gap-3 w-32 rounded-lg">Add/Edit User</button>
+                  <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button>
+                  <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg">Add/Edit User</button>
                 </div>
               </div>
             </Box>

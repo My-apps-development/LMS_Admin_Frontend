@@ -48,7 +48,7 @@ const User = () => {
         </div>
         <div className="flex justify-between items-center p-2">
           <h1>User List</h1>
-          <button className="p-2 border-2 border-pink-600 bg-pink-600 text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-32" onClick={handleOpen}><FaPlus />Add</button>
+          <button className="p-2 border-2 border-[#B32073] bg-[#B32073] text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-32" onClick={handleOpen}><FaPlus />Add</button>
         </div>
         <div className="w-full mt-5">
           <table className="w-[100%]">
@@ -157,7 +157,7 @@ const User = () => {
               <div className="w-full font-semibold text-gray-600 flex flex-col gap-5">
                 <div className="flex justify-between items-center w-full text-black">
                   <h1 className="text-2xl">Add/Edit User</h1>
-                  <button className="border-pink-600 text-white bg-pink-600 p-2 rounded-lg w-20" onClick={handleClose}>Close</button>
+                  <button className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-20" onClick={handleClose}>Close</button>
                 </div>
                 <div className="grid grid-cols-2">
                   <div className="flex flex-col p-2 gap-3">
@@ -214,8 +214,8 @@ const User = () => {
 
 
                 <div className="w-full flex justify-center items-center gap-5">
-                  <button className="p-2 border-2 border-pink-600 bg-white text-pink-600 hover:text-white hover:bg-pink-600 flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button>
-                  <button className="p-2 border-2 border-pink-600 bg-pink-600 hover:bg-white hover:text-pink-600 text-white  flex justify-center items-center gap-3 w-32 rounded-lg">Add/Edit User</button>
+                  <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button>
+                  <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg">Add/Edit User</button>
                 </div>
               </div>
             </Box>

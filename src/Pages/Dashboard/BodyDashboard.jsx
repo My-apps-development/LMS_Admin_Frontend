@@ -77,7 +77,7 @@ const BodyDashboard = () => {
                     <div className="w-[70%] shadow-xl p-3 ml-5">
                         <div className="flex justify-between items-center">
                             <h1>Active User (Students) </h1>
-                            <p className="border-2 px-4 py-2 rounded-lg bg-pink-600 text-white">Jan 2024 &gt;</p>
+                            <p className="border-2 px-4 py-2 rounded-lg bg-[#B32073] text-white">Jan 2024 &gt;</p>
                         </div>
                         <div>
                             <Bar data={userData} />

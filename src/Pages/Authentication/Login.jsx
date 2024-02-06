@@ -37,7 +37,7 @@ const Login = () => {
               </div>
 
               <div className="p-2 flex flex-col gap-2">
-                <button className="bg-pink-500 p-2 rounded-lg text-white hover:bg-pink-700" onClick={() => navigate("/dashboard")}>Log in</button>
+                <button className="bg-[#B32073] p-2 rounded-lg text-white hover:bg-[#B32073]" onClick={() => navigate("/dashboard")}>Log in</button>
               </div>
             </form>
           </div>

@@ -41,7 +41,7 @@ const EnrollmentCourse = () => {
                 </div>
                 <div className="flex justify-between items-center p-2">
                     <h1>Course Enrollment</h1>
-                    <button className="p-2 border-2 border-pink-600 bg-pink-600 text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-32" onClick={handleOpen}><FaPlus />Add</button>
+                    <button className="p-2 border-2 border-[#B32073] bg-[#B32073] text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-32" onClick={handleOpen}><FaPlus />Add</button>
                 </div>
 
                 <div>
@@ -55,7 +55,7 @@ const EnrollmentCourse = () => {
                             <div className="w-full font-semibold text-gray-600 flex flex-col gap-5">
                                 <div className="flex justify-between items-center w-full text-black">
                                     <h1 className="text-2xl">Enrollment Form</h1>
-                                    <button className="border-pink-600 bg-pink-600 p-2 rounded-lg w-20" onClick={handleClose}>Close</button>
+                                    <button className="border-[#B32073] bg-[#B32073] p-2 rounded-lg w-20" onClick={handleClose}>Close</button>
                                 </div>
                                 <div className="flex flex-col p-2 gap-3">
                                     <label htmlFor="">User Role</label>
@@ -72,7 +72,7 @@ const EnrollmentCourse = () => {
                                     </select>
                                 </div>
                                 <div className="w-full flex justify-center items-center">
-                                    <button className="p-2 border-2 border-pink-600 bg-pink-600 text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-32 rounded-lg">Enroll Course</button>
+                                    <button className="p-2 border-2 border-[#B32073] bg-[#B32073] text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-32 rounded-lg">Enroll Course</button>
                                 </div>
                             </div>
                         </Box>

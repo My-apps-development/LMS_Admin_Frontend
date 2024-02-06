@@ -2,6 +2,8 @@ import { TablePagination } from "@mui/material"
 import AdminDashboard from "../Dashboard/AdminDashboard"
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
+import { CiEdit } from "react-icons/ci";
+import { MdDelete } from "react-icons/md";
 
 
 const EnrollmentList = () => {
@@ -25,7 +27,7 @@ const EnrollmentList = () => {
                 </div>
                 <div className="flex justify-between items-center p-2">
                     <h1>Enrollment List</h1>
-                    <button className="p-2 border-2 border-pink-600 bg-pink-600 text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-32"><FaPlus />Add</button>
+                    <button className="p-2 border-2 border-[#B32073] bg-[#B32073] text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-32"><FaPlus />Add</button>
                 </div>
                 <div className="w-full mt-5">
                     <table className="w-[100%]">
@@ -58,9 +60,9 @@ const EnrollmentList = () => {
                                 <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">Driver</td>
                                 <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">Introduction</td>
                                 <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">21/02/2024</td>
-                                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                                    <p>edit</p>
-                                    <p>delete</p>
+                                <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
+                                    <p><CiEdit /></p>
+                                    <p><MdDelete /></p>
                                 </td>
                                 <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">hamburger</td>
                             </tr>
@@ -71,9 +73,9 @@ const EnrollmentList = () => {
                                 <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">Driver</td>
                                 <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">Introduction</td>
                                 <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">21/02/2024</td>
-                                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                                    <p>edit</p>
-                                    <p>delete</p>
+                                <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
+                                    <p><CiEdit /></p>
+                                    <p><MdDelete /></p>
                                 </td>
                                 <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">hamburger</td>
                             </tr>
@@ -84,9 +86,9 @@ const EnrollmentList = () => {
                                 <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">Driver</td>
                                 <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">Introduction</td>
                                 <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">21/02/2024</td>
-                                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                                    <p>edit</p>
-                                    <p>delete</p>
+                                <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
+                                    <p><CiEdit /></p>
+                                    <p><MdDelete /></p>
                                 </td>
                                 <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">hamburger</td>
                             </tr>
@@ -97,9 +99,9 @@ const EnrollmentList = () => {
                                 <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">Driver</td>
                                 <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">Introduction</td>
                                 <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">21/02/2024</td>
-                                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                                    <p>edit</p>
-                                    <p>delete</p>
+                                <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
+                                    <p><CiEdit /></p>
+                                    <p><MdDelete /></p>
                                 </td>
                                 <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">hamburger</td>
                             </tr>

@@ -29,7 +29,7 @@ const SideMenu = () => {
                     <NavLink to="/">
                         <div className="p-2 hover:bg-gray-300 rounded-lg flex gap-2 w-full">
                             <p className="flex justify-center items-center text-gray-500"><MdSpaceDashboard /></p>
-                            <h1 className="text-xl hover:text-pink-600 text-gray-500 w-full">Dashboard</h1>
+                            <h1 className="text-xl hover:text-[#B32073] text-gray-500 w-full">Dashboard</h1>
                         </div>
                     </NavLink>
                     <div className="w-[100%] p-2 text-gray-500 flex flex-col gap-1">
@@ -54,7 +54,7 @@ const SideMenu = () => {
                             <p><FaChevronDown /></p>
                         </div>
                         <div className={`sm ${isAssignmentOpen ? "flex" : "hidden"} flex-col gap-5 mt-5`}>
-                            
+
                             <p>Assignment</p>
                             <NavLink to="/Assessment/List"><p>Question List</p></NavLink>
 
@@ -77,28 +77,28 @@ const SideMenu = () => {
                     <NavLink to="/users">
                         <div className="p-2 hover:bg-gray-300 rounded-lg flex gap-2 w-full">
                             <p className="flex justify-center items-center text-gray-500"><FaUserLarge /></p>
-                            <h1 className="text-xl hover:text-pink-600 text-gray-500 w-full">Users</h1>
+                            <h1 className="text-xl hover:text-[#B32073] text-gray-500 w-full">Users</h1>
                         </div>
                     </NavLink>
 
                     <div className="p-2 hover:bg-gray-300 rounded-lg flex gap-2 w-full">
                         <p className="flex justify-center items-center text-gray-500"><AiOutlineSafetyCertificate /></p>
-                        <h1 className="text-xl hover:text-pink-600 text-gray-500 w-full">Certificate</h1>
+                        <NavLink to="/Certificate"><h1 className="text-xl hover:text-[#B32073] text-gray-500 w-full">Certificate</h1></NavLink>
                     </div>
 
                     <div className="p-2 hover:bg-gray-300 rounded-lg flex gap-2 w-full">
                         <p className="flex justify-center items-center text-gray-500"><RiMenu2Line /></p>
-                        <h1 className="text-xl hover:text-pink-600 text-gray-500 w-full">Menu</h1>
+                        <h1 className="text-xl hover:text-[#B32073] text-gray-500 w-full">Menu</h1>
                     </div>
 
                     <div className="p-2 hover:bg-gray-300 rounded-lg flex gap-2 w-full">
                         <p className="flex justify-center items-center text-gray-500"><MdSettings /></p>
-                        <h1 className="text-xl hover:text-pink-600 text-gray-500 w-full">Settings</h1>
+                        <h1 className="text-xl hover:text-[#B32073] text-gray-500 w-full">Settings</h1>
                     </div>
 
                     <div className="p-2 hover:bg-gray-300 rounded-lg flex gap-2 w-full">
                         <p className="flex justify-center items-center text-gray-500"><IoPower /></p>
-                        <h1 className="text-xl hover:text-pink-600 text-gray-500 w-full">Logout</h1>
+                        <h1 className="text-xl hover:text-[#B32073] text-gray-500 w-full">Logout</h1>
                     </div>
                 </div>
             </aside>
