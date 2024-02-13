@@ -98,11 +98,20 @@ const CourseList = () => {
     //     }
     // }
 
+    const FetchChapters = async () => {
+        try {
+            const response = await axiosInstance.get("/homepage/fetchChapters")
+            const data = await response.data
+            console.log(data)
+        } catch (error) {
+            console.log("Error Fetching Chapters", error.message);
+        }
+    }
     const handleDeleteChapter = async (_id) => {
         console.log(_id);
         try {
             setLoader(true)
-            const response = await axiosInstance.delete("/homepage/deleteChapters", { data: { id: _id } })
+            const response = await axiosInstance.delete("homepage/deleteCourse", { data: { courseId: _id } })
             const data = await response.data
             successMessage(data.message);
             fetchCourses()
@@ -114,6 +123,7 @@ const CourseList = () => {
 
     useEffect(() => {
         fetchCourses()
+        FetchChapters()
     }, [])
 
 
@@ -146,7 +156,7 @@ const CourseList = () => {
                             {
                                 courseList.map((item, index) => {
                                     return (
-                                        <div className="w-[100%] h-72 border-2 shadow-xl p-2 rounded-lg hover:scale-95 duration-300" key={index}>
+                                        <div className="w-[100%] h-72 border-2 shadow-xl p-2 rounded-lg hover:scale-95 duration-300" key={index} >
                                             <div className="flex flex-col gap-2 ">
                                                 <h1 className="text-xl text-gray-600">{item.title}</h1>
 

@@ -6,6 +6,7 @@ import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
 import { axiosInstance } from "../../Utils/AxiosSetUp";
 import { successMessage } from "../../Utils/notificationManager";
+import Loader from "../../Utils/Loader";
 
 
 
@@ -18,6 +19,7 @@ const CourseCategory = () => {
     const [categoryList, setCategoryList] = useState([])
     const [subCategoryList, setSubCategoryList] = useState([])
     const [subCategory, setSubCategory] = useState([])
+    const [loader, setLoader] = useState(false)
 
 
 
@@ -75,6 +77,7 @@ const CourseCategory = () => {
     const FetchCategories = async () => {
 
         try {
+            setLoader(true)
             const response = await axiosInstance.get("/category/fetch")
             const data = await response.data
             setCategoryList(data.categories);
@@ -82,6 +85,7 @@ const CourseCategory = () => {
             data.categories.forEach(category => {
                 setSubCategory(category._id)
             })
+            setLoader(false)
 
         } catch (error) {
             console.log("Error Fetching Categories");
@@ -108,10 +112,12 @@ const CourseCategory = () => {
     const DeleteCategory = async (_id) => {
         console.log(_id)
         try {
+            setLoader(true)
             const response = await axiosInstance.delete(`/category/delete`, { data: { id: _id } })
             const data = await response.data
             successMessage(data.message);
             FetchCategories()
+            setLoader(false)
         } catch (error) {
             console.log("Error Deleting Category", error.message);
         }
@@ -128,7 +134,7 @@ const CourseCategory = () => {
     return (
         <div className="w-full">
             <AdminDashboard />
-            <div className="ml-56 mt-32 w-auto p-3 font-semibold text-gray-600">
+            {loader ? <Loader /> : <div className="ml-56 mt-32 w-auto p-3 font-semibold text-gray-600">
 
                 <div className="">
                     <div className="p-2 ">
@@ -171,20 +177,20 @@ const CourseCategory = () => {
                                     }
 
                                     {/* <div className="flex justify-between items-center gap-2">
-                                        <p>Sub Category 2</p>
-                                        <div className="flex justify-center items-center gap-2">
+                        <p>Sub Category 2</p>
+                        <div className="flex justify-center items-center gap-2">
 
-                                            <p onClick={handleEditSubmodal}><CiEdit /></p>
-                                            <p><MdDelete /></p>
-                                        </div>
-                                    </div>
-                                    <div className="flex justify-between items-center gap-2">
-                                        <p>Sub Category 2</p>
-                                        <div className="flex justify-center items-center gap-2">
-                                            <p><CiEdit /></p>
-                                            <p><MdDelete /></p>
-                                        </div>
-                                    </div> */}
+                            <p onClick={handleEditSubmodal}><CiEdit /></p>
+                            <p><MdDelete /></p>
+                        </div>
+                    </div>
+                    <div className="flex justify-between items-center gap-2">
+                        <p>Sub Category 2</p>
+                        <div className="flex justify-center items-center gap-2">
+                            <p><CiEdit /></p>
+                            <p><MdDelete /></p>
+                        </div>
+                    </div> */}
                                     <div className="flex justify-between items-center gap-2 text-2xl">
                                         <p className="text-blue-500 cursor-pointer" onClick={handleEdit}><CiEdit /></p>
                                         <p className="text-red-500 cursor-pointer" onClick={() => DeleteCategory(item._id)}><MdDelete /></p>
@@ -195,183 +201,183 @@ const CourseCategory = () => {
                     })}
 
                     {/* <div className="border-2 shadow-lg flex flex-col gap-3 p-3 rounded-lg">
-                        <div>
-                            <img src="https://img.freepik.com/premium-photo/woman-standing-by-potted-plants_1048944-16402036.jpg?t=st=1706787923~exp=1706788523~hmac=c2a58b2e44fde18bbe73065ee3ec83536c363ff3f098ea6a57ec1ba9795607a9" alt="" className="rounded-lg object-cover" />
-                        </div>
-                        <div>
-                            <h1 className="text-2xl">Introduction</h1>
-                            <p className="text-sm">3 sub categories</p>
-                        </div>
-                        <div className="flex justify-between items-center gap-2">
-                            <p>App Introduction</p>
-                            <div className="flex justify-center items-center gap-2">
-                                <p><CiEdit /></p>
-                                <p><MdDelete /></p>
-                            </div>
-                        </div>
-                        <div className="flex justify-between items-center gap-2">
-                            <p>Sub Category 2</p>
-                            <div className="flex justify-center items-center gap-2">
+        <div>
+            <img src="https://img.freepik.com/premium-photo/woman-standing-by-potted-plants_1048944-16402036.jpg?t=st=1706787923~exp=1706788523~hmac=c2a58b2e44fde18bbe73065ee3ec83536c363ff3f098ea6a57ec1ba9795607a9" alt="" className="rounded-lg object-cover" />
+        </div>
+        <div>
+            <h1 className="text-2xl">Introduction</h1>
+            <p className="text-sm">3 sub categories</p>
+        </div>
+        <div className="flex justify-between items-center gap-2">
+            <p>App Introduction</p>
+            <div className="flex justify-center items-center gap-2">
+                <p><CiEdit /></p>
+                <p><MdDelete /></p>
+            </div>
+        </div>
+        <div className="flex justify-between items-center gap-2">
+            <p>Sub Category 2</p>
+            <div className="flex justify-center items-center gap-2">
 
-                                <p onClick={handleEditSubmodal}><CiEdit /></p>
-                                <p><MdDelete /></p>
-                            </div>
-                        </div>
-                        <div className="flex justify-between items-center gap-2">
-                            <p>Sub Category 2</p>
-                            <div className="flex justify-center items-center gap-2">
-                                <p><CiEdit /></p>
-                                <p><MdDelete /></p>
-                            </div>
-                        </div>
-                        <div className="flex justify-between items-center gap-2 text-2xl">
-                            <p className="text-blue-500" onClick={handleEdit}><CiEdit /></p>
-                            <p className="text-red-500"><MdDelete /></p>
-                        </div>
-                    </div>
+                <p onClick={handleEditSubmodal}><CiEdit /></p>
+                <p><MdDelete /></p>
+            </div>
+        </div>
+        <div className="flex justify-between items-center gap-2">
+            <p>Sub Category 2</p>
+            <div className="flex justify-center items-center gap-2">
+                <p><CiEdit /></p>
+                <p><MdDelete /></p>
+            </div>
+        </div>
+        <div className="flex justify-between items-center gap-2 text-2xl">
+            <p className="text-blue-500" onClick={handleEdit}><CiEdit /></p>
+            <p className="text-red-500"><MdDelete /></p>
+        </div>
+    </div>
 
-                    <div className="border-2 shadow-lg flex flex-col gap-3 p-3 rounded-lg">
-                        <div>
-                            <img src="https://img.freepik.com/premium-photo/woman-standing-by-potted-plants_1048944-16402036.jpg?t=st=1706787923~exp=1706788523~hmac=c2a58b2e44fde18bbe73065ee3ec83536c363ff3f098ea6a57ec1ba9795607a9" alt="" className="rounded-lg object-cover" />
-                        </div>
-                        <div>
-                            <h1 className="text-2xl">Introduction</h1>
-                            <p className="text-sm">3 sub categories</p>
-                        </div>
-                        <div className="flex justify-between items-center gap-2">
-                            <p>App Introduction</p>
-                            <div className="flex justify-center items-center gap-2">
-                                <p><CiEdit /></p>
-                                <p><MdDelete /></p>
-                            </div>
-                        </div>
-                        <div className="flex justify-between items-center gap-2">
-                            <p>Sub Category 2</p>
-                            <div className="flex justify-center items-center gap-2">
-                                <p><CiEdit /></p>
-                                <p><MdDelete /></p>
-                            </div>
-                        </div>
-                        <div className="flex justify-between items-center gap-2">
-                            <p>Sub Category 2</p>
-                            <div className="flex justify-center items-center gap-2">
-                                <p><CiEdit /></p>
-                                <p><MdDelete /></p>
-                            </div>
-                        </div>
-                        <div className="flex justify-between items-center gap-2 text-2xl">
-                            <p className="text-blue-500" onClick={handleEdit}><CiEdit /></p>
-                            <p className="text-red-500"><MdDelete /></p>
-                        </div>
-                    </div>
+    <div className="border-2 shadow-lg flex flex-col gap-3 p-3 rounded-lg">
+        <div>
+            <img src="https://img.freepik.com/premium-photo/woman-standing-by-potted-plants_1048944-16402036.jpg?t=st=1706787923~exp=1706788523~hmac=c2a58b2e44fde18bbe73065ee3ec83536c363ff3f098ea6a57ec1ba9795607a9" alt="" className="rounded-lg object-cover" />
+        </div>
+        <div>
+            <h1 className="text-2xl">Introduction</h1>
+            <p className="text-sm">3 sub categories</p>
+        </div>
+        <div className="flex justify-between items-center gap-2">
+            <p>App Introduction</p>
+            <div className="flex justify-center items-center gap-2">
+                <p><CiEdit /></p>
+                <p><MdDelete /></p>
+            </div>
+        </div>
+        <div className="flex justify-between items-center gap-2">
+            <p>Sub Category 2</p>
+            <div className="flex justify-center items-center gap-2">
+                <p><CiEdit /></p>
+                <p><MdDelete /></p>
+            </div>
+        </div>
+        <div className="flex justify-between items-center gap-2">
+            <p>Sub Category 2</p>
+            <div className="flex justify-center items-center gap-2">
+                <p><CiEdit /></p>
+                <p><MdDelete /></p>
+            </div>
+        </div>
+        <div className="flex justify-between items-center gap-2 text-2xl">
+            <p className="text-blue-500" onClick={handleEdit}><CiEdit /></p>
+            <p className="text-red-500"><MdDelete /></p>
+        </div>
+    </div>
 
-                    <div className="border-2 shadow-lg flex flex-col gap-3 p-3 rounded-lg">
-                        <div>
-                            <img src="https://img.freepik.com/premium-photo/woman-standing-by-potted-plants_1048944-16402036.jpg?t=st=1706787923~exp=1706788523~hmac=c2a58b2e44fde18bbe73065ee3ec83536c363ff3f098ea6a57ec1ba9795607a9" alt="" className="rounded-lg object-cover" />
-                        </div>
-                        <div>
-                            <h1 className="text-2xl">Introduction</h1>
-                            <p className="text-sm">3 sub categories</p>
-                        </div>
-                        <div className="flex justify-between items-center gap-2">
-                            <p>App Introduction</p>
-                            <div className="flex justify-center items-center gap-2">
-                                <p><CiEdit /></p>
-                                <p><MdDelete /></p>
-                            </div>
-                        </div>
-                        <div className="flex justify-between items-center gap-2">
-                            <p>Sub Category 2</p>
-                            <div className="flex justify-center items-center gap-2">
-                                <p><CiEdit /></p>
-                                <p><MdDelete /></p>
-                            </div>
-                        </div>
-                        <div className="flex justify-between items-center gap-2">
-                            <p>Sub Category 2</p>
-                            <div className="flex justify-center items-center gap-2">
-                                <p><CiEdit /></p>
-                                <p><MdDelete /></p>
-                            </div>
-                        </div>
-                        <div className="flex justify-between items-center gap-2 text-2xl">
-                            <p className="text-blue-500" onClick={handleEdit}><CiEdit /></p>
-                            <p className="text-red-500"><MdDelete /></p>
-                        </div>
-                    </div>
+    <div className="border-2 shadow-lg flex flex-col gap-3 p-3 rounded-lg">
+        <div>
+            <img src="https://img.freepik.com/premium-photo/woman-standing-by-potted-plants_1048944-16402036.jpg?t=st=1706787923~exp=1706788523~hmac=c2a58b2e44fde18bbe73065ee3ec83536c363ff3f098ea6a57ec1ba9795607a9" alt="" className="rounded-lg object-cover" />
+        </div>
+        <div>
+            <h1 className="text-2xl">Introduction</h1>
+            <p className="text-sm">3 sub categories</p>
+        </div>
+        <div className="flex justify-between items-center gap-2">
+            <p>App Introduction</p>
+            <div className="flex justify-center items-center gap-2">
+                <p><CiEdit /></p>
+                <p><MdDelete /></p>
+            </div>
+        </div>
+        <div className="flex justify-between items-center gap-2">
+            <p>Sub Category 2</p>
+            <div className="flex justify-center items-center gap-2">
+                <p><CiEdit /></p>
+                <p><MdDelete /></p>
+            </div>
+        </div>
+        <div className="flex justify-between items-center gap-2">
+            <p>Sub Category 2</p>
+            <div className="flex justify-center items-center gap-2">
+                <p><CiEdit /></p>
+                <p><MdDelete /></p>
+            </div>
+        </div>
+        <div className="flex justify-between items-center gap-2 text-2xl">
+            <p className="text-blue-500" onClick={handleEdit}><CiEdit /></p>
+            <p className="text-red-500"><MdDelete /></p>
+        </div>
+    </div>
 
-                    <div className="border-2 shadow-lg flex flex-col gap-3 p-3 rounded-lg">
-                        <div>
-                            <img src="https://img.freepik.com/premium-photo/woman-standing-by-potted-plants_1048944-16402036.jpg?t=st=1706787923~exp=1706788523~hmac=c2a58b2e44fde18bbe73065ee3ec83536c363ff3f098ea6a57ec1ba9795607a9" alt="" className="rounded-lg object-cover" />
-                        </div>
-                        <div>
-                            <h1 className="text-2xl">Introduction</h1>
-                            <p className="text-sm">3 sub categories</p>
-                        </div>
-                        <div className="flex justify-between items-center gap-2">
-                            <p>App Introduction</p>
-                            <div className="flex justify-center items-center gap-2">
-                                <p><CiEdit /></p>
-                                <p><MdDelete /></p>
-                            </div>
-                        </div>
-                        <div className="flex justify-between items-center gap-2">
-                            <p>Sub Category 2</p>
-                            <div className="flex justify-center items-center gap-2">
-                                <p><CiEdit /></p>
-                                <p><MdDelete /></p>
-                            </div>
-                        </div>
-                        <div className="flex justify-between items-center gap-2">
-                            <p>Sub Category 2</p>
-                            <div className="flex justify-center items-center gap-2">
-                                <p><CiEdit /></p>
-                                <p><MdDelete /></p>
-                            </div>
-                        </div>
-                        <div className="flex justify-between items-center gap-2 text-2xl">
-                            <p className="text-blue-500" onClick={handleEdit}><CiEdit /></p>
-                            <p className="text-red-500"><MdDelete /></p>
-                        </div>
-                    </div>
+    <div className="border-2 shadow-lg flex flex-col gap-3 p-3 rounded-lg">
+        <div>
+            <img src="https://img.freepik.com/premium-photo/woman-standing-by-potted-plants_1048944-16402036.jpg?t=st=1706787923~exp=1706788523~hmac=c2a58b2e44fde18bbe73065ee3ec83536c363ff3f098ea6a57ec1ba9795607a9" alt="" className="rounded-lg object-cover" />
+        </div>
+        <div>
+            <h1 className="text-2xl">Introduction</h1>
+            <p className="text-sm">3 sub categories</p>
+        </div>
+        <div className="flex justify-between items-center gap-2">
+            <p>App Introduction</p>
+            <div className="flex justify-center items-center gap-2">
+                <p><CiEdit /></p>
+                <p><MdDelete /></p>
+            </div>
+        </div>
+        <div className="flex justify-between items-center gap-2">
+            <p>Sub Category 2</p>
+            <div className="flex justify-center items-center gap-2">
+                <p><CiEdit /></p>
+                <p><MdDelete /></p>
+            </div>
+        </div>
+        <div className="flex justify-between items-center gap-2">
+            <p>Sub Category 2</p>
+            <div className="flex justify-center items-center gap-2">
+                <p><CiEdit /></p>
+                <p><MdDelete /></p>
+            </div>
+        </div>
+        <div className="flex justify-between items-center gap-2 text-2xl">
+            <p className="text-blue-500" onClick={handleEdit}><CiEdit /></p>
+            <p className="text-red-500"><MdDelete /></p>
+        </div>
+    </div>
 
-                    <div className="border-2 shadow-lg flex flex-col gap-3 p-3 rounded-lg">
-                        <div>
-                            <img src="https://img.freepik.com/premium-photo/woman-standing-by-potted-plants_1048944-16402036.jpg?t=st=1706787923~exp=1706788523~hmac=c2a58b2e44fde18bbe73065ee3ec83536c363ff3f098ea6a57ec1ba9795607a9" alt="" className="rounded-lg object-cover" />
-                        </div>
-                        <div>
-                            <h1 className="text-2xl">Introduction</h1>
-                            <p className="text-sm">3 sub categories</p>
-                        </div>
-                        <div className="flex justify-between items-center gap-2">
-                            <p>App Introduction</p>
-                            <div className="flex justify-center items-center gap-2">
-                                <p><CiEdit /></p>
-                                <p><MdDelete /></p>
-                            </div>
-                        </div>
-                        <div className="flex justify-between items-center gap-2">
-                            <p>Sub Category 2</p>
-                            <div className="flex justify-center items-center gap-2">
-                                <p><CiEdit /></p>
-                                <p><MdDelete /></p>
-                            </div>
-                        </div>
-                        <div className="flex justify-between items-center gap-2">
-                            <p>Sub Category 2</p>
-                            <div className="flex justify-center items-center gap-2">
-                                <p><CiEdit /></p>
-                                <p><MdDelete /></p>
-                            </div>
-                        </div>
-                        <div className="flex justify-between items-center gap-2 text-2xl">
-                            <p className="text-blue-500" onClick={handleEdit}><CiEdit /></p>
-                            <p className="text-red-500"><MdDelete /></p>
-                        </div>
-                    </div> */}
+    <div className="border-2 shadow-lg flex flex-col gap-3 p-3 rounded-lg">
+        <div>
+            <img src="https://img.freepik.com/premium-photo/woman-standing-by-potted-plants_1048944-16402036.jpg?t=st=1706787923~exp=1706788523~hmac=c2a58b2e44fde18bbe73065ee3ec83536c363ff3f098ea6a57ec1ba9795607a9" alt="" className="rounded-lg object-cover" />
+        </div>
+        <div>
+            <h1 className="text-2xl">Introduction</h1>
+            <p className="text-sm">3 sub categories</p>
+        </div>
+        <div className="flex justify-between items-center gap-2">
+            <p>App Introduction</p>
+            <div className="flex justify-center items-center gap-2">
+                <p><CiEdit /></p>
+                <p><MdDelete /></p>
+            </div>
+        </div>
+        <div className="flex justify-between items-center gap-2">
+            <p>Sub Category 2</p>
+            <div className="flex justify-center items-center gap-2">
+                <p><CiEdit /></p>
+                <p><MdDelete /></p>
+            </div>
+        </div>
+        <div className="flex justify-between items-center gap-2">
+            <p>Sub Category 2</p>
+            <div className="flex justify-center items-center gap-2">
+                <p><CiEdit /></p>
+                <p><MdDelete /></p>
+            </div>
+        </div>
+        <div className="flex justify-between items-center gap-2 text-2xl">
+            <p className="text-blue-500" onClick={handleEdit}><CiEdit /></p>
+            <p className="text-red-500"><MdDelete /></p>
+        </div>
+    </div> */}
 
                 </div>
-            </div>
+            </div>}
             <div>
                 <Modal
                     open={open}
