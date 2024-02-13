@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AdminDashboard from "../Dashboard/AdminDashboard"
 import { FaPlus } from "react-icons/fa6";
 import { Box, Modal } from "@mui/material";
 import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
+import { axiosInstance } from "../../Utils/AxiosSetUp";
+import { successMessage } from "../../Utils/notificationManager";
+
 
 
 const CourseCategory = () => {
@@ -11,6 +14,12 @@ const CourseCategory = () => {
     const [open, setOpen] = useState(false)
     const [subModalOpen, setSubModalOpen] = useState(false)
     const [addModalOpen, setAddModalOpen] = useState(false)
+
+    const [categoryList, setCategoryList] = useState([])
+    const [subCategoryList, setSubCategoryList] = useState([])
+    const [subCategory, setSubCategory] = useState([])
+
+
 
 
     const handleEdit = () => {
@@ -63,6 +72,59 @@ const CourseCategory = () => {
         p: 4,
     };
 
+    const FetchCategories = async () => {
+
+        try {
+            const response = await axiosInstance.get("/category/fetch")
+            const data = await response.data
+            setCategoryList(data.categories);
+
+            data.categories.forEach(category => {
+                setSubCategory(category._id)
+            })
+
+        } catch (error) {
+            console.log("Error Fetching Categories");
+        }
+    }
+
+
+
+    // console.log(subCategory);
+
+    console.log(categoryList);
+
+
+    const FetchSubCategories = async () => {
+        try {
+            const response = await axiosInstance.get(`category/fetch/subcategory?categoryId=65bca28182a04790da0b2e7f`)
+            const data = await response.data
+            setSubCategoryList(data.Subcategories);
+        } catch (error) {
+            console.log("Error fetching Sub Category List");
+        }
+    }
+
+    const DeleteCategory = async (_id) => {
+        console.log(_id)
+        try {
+            const response = await axiosInstance.delete(`/category/delete`, { data: { id: _id } })
+            const data = await response.data
+            successMessage(data.message);
+            FetchCategories()
+        } catch (error) {
+            console.log("Error Deleting Category", error.message);
+        }
+    }
+
+
+    useEffect(() => {
+        FetchCategories()
+        FetchSubCategories()
+    }, [])
+
+    // console.log(subCategoryList);
+
     return (
         <div className="w-full">
             <AdminDashboard />
@@ -73,15 +135,66 @@ const CourseCategory = () => {
                         <h1 className="text-2xl">Categories</h1>
                     </div>
                     <div className="flex justify-between items-center p-2">
-                        <p>Total Four Categories Available</p>
+                        <p>Total {categoryList.length} Categories Available</p>
                         <button className="p-2 border-2 border-[#B32073] bg-[#B32073] text-white hover:bg-pink-800 flex justify-center items-center gap-3" onClick={handleAddModalOpen}><FaPlus /> Add Category</button>
                     </div>
                 </div>
 
 
+
                 <div className="grid grid-cols-4 gap-5 mt-5 p-2 w-[100%] max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 max-lg:text-xs">
 
-                    <div className="border-2 shadow-lg flex flex-col gap-3 p-3 rounded-lg">
+                    {categoryList.map((item, index) => {
+
+                        return (
+                            <div key={index}>
+                                <div className="border-2 shadow-lg flex flex-col gap-3 p-3 rounded-lg hover:scale-95 duration-300">
+                                    <div>
+                                        <img src={item.upload_thumbnail} alt="" className="rounded-lg object-cover" />
+                                    </div>
+                                    <div>
+                                        <h1 className="text-2xl">{item.categories}</h1>
+                                        <p className="text-sm">{item.totalsubCategory} sub categories</p>
+                                    </div>
+                                    {
+                                        subCategoryList.map((item, index) => {
+                                            return (
+                                                <div className="flex justify-between items-center gap-2" key={index}>
+                                                    <p>{item.title}</p>
+                                                    <div className="flex justify-center items-center gap-2">
+                                                        <p onClick={handleEditSubmodal}><CiEdit /></p>
+                                                        <p><MdDelete /></p>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })
+                                    }
+
+                                    {/* <div className="flex justify-between items-center gap-2">
+                                        <p>Sub Category 2</p>
+                                        <div className="flex justify-center items-center gap-2">
+
+                                            <p onClick={handleEditSubmodal}><CiEdit /></p>
+                                            <p><MdDelete /></p>
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-between items-center gap-2">
+                                        <p>Sub Category 2</p>
+                                        <div className="flex justify-center items-center gap-2">
+                                            <p><CiEdit /></p>
+                                            <p><MdDelete /></p>
+                                        </div>
+                                    </div> */}
+                                    <div className="flex justify-between items-center gap-2 text-2xl">
+                                        <p className="text-blue-500 cursor-pointer" onClick={handleEdit}><CiEdit /></p>
+                                        <p className="text-red-500 cursor-pointer" onClick={() => DeleteCategory(item._id)}><MdDelete /></p>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })}
+
+                    {/* <div className="border-2 shadow-lg flex flex-col gap-3 p-3 rounded-lg">
                         <div>
                             <img src="https://img.freepik.com/premium-photo/woman-standing-by-potted-plants_1048944-16402036.jpg?t=st=1706787923~exp=1706788523~hmac=c2a58b2e44fde18bbe73065ee3ec83536c363ff3f098ea6a57ec1ba9795607a9" alt="" className="rounded-lg object-cover" />
                         </div>
@@ -255,7 +368,7 @@ const CourseCategory = () => {
                             <p className="text-blue-500" onClick={handleEdit}><CiEdit /></p>
                             <p className="text-red-500"><MdDelete /></p>
                         </div>
-                    </div>
+                    </div> */}
 
                 </div>
             </div>

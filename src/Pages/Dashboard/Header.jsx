@@ -2,7 +2,7 @@ import { FiSearch } from "react-icons/fi";
 
 const Header = () => {
     return (
-        <div className="flex justify-between p-2 w-[85%] fixed font-semibold">
+        <div className="flex justify-between p-2 w-[85%] font-semibold">
             <div className="flex justify-center items-center p-2 border-2 w-[50%] mt-5 ml-20 rounded-lg">
                 <p className="text-4xl w-14 text-center"><FiSearch /></p>
                 <input type="text" name="" id="" className="p-2 w-full" />

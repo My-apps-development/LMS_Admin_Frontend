@@ -12,6 +12,8 @@ import EnrollmentList from './Pages/Enrollment/EnrollmentList'
 import EnrollmentCourse from './Pages/Enrollment/EnrollmentCourse'
 import AssessmentList from './Pages/Assessment/AssessmentList'
 import Certificate from './Pages/Certificate/Certificate'
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify'
 
 
 function App() {
@@ -20,6 +22,7 @@ function App() {
   return (
     <>
       <BrowserRouter>
+      <ToastContainer />
         <Routes>
 
           <Route path='/' element={<Dashboard />} />

@@ -1,8 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 
 import { Chart as ChartJS } from "chart.js/auto";
-import AdminDashboard from "./AdminDashboard";
+import { IoBookSharp } from "react-icons/io5";
+import { axiosInstance } from "../../Utils/AxiosSetUp";
+import { IoNewspaperSharp } from "react-icons/io5";
+import { FaUsers } from "react-icons/fa6";
+import { MdOutlineAssignment } from "react-icons/md";
+import { HiMiniNewspaper } from "react-icons/hi2";
+import { PiVideoFill } from "react-icons/pi";
+import { MdOutlineOndemandVideo } from "react-icons/md";
+
+
 
 const BodyDashboard = () => {
     const [userData, setUserData] = useState({
@@ -20,56 +29,101 @@ const BodyDashboard = () => {
             },
         ],
     });
+
+    const [courseList, setCourseList] = useState([])
+    const [QuestionList, setQuestionList] = useState([])
+    const [UserList, setUserList] = useState([])
+
+
+
+    const fetchCourses = async () => {
+        try {
+            const response = await axiosInstance.get("/homepage/courses")
+            const data = await response.data
+            setCourseList(data.Courses);
+        } catch (error) {
+            console.log("Error Fetching Courses", error.message);
+        }
+    }
+
+    const fetchQuestions = async () => {
+        try {
+            const response = await axiosInstance.get("/Quiz/fetch")
+            const data = await response.data
+            setQuestionList(data.data);
+        } catch (error) {
+            console.log("Error Fetching Questions", error.message);
+        }
+    }
+
+
+    const fetchUsers = async () => {
+        try {
+            const response = await axiosInstance.get("/users")
+            const data = await response.data
+            setUserList(data.users);
+        } catch (error) {
+            console.log("Error Fetching Users", error.message);
+        }
+    }
+
+
+
+    useEffect(() => {
+        fetchCourses()
+        fetchQuestions()
+        fetchUsers()
+    }, [])
     return (
         <>
-       
+
             <div className=" ml-56 flex flex-col font-semibold justify-center items-center mt-32 w-[85%]">
 
                 <div className="flex justify-start items-center p-3 w-full">
                     <h1 className="text-2xl text-gray-800">DashBoard</h1>
                 </div>
-                <div className="grid grid-cols-4 p-5 gap-5 w-[100%]">
+                <div className="grid grid-cols-4 p-5 gap-5 w-[100%] text-xl ">
                     <div className="flex flex-col gap-5 justify-center items-start border-2 p-2 rounded-lg shadow-lg">
-                        <p>icon</p>
-                        <p>Total Courses</p>
-                        <p>12</p>
+                        <p className="text-[#B32073] ml-5 mt-3"><IoBookSharp /></p>
+                        <p className="ml-5">Total Courses</p>
+                        <p className="ml-5">{courseList.length}</p>
                     </div>
                     <div className="flex flex-col gap-5 justify-center items-start border-2 p-2 rounded-lg shadow-lg">
-                        <p>icon</p>
-                        <p>Total Courses</p>
-                        <p>12</p>
+                        <p className="text-[#B32073] ml-5 mt-3"><PiVideoFill /></p>
+                        <p className="ml-5">Total Lessons</p>
+                        <p className="ml-5">12</p>
                     </div>
                     <div className="flex flex-col gap-5 justify-center items-start border-2 p-2 rounded-lg shadow-lg">
-                        <p>icon</p>
-                        <p>Total Courses</p>
-                        <p>12</p>
+                        <p className="text-[#B32073] ml-5 mt-3"><HiMiniNewspaper /></p>
+                        <p className="ml-5">Completed Courses</p>
+                        <p className="ml-5">12</p>
                     </div>
                     <div className="flex flex-col gap-5 justify-center items-start border-2 p-2 rounded-lg shadow-lg">
-                        <p>icon</p>
-                        <p>Total Courses</p>
-                        <p>12</p>
+                        <p className="text-[#B32073] ml-5 mt-3"><FaUsers /></p>
+                        <p className="ml-5">Total Completed Course</p>
+                        <p className="ml-5">{UserList.length}</p>
                     </div>
                 </div>
-                <div className="grid grid-cols-4 p-5 gap-5 w-[100%]">
+                <div className="grid grid-cols-4 p-5 gap-5 w-[100%] text-xl ">
                     <div className="flex flex-col gap-5 justify-center items-start border-2 p-2 rounded-lg shadow-lg">
-                        <p>icon</p>
-                        <p>Total Courses</p>
-                        <p>12</p>
+                        <p className="text-[#B32073] ml-5 mt-3"><IoNewspaperSharp /></p>
+                        <p className="ml-5">Total Questions</p>
+                        <p className="ml-5">{QuestionList.length}</p>
                     </div>
                     <div className="flex flex-col gap-5 justify-center items-start border-2 p-2 rounded-lg shadow-lg">
-                        <p>icon</p>
-                        <p>Total Courses</p>
-                        <p>12</p>
+                        <p className="text-[#B32073] ml-5 mt-3"><MdOutlineOndemandVideo /></p>
+                        <p className="ml-5">Answered Questions</p>
+                        <p className="ml-5">12</p>
                     </div>
                     <div className="flex flex-col gap-5 justify-center items-start border-2 p-2 rounded-lg shadow-lg">
-                        <p>icon</p>
-                        <p>Total Courses</p>
-                        <p>12</p>
+                        <p className="text-[#B32073] ml-5 mt-3"><MdOutlineAssignment /></p>
+                        <p className="ml-5">Completed Assignments</p>
+                        <p className="ml-5">12</p>
                     </div>
                     <div className="flex flex-col gap-5 justify-center items-start border-2 p-2 rounded-lg shadow-lg">
-                        <p>icon</p>
-                        <p>Total Courses</p>
-                        <p>12</p>
+                        <p className="text-[#B32073] ml-5 mt-3"><MdOutlineAssignment /></p>
+                        <p className="ml-5">Total Certificates</p>
+                        <p className="ml-5">12</p>
                     </div>
                 </div>
 
@@ -79,7 +133,7 @@ const BodyDashboard = () => {
                             <h1>Active User (Students) </h1>
                             <p className="border-2 px-4 py-2 rounded-lg bg-[#B32073] text-white">Jan 2024 &gt;</p>
                         </div>
-                        <div>
+                        <div className="w-[100%]">
                             <Bar data={userData} />
                         </div>
                     </div>
@@ -87,15 +141,24 @@ const BodyDashboard = () => {
                         <div className="flex justify-start items-center w-[100%] p-2">
                             <h1>Users List</h1>
                         </div>
-                        <div className="flex gap-3">
-                            <div className="w-[20%]">
-                                <img src="https://img.freepik.com/free-photo/businessman-working-laptop_23-2147839979.jpg?size=626&ext=jpg&ga=GA1.1.1985124745.1695480142&semt=sph" alt="" className="w-12 h-12 object-cover rounded-full" />
-                            </div>
-                            <div className="w-full">
-                                <h1>John Doe</h1>
-                                <p className="text-gray-500">johndoe@gmail.com</p>
-                            </div>
+                        <div className="flex flex-col gap-3 w-auto text-sm">
+                            {
+                                UserList.map((item, index) => {
+                                    return (
+                                        <div className="flex gap-3" key={index}>
+                                            <div className="w-[20%]">
+                                                <img src={item.upload_profile} alt="" className="w-12 h-12 object-cover rounded-full" />
+                                            </div>
+                                            <div className="w-full">
+                                                <h1>{item.fullname}</h1>
+                                                <p className="text-gray-500">{item.email}</p>
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
                         </div>
+
                     </div>
                 </div>
             </div></>

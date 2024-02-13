@@ -1,8 +1,66 @@
+// import axios from "axios";
+import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
+import { errorMessage, successMessage } from "../../Utils/notificationManager";
 import { useNavigate } from "react-router-dom";
+import { axiosInstance } from "../../Utils/AxiosSetUp";
 
 const Login = () => {
   const navigate = useNavigate()
+
+  const [inputs, setInputs] = useState({ email: "", password: "" })
+
+
+  
+
+  const handleChange = async (e) => {
+    e.preventDefault()
+
+    setInputs( { ...inputs,[e.target.name]: e.target.value })
+
+  }
+
+  // console.log(inputs);
+
+
+  const handleSubmitData = async(e) => {
+    e.preventDefault()
+
+    if(!inputs.email){
+       errorMessage("email required")
+       return
+    }
+
+    if(!inputs.password){
+     errorMessage("password required")
+     return
+    }
+
+    try {
+
+      const response = await axiosInstance.post("/adminlogin", inputs)
+      console.log(response);
+      const data = await response.data
+      if(response.status===200){
+        localStorage.setItem("token", JSON.stringify(data.token))
+        localStorage.setItem("role", JSON.stringify(data.admin.role))
+        localStorage.setItem("admin", JSON.stringify(data.admin))
+        successMessage(data.message)
+        navigate("/")
+      }
+      
+    } catch (error) {
+      
+      console.log("Cannot post login details");
+    }
+
+    
+
+  }
+
+
+
+
   return (
     <div className="flex w-[100%] h-screen font-semibold">
       <div className="w-[50%] mt-28">
@@ -25,19 +83,19 @@ const Login = () => {
           </div>
 
           <div className="w-[70%] grid grid-cols-1 justify-center items-center p-2 gap-5">
-            <form className="w-[100%]">
+            <form className="w-[100%]" onSubmit={handleSubmitData}>
               <div className="p-2 flex flex-col gap-2">
                 <label htmlFor="">Username or Email</label>
-                <input type="text" name="email" id="email" className="border-2 p-2 rounded-lg" placeholder="Enter Email or Username" />
+                <input type="text" name="email" id="email" className="border-2 p-2 rounded-lg" placeholder="Enter Email or Username" onChange={handleChange} />
               </div>
 
               <div className="p-2 flex flex-col gap-2">
                 <label htmlFor="">Password</label>
-                <input type="text" name="password" id="password" className="border-2 p-2 rounded-lg" placeholder="Enter Password" />
+                <input type="text" name="password" id="password" className="border-2 p-2 rounded-lg" placeholder="Enter Password" onChange={handleChange} />
               </div>
 
               <div className="p-2 flex flex-col gap-2">
-                <button className="bg-[#B32073] p-2 rounded-lg text-white hover:bg-[#B32073]" onClick={() => navigate("/dashboard")}>Log in</button>
+                <button className="bg-[#B32073] p-2 rounded-lg text-white hover:bg-[#B32073]">Log in</button>
               </div>
             </form>
           </div>

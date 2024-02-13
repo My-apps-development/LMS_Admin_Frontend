@@ -1,16 +1,40 @@
 import { Box, Modal, TablePagination } from "@mui/material"
 import AdminDashboard from "../Dashboard/AdminDashboard"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
+import { axiosInstance } from "../../Utils/AxiosSetUp";
+import { Redactor } from '@texttree/notepad-rcl';
+import { errorMessage, successMessage } from "../../Utils/notificationManager";
+import Loader from "../../Utils/Loader";
 
 
 const AssessmentList = () => {
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [open, setOpen] = useState(false);
+
+  const [Quiz, setQuiz] = useState([])
+  const [Flag, setFlag] = useState(true)
+  const [loader, setLoader] = useState(false)
+  const [courseList, setCoursesList] = useState([])
+  const [chapterList, setChapterList] = useState([])
+
+  const [inputs, setInputs] = useState({
+    question: "",
+    option_A: "",
+    option_B: "",
+    option_C: "",
+    option_D: "",
+    correct_option: "",
+    marks: "",
+    courseId: "",
+    chapterId: ""
+  })
+
+
   const handleOpen = () => {
     console.log(open);
     setOpen(true)
@@ -20,6 +44,70 @@ const AssessmentList = () => {
     setOpen(false)
   };
 
+  const handleChange = (e) => {
+    e.preventDefault()
+
+
+    setInputs({ ...inputs, [e.target.name]: e.target.value })
+  }
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    if (!inputs.question) {
+      errorMessage("Question is Required")
+      return
+    }
+
+    if (!inputs.option_A) {
+      errorMessage("Option A is Required")
+      return
+    }
+
+    if (!inputs.option_B) {
+      errorMessage("Option B is Required")
+      return
+    }
+
+    if (!inputs.option_D) {
+      errorMessage("Option c is Required")
+      return
+    }
+
+    if (!inputs.correct_option) {
+      errorMessage("Correct Answer Required")
+      return
+    }
+
+
+    console.log(inputs);
+
+    try {
+      setLoader(true)
+      const response = await axiosInstance.post("/Quiz/insert", inputs)
+      const data = await response.data
+      successMessage(data.message);
+      fetchQuestion()
+      setOpen(false)
+      setLoader(false)
+    } catch(error) {
+      console.log("Error Posting Data", error.message)
+    }
+  }
+
+  const FetchCourses = async () => {
+    try {
+      setLoader(true)
+      const response = await axiosInstance.get("https://myappsdevelopment.co.in/homepage/courses")
+      const data = await response.data
+      setCoursesList(data.Courses);
+      setLoader(false)
+    } catch (error) {
+      console.log("Error Fetching Course", error.message);
+    }
+  }
+
 
   const style = {
     position: 'absolute',
@@ -27,9 +115,11 @@ const AssessmentList = () => {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 800,
+    height: 600,
     bgcolor: 'background.paper',
     border: '2px solid transparent',
     boxShadow: 24,
+    overflowY: 'scroll',
     p: 4,
   };
 
@@ -45,6 +135,8 @@ const AssessmentList = () => {
   //   p: 4,
   // };
 
+  const totalQuizLength = Quiz.length
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -54,10 +146,73 @@ const AssessmentList = () => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+
+  const fetchQuestion = async () => {
+    try {
+      setLoader(true)
+      const response = await axiosInstance.get("/Quiz/fetch")
+      const data = await response.data
+      setQuiz(data.data);
+      setLoader(false)
+    } catch (error) {
+      console.log("Error Fetching Quiz", error.message);
+    }
+
+  }
+
+
+  const FetchChapters = async () => {
+    try {
+      const response = await axiosInstance.get("/homepage/fetchChapters")
+      const data = await response.data
+      setChapterList(data.chapter);
+    } catch (error) {
+      console.log("Error Fetching Chapters", error.message)
+    }
+  }
+
+
+  const FetchSingleQuestionById = async (_id) => {
+      console.log(_id);
+      try{
+        const response = await axiosInstance.get(`/singlequestion?questionid=${_id}`)
+        const data = await response.data
+        console.log(data);
+      } catch(error) {
+        console.log("Error While Fetching By Single Id", error.message);
+      }
+  }
+
+
+  const DeleteQuestionById = async (_id) => {
+    try{
+      setLoader(true)
+      const response = await axiosInstance.delete("/Quiz/delete", {data: {QuestionId: _id}})
+      const data = await response.data
+      successMessage(data.massage)
+      fetchQuestion()
+      setLoader(false)
+    } catch(error) {
+      console.log("Error Deleting Data", error.message);
+    }
+  }
+
+  // console.log(chapterList);
+
+
+  useEffect(() => {
+    fetchQuestion()
+    FetchCourses()
+    FetchChapters()
+  }, [])
+
+  // console.log(Quiz);
+
   return (
     <div>
       <AdminDashboard />
-      <div className="ml-56 mt-32 w-auto p-3 font-semibold text-gray-600">
+      <div className="ml-56 mt-16 w-auto p-3 font-semibold text-gray-600">
         <div className="p-2 ">
           <h1 className="text-2xl">Assessment</h1>
         </div>
@@ -92,80 +247,38 @@ const AssessmentList = () => {
               </tr>
             </thead>
             <tbody>
-              <tr className="bg-gray-100 text-center border-b text-sm text-gray-600">
-                <td className="border-r">  <input type="checkbox" /></td>
-                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">1</td>
-                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">Driver</td>
-                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                  <option value="1">Option 1</option>
-                  <option value="2">Option 2</option>
-                  <option value="3">Option 3</option>
-                  <option value="4">OPtion 4</option>
-                </td>
-                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">21/02/2024</td>
-                <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
-                  <p><CiEdit /></p>
-                  <p><MdDelete /></p>
-                </td>
+              {loader ? <Loader /> : null}
+              {
+                Quiz?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => {
+                  return (
+                    <tr className="bg-gray-100 text-center border-b text-sm text-gray-600" key={index}>
+                      <td className="border-r">  <input type="checkbox" /></td>
+                      <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{index + 1 + page * rowsPerPage}</td>
+                      <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item.question}</td>
+                      <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                        <option value="1">1. {item.option_A}</option>
+                        <option value="2">2. {item.option_B}</option>
+                        <option value="3">3. {item.option_C}</option>
+                        <option value="4">4. {item.option_D}</option>
+                      </td>
+                      <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item.correct_option}</td>
+                      <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
+                        <p onClick={()=> {
+                          setOpen(true)
+                          FetchSingleQuestionById(item?._id)
+                          setFlag(false)
+                        }}><CiEdit /></p>
+                        <p onClick={()=>{
+                          DeleteQuestionById(item?._id)
+                        }}><MdDelete /></p>
+                      </td>
 
-              </tr>
+                    </tr>
+                  )
+                })
+              }
 
-
-              <tr className="bg-gray-100 text-center border-b text-sm text-gray-600">
-                <td className="border-r">  <input type="checkbox" /></td>
-                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">2</td>
-                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">Driver</td>
-                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                  <option value="1">Option 1</option>
-                  <option value="2">Option 2</option>
-                  <option value="3">Option 3</option>
-                  <option value="4">OPtion 4</option>
-                </td>
-                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">21/02/2024</td>
-                <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
-                  <p><CiEdit /></p>
-                  <p><MdDelete /></p>
-                </td>
-
-              </tr>
-
-
-              <tr className="bg-gray-100 text-center border-b text-sm text-gray-600">
-                <td className="border-r">  <input type="checkbox" /></td>
-                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">3</td>
-                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">Driver</td>
-                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                  <option value="1">Option 1</option>
-                  <option value="2">Option 2</option>
-                  <option value="3">Option 3</option>
-                  <option value="4">OPtion 4</option>
-                </td>
-                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">21/02/2024</td>
-                <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
-                  <p><CiEdit /></p>
-                  <p><MdDelete /></p>
-                </td>
-
-              </tr>
-
-
-              <tr className="bg-gray-100 text-center border-b text-sm text-gray-600">
-                <td className="border-r">  <input type="checkbox" /></td>
-                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">4</td>
-                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">Driver</td>
-                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                  <option value="1">Option 1</option>
-                  <option value="2">Option 2</option>
-                  <option value="3">Option 3</option>
-                  <option value="4">OPtion 4</option>
-                </td>
-                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">21/02/2024</td>
-                <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
-                  <p><CiEdit /></p>
-                  <p><MdDelete /></p>
-                </td>
-
-              </tr>
+              
             </tbody>
           </table>
           <table>
@@ -175,7 +288,7 @@ const AssessmentList = () => {
                 <td><TablePagination
                   rowsPerPageOptions={[5, 10, 100]}
                   component="div"
-                  count={1}
+                  count={totalQuizLength}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   onPageChange={handleChangePage}
@@ -199,65 +312,104 @@ const AssessmentList = () => {
                   <h1 className="text-2xl">Add/Edit User</h1>
                   <button className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-20" onClick={handleClose}>Close</button>
                 </div>
-                <div className="grid grid-cols-2">
-                  <div className="flex flex-col p-2 gap-3">
-                    <label htmlFor="">First Name</label>
-                    <input type="text" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
-                  </div>
 
-                  <div className="flex flex-col p-2 gap-3">
-                    <label htmlFor="">First Name</label>
-                    <input type="text" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
-                  </div>
+                <form action="" onSubmit={handleSubmit}>
+                  <div className="grid grid-cols-2">
+                    <div className="flex flex-col p-2 gap-3">
+                      <label htmlFor="">Select Course</label>
+                      <select name="courseId" id="" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange}>
+                        <option value="Choose Option">Choose Option</option>
 
-                  <div className="flex flex-col p-2 gap-3">
-                    <label htmlFor="">First Name</label>
-                    <input type="text" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
-                  </div>
+                        {
+                          courseList?.map((item, index) => {
+                            return (
+                              <option key={index} value={item?._id}>{item?.title}</option>
+                            )
+                          })
+                        }
 
-                  <div className="flex flex-col p-2 gap-3">
-                    <label htmlFor="">First Name</label>
-                    <input type="text" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
-                  </div>
+                      </select>
+                    </div>
 
-                  <div className="flex flex-col p-2 gap-3">
-                    <label htmlFor="">First Name</label>
-                    <input type="text" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
-                  </div>
+                    <div className="flex flex-col p-2 gap-3">
+                      <label htmlFor="">Video/Chapters</label>
+                      <select name="chapterId" id="" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange}>
+                        <option value="Choose Option">Choose Option</option>
 
-                  <div className="flex flex-col p-2 gap-3">
-                    <label htmlFor="">First Name</label>
-                    <input type="text" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
-                  </div>
-
-                  <div className="flex flex-col p-2 gap-3">
-                    <label htmlFor="">First Name</label>
-                    <input type="text" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
-                  </div>
-
-                  <div className="flex flex-col p-2 gap-3">
-                    <label htmlFor="">First Name</label>
-                    <input type="text" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
+                        {
+                          chapterList?.map((item, index) => {
+                            return (
+                              <option key={index} value={item?._id}>{item?.title}</option>
+                            )
+                          })
+                        }
+                      </select>
+                    </div>
                   </div>
 
 
+                  <div className="flex flex-col p-2 gap-3">
+                    <label htmlFor="">Question</label>
+                    <Redactor />
+                    <input type="text" name="question" id="question" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
+                  </div>
 
-                </div>
+                  <div className="flex flex-col p-2 gap-3">
+                    <label htmlFor="">Option A</label>
+                    <input type="text" name="option_A" id="option_A" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
+                  </div>
 
-                <div className="flex flex-col p-2 gap-3">
-                  <label htmlFor="">Course To Enroll</label>
-                  <select name="" id="" className="p-3 border-2 border-gray-600 rounded-lg">
-                    <option value="Driver">Defencive driving</option>
-                    <option value="Security Gaurd">Security Gaurd</option>
-                  </select>
-                </div>
+                  <div className="flex flex-col p-2 gap-3">
+                    <label htmlFor="">Option B</label>
+                    <input type="text" name="option_B" id="option_B" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
+                  </div>
+
+                  <div className="flex flex-col p-2 gap-3">
+                    <label htmlFor="">Option C</label>
+                    <input type="text" name="option_C" id="option_C" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
+                  </div>
+
+                  <div className="flex flex-col p-2 gap-3">
+                    <label htmlFor="">Option D</label>
+                    <input type="text" name="option_D" id="option_D" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
+                  </div>
+
+                  <div className="grid grid-cols-2 justify-between items-center">
+                    <div className="flex flex-col p-2 gap-3">
+                      <label htmlFor="">Add Marks</label>
+                      <input type="text" name="marks" id="marks" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
+                    </div>
+
+                    <div className="flex flex-col p-2">
+                      <label htmlFor="">Correct Answer</label>
+                      <div className="flex gap-4">
+                        <input type="radio" name="correct_option" id="correct_option" value={inputs.correct_option ? "A" : ""} onChange={handleChange} />
+                        <label htmlFor="">A</label>
+                        <input type="radio" name="correct_option" id="correct_option" value={inputs.correct_option ? "B" : ""} onChange={handleChange} />
+                        <label htmlFor="">B</label>
+                        <input type="radio" name="correct_option" id="correct_option" value={inputs.correct_option ? "C" : ""} onChange={handleChange} />
+                        <label htmlFor="">C</label>
+                        <input type="radio" name="correct_option" id="correct_option" value={inputs.correct_option ? "D" : ""} onChange={handleChange} />
+                        <label htmlFor="">D</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="w-full flex justify-center items-center gap-5">
+                    <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg" onClick={() => setOpen(false)}>Cancel</button>
+                    <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg">{Flag ? "Add Question" : " Update Question"}</button>
+                  </div>
 
 
-                <div className="w-full flex justify-center items-center gap-5">
-                  <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button>
-                  <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg">Add/Edit User</button>
-                </div>
+
+                </form>
+
               </div>
+
+
+
+
+
             </Box>
           </Modal>
         </div>
