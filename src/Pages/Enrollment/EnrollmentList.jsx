@@ -114,16 +114,16 @@ const EnrollmentList = () => {
     const UpdateEnrollment = async (e) => { 
         e.preventDefault()
         console.log(singleInputs);
-        // try {
-        //     console.log(singleInputs);
-        //     const response = await axiosInstance.patch("https://myappsdevelopment.co.in/enrollment/update", singleInputs)
-        //     const data = await response.data
-        //     successMessage(data.message)
-        //     FetchEnrollment()
-        //     setIsOpen(false)
-        // } catch (error) {
-        //     console.log("Error Updating Enrollment", error.message);
-        // }
+        try {
+            console.log(singleInputs);
+            const response = await axiosInstance.patch("https://myappsdevelopment.co.in/enrollment/update", singleInputs)
+            const data = await response.data
+            successMessage(data.message)
+            FetchEnrollment()
+            setIsOpen(false)
+        } catch (error) {
+            console.log("Error Updating Enrollment", error.message);
+        }
         ClearInputs()
     }
 
