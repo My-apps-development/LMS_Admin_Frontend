@@ -34,10 +34,23 @@ const AssessmentList = () => {
     chapterId: ""
   })
 
+  const [singleInputs, setSingleInputs] = useState({
+    question: "",
+    option_A: "",
+    option_B: "",
+    option_C: "",
+    option_D: "",
+    correct_option: "",
+    marks: "",
+    courseId: "",
+    chapterId: ""
+  })
+
 
   const handleOpen = () => {
     console.log(open);
     setOpen(true)
+    setFlag(true)
   };
   const handleClose = () => {
     console.log(open);
@@ -47,8 +60,7 @@ const AssessmentList = () => {
   const handleChange = (e) => {
     e.preventDefault()
 
-
-    setInputs({ ...inputs, [e.target.name]: e.target.value })
+    Flag ? setInputs({ ...inputs, [e.target.name]: e.target.value }) : setSingleInputs({ ...singleInputs, [e.target.name]: e.target.value })
   }
 
 
@@ -80,7 +92,7 @@ const AssessmentList = () => {
       return
     }
 
-
+    console.log("submit initial");
     console.log(inputs);
 
     try {
@@ -91,9 +103,11 @@ const AssessmentList = () => {
       fetchQuestion()
       setOpen(false)
       setLoader(false)
-    } catch(error) {
+    } catch (error) {
       console.log("Error Posting Data", error.message)
     }
+
+    ClearInputs()
   }
 
   const FetchCourses = async () => {
@@ -173,38 +187,80 @@ const AssessmentList = () => {
   }
 
 
-  const FetchSingleQuestionById = async (_id) => {
-      console.log(_id);
-      try{
-        const response = await axiosInstance.get(`/singlequestion?questionid=${_id}`)
-        const data = await response.data
-        console.log(data);
-      } catch(error) {
-        console.log("Error While Fetching By Single Id", error.message);
-      }
+  const FetchSingleQuestionById = async (questionid) => {
+
+    console.log(questionid);
+
+    try {
+      setLoader(true)
+      const response = await axiosInstance.get(`/Quiz/singlequestion?questionid=${questionid}`)
+      const data = await response.data
+      setSingleInputs(data.question);
+      setLoader(false)
+    } catch (error) {
+      console.log("Error While Fetching By Single Id", error.message);
+    }
   }
 
+  const UpdateQuestionById = async (e) => {
+    e.preventDefault()
+    console.log("update by id");
+    try {
+      setLoader(true)
+      const response = await axiosInstance.patch("/Quiz/update", singleInputs)
+      const data = await response.data
+      successMessage(data.message);
+      fetchQuestion()
+      setOpen(false)
+      setLoader(false)
+    } catch (error) {
+      console.log("Error Updating Data", error.message);
+    }
+
+    ClearInputs()
+  }
 
   const DeleteQuestionById = async (_id) => {
-    try{
+    try {
       setLoader(true)
-      const response = await axiosInstance.delete("/Quiz/delete", {data: {QuestionId: _id}})
+      const response = await axiosInstance.delete("/Quiz/delete", { data: { QuestionId: _id } })
       const data = await response.data
       successMessage(data.massage)
       fetchQuestion()
       setLoader(false)
-    } catch(error) {
+    } catch (error) {
       console.log("Error Deleting Data", error.message);
     }
   }
 
-  // console.log(chapterList);
+  const ClearInputs = () => {
+    try {
+      setInputs((prevState) => ({
+        ...prevState,
+        question: "",
+        option_A: "",
+        option_B: "",
+        option_C: "",
+        option_D: "",
+        correct_option: "",
+        marks: "",
+        courseId: "",
+        chapterId: ""
+      }))
+    } catch (error) {
+      console.log("error clearing input fields", error.message);
+    }
+  }
+
+
+
 
 
   useEffect(() => {
     fetchQuestion()
     FetchCourses()
     FetchChapters()
+
   }, [])
 
   // console.log(Quiz);
@@ -263,12 +319,13 @@ const AssessmentList = () => {
                       </td>
                       <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item.correct_option}</td>
                       <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
-                        <p onClick={()=> {
-                          setOpen(true)
+                        <p onClick={() => {
                           FetchSingleQuestionById(item?._id)
+                          setOpen(true)
+
                           setFlag(false)
                         }}><CiEdit /></p>
-                        <p onClick={()=>{
+                        <p onClick={() => {
                           DeleteQuestionById(item?._id)
                         }}><MdDelete /></p>
                       </td>
@@ -278,7 +335,7 @@ const AssessmentList = () => {
                 })
               }
 
-              
+
             </tbody>
           </table>
           <table>
@@ -313,7 +370,7 @@ const AssessmentList = () => {
                   <button className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-20" onClick={handleClose}>Close</button>
                 </div>
 
-                <form action="" onSubmit={handleSubmit}>
+                <form action="" onSubmit={Flag ? handleSubmit : UpdateQuestionById}>
                   <div className="grid grid-cols-2">
                     <div className="flex flex-col p-2 gap-3">
                       <label htmlFor="">Select Course</label>
@@ -351,45 +408,45 @@ const AssessmentList = () => {
                   <div className="flex flex-col p-2 gap-3">
                     <label htmlFor="">Question</label>
                     <Redactor />
-                    <input type="text" name="question" id="question" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
+                    <input type="text" name="question" id="question" value={Flag ? inputs?.question : singleInputs?.question} className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
                   </div>
 
                   <div className="flex flex-col p-2 gap-3">
                     <label htmlFor="">Option A</label>
-                    <input type="text" name="option_A" id="option_A" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
+                    <input type="text" name="option_A" id="option_A" value={Flag ? inputs?.option_A : singleInputs?.option_A} className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
                   </div>
 
                   <div className="flex flex-col p-2 gap-3">
                     <label htmlFor="">Option B</label>
-                    <input type="text" name="option_B" id="option_B" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
+                    <input type="text" name="option_B" id="option_B" value={Flag ? inputs?.option_B : singleInputs?.option_B} className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
                   </div>
 
                   <div className="flex flex-col p-2 gap-3">
                     <label htmlFor="">Option C</label>
-                    <input type="text" name="option_C" id="option_C" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
+                    <input type="text" name="option_C" id="option_C" value={Flag ? inputs?.option_C : singleInputs?.option_C} className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
                   </div>
 
                   <div className="flex flex-col p-2 gap-3">
                     <label htmlFor="">Option D</label>
-                    <input type="text" name="option_D" id="option_D" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
+                    <input type="text" name="option_D" id="option_D" value={Flag ? inputs?.option_D : singleInputs?.option_D} className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
                   </div>
 
                   <div className="grid grid-cols-2 justify-between items-center">
                     <div className="flex flex-col p-2 gap-3">
                       <label htmlFor="">Add Marks</label>
-                      <input type="text" name="marks" id="marks" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
+                      <input type="text" name="marks" id="marks" value={Flag ? inputs?.marks : singleInputs?.marks} className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
                     </div>
 
                     <div className="flex flex-col p-2">
                       <label htmlFor="">Correct Answer</label>
                       <div className="flex gap-4">
-                        <input type="radio" name="correct_option" id="correct_option" value={inputs.correct_option ? "A" : ""} onChange={handleChange} />
+                        <input type="radio" name="correct_option" id="correct_option_A" value="A" checked={Flag ? inputs.correct_option === 'A' : singleInputs.correct_option === 'A'} onChange={handleChange} />
                         <label htmlFor="">A</label>
-                        <input type="radio" name="correct_option" id="correct_option" value={inputs.correct_option ? "B" : ""} onChange={handleChange} />
+                        <input type="radio" name="correct_option" id="correct_option_B" value="B" checked={Flag ? inputs.correct_option === 'B' : singleInputs.correct_option === 'B'} onChange={handleChange} />
                         <label htmlFor="">B</label>
-                        <input type="radio" name="correct_option" id="correct_option" value={inputs.correct_option ? "C" : ""} onChange={handleChange} />
+                        <input type="radio" name="correct_option" id="correct_option_C" value="C" checked={Flag ? inputs.correct_option === 'C' : singleInputs.correct_option === 'C'} onChange={handleChange} />
                         <label htmlFor="">C</label>
-                        <input type="radio" name="correct_option" id="correct_option" value={inputs.correct_option ? "D" : ""} onChange={handleChange} />
+                        <input type="radio" name="correct_option" id="correct_option_D" value="D" checked={Flag ? inputs.correct_option === 'D' : singleInputs.correct_option === 'D'} onChange={handleChange} />
                         <label htmlFor="">D</label>
                       </div>
                     </div>
@@ -397,7 +454,7 @@ const AssessmentList = () => {
 
                   <div className="w-full flex justify-center items-center gap-5">
                     <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg" onClick={() => setOpen(false)}>Cancel</button>
-                    <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg">{Flag ? "Add Question" : " Update Question"}</button>
+                    <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-40 rounded-lg">{Flag ? "Add Question" : " Update Question"}</button>
                   </div>
 
 
