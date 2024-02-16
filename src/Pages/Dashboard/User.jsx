@@ -16,7 +16,9 @@ const User = () => {
   const [open, setOpen] = useState(false);
   const [flag, setFlag] = useState(true)
 
- 
+  // const [Image, setImage] = useState()
+
+
 
   const [userInputs, setUserInputs] = useState({
     firstName: "",
@@ -27,7 +29,8 @@ const User = () => {
     license_num: "",
     role: "",
     aadhar_num: "",
-    course:""
+    course: "",
+    upload_license: ""
 
   })
 
@@ -40,7 +43,7 @@ const User = () => {
     license_num: "",
     role: "",
     aadhar_num: "",
-    course:""
+    course: ""
 
   })
 
@@ -49,7 +52,8 @@ const User = () => {
 
   const [courseList, setCourseList] = useState([])
 
-  
+  const [image, setImage] = useState()
+
   const [loader, setLoader] = useState(false)
 
 
@@ -71,6 +75,7 @@ const User = () => {
   const handleOpen = () => {
     // console.log(open);
     setFlag(true)
+
     console.log(flag);
     setOpen(true)
   };
@@ -92,6 +97,30 @@ const User = () => {
   };
 
 
+  const handleChangeImage = (e) => {
+    e.preventDefault()
+
+
+
+    const imageFile = e.target.files[0];
+
+    setImage(imageFile);
+
+    // console.log(imageFile);
+    // setImage(imageFile)
+
+    // if (imageFile) {
+    //   const imageUrl = URL.createObjectURL(imageFile);
+    //   console.log(imageUrl);
+
+    //   setImage(imageFile);
+    //   setOpen(false)
+    // }
+
+    
+  }
+
+
   const FetchUsers = async () => {
     try {
       const response = await axiosInstance.get("/users")
@@ -111,8 +140,8 @@ const User = () => {
         ...prevInputs,
         [e.target.name]: e.target.value,
         fullname: e.target.name === 'firstname' ? e.target.value + (prevInputs.lastname || '') : (prevInputs.firstname || '') + e.target.value
-      })) 
-      : 
+      }))
+      :
       setSingleInputs((prevInputs) => ({
         ...prevInputs,
         [e.target.name]: e.target.value,
@@ -155,9 +184,31 @@ const User = () => {
       errorMessage("Aadhar Required")
     }
 
-
-
     console.log(userInputs);
+
+    const fD = new FormData()
+    fD.append("firstName", userInputs.firstName)
+    fD.append("lastName", userInputs.lastName)
+    fD.append("mob_number", userInputs.mob_number)
+    fD.append("license_num", userInputs.license_num)
+    fD.append("role", userInputs.role)
+    fD.append("aadhar_num", userInputs.aadhar_num)
+    fD.append("Upload_Category", image)
+
+
+    try {
+      const response = await axiosInstance.post("/adduser", fD, { headers: { 'Content-Type': 'multipart/form-data' } })
+      const data = await response.data
+
+      console.log(data);
+
+
+    } catch (error) {
+
+      console.log("Error Posting data", error.message);
+    }
+
+    ClearInputs()
   }
 
   const handleUpdateUSer = async (e) => {
@@ -172,6 +223,7 @@ const User = () => {
     } catch (error) {
       console.log("error updating data", error.message);
     }
+    ClearInputs()
   }
 
 
@@ -208,7 +260,7 @@ const User = () => {
       const response = await axiosInstance.get("/homepage/courses")
       const data = await response.data
       setCourseList(data.Courses);
-    } catch(error) {
+    } catch (error) {
       console.log("error fetching course", error.message);
     }
   }
@@ -226,7 +278,27 @@ const User = () => {
     }
   }
 
-  
+  const ClearInputs = () => {
+    try {
+      setUserInputs((prevState) => ({
+        ...prevState,
+        firstName: "",
+        lastName: "",
+        fullname: "",
+        mob_number: "",
+        email: "",
+        license_num: "",
+        role: "",
+        aadhar_num: "",
+        course: ""
+
+      }))
+    } catch (error) {
+      console.log("error clearing input fields", error.message);
+    }
+  }
+
+
 
   console.log(singleInputs);
   useEffect(() => {
@@ -292,11 +364,11 @@ const User = () => {
                         <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item.aadhar_num}</td>
                         <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">status</td>
                         <td className="p-2 border-r cursor-pointer font-semibold text-gray-500 flex gap-2 text-2xl justify-around ">
-                          <p onClick={() =>{
-                          
-                             setFlag(false)
-                             setOpen(true)
-                             getSingleUserById(item?._id)
+                          <p onClick={() => {
+
+                            setFlag(false)
+                            setOpen(true)
+                            getSingleUserById(item?._id)
                           }}><CiEdit /></p>
                           <p onClick={() => handleDelete(item._id)}><MdDelete /></p>
                         </td>
@@ -326,6 +398,8 @@ const User = () => {
               </tbody>
             </table>
           </div>}
+
+          
         </div>
         <div>
           <Modal
@@ -364,7 +438,7 @@ const User = () => {
 
                     <div className="flex flex-col p-2 gap-3">
                       <label htmlFor="">Upload License</label>
-                      <input type="file" name="upload_license" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
+                      <input type="file" name="upload_license" id="image" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeImage} />
                     </div>
 
                     <div className="flex flex-col p-2 gap-3">
@@ -392,7 +466,7 @@ const User = () => {
                     <select name="course" id="" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange}>
                       <option value="Driver">Choose Options</option>
                       {
-                        courseList.map((item, index)=>{
+                        courseList.map((item, index) => {
                           return (
                             <option key={index} value={item?._id}>{item?.title}</option>
                           )

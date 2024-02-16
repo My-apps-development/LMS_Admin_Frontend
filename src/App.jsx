@@ -14,6 +14,7 @@ import AssessmentList from './Pages/Assessment/AssessmentList'
 import Certificate from './Pages/Certificate/Certificate'
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify'
+import ProtectedWrapper from './Utils/ProtectedRoute'
 
 
 function App() {
@@ -25,16 +26,16 @@ function App() {
       <ToastContainer />
         <Routes>
 
-          <Route path='/' element={<Dashboard />} />
+          <Route path='/' element={<ProtectedWrapper><Dashboard /></ProtectedWrapper>} />
           <Route path='/login' element={<Login />} />
-          <Route path='/Courses/CourseList' element={<CourseList />} />
-          <Route path='/Courses/Categories' element={<CourseCategory />} />
-          <Route path='/Enrollment/List' element={<EnrollmentList />} />
-          <Route path='/Course/Enrollment' element={<EnrollmentCourse />} />
-          <Route path='/Assessment/List' element={<AssessmentList />} />
-          <Route path='/Certificate' element={<Certificate />} />
+          <Route path='/Courses/CourseList' element={<ProtectedWrapper><CourseList /></ProtectedWrapper>} />
+          <Route path='/Courses/Categories' element={<ProtectedWrapper><CourseCategory /></ProtectedWrapper>} />
+          <Route path='/Enrollment/List' element={<ProtectedWrapper><EnrollmentList /></ProtectedWrapper>} />
+          <Route path='/Course/Enrollment' element={<ProtectedWrapper><EnrollmentCourse /></ProtectedWrapper>} />
+          <Route path='/Assessment/List' element={<ProtectedWrapper><AssessmentList /></ProtectedWrapper>} />
+          <Route path='/Certificate' element={<ProtectedWrapper><Certificate /></ProtectedWrapper>} />
 
-          <Route path='/Users' element={<User />} />
+          <Route path='/Users' element={<ProtectedWrapper><User /></ProtectedWrapper>} />
           <Route path='*' element={<NotFound />} />
 
         </Routes>
