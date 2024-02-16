@@ -6,7 +6,7 @@ import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
 import { PiDotsThreeOutlineFill } from "react-icons/pi";
 import { axiosInstance } from "../../Utils/AxiosSetUp";
-import { successMessage } from "../../Utils/notificationManager";
+import { errorMessage, successMessage } from "../../Utils/notificationManager";
 import Loader from "../../Utils/Loader";
 
 
@@ -45,14 +45,26 @@ const EnrollmentList = () => {
 
     const handleChange = (e) => {
         e.preventDefault()
-
+        console.log(Flag);
         Flag ? setInputs({ ...inputs, [e.target.name]: e.target.value }) : setSingleInputs({ ...singleInputs, [e.target.name]: e.target.value })
+
+      
     }
 
     const handleSubmitEnrollment = async (e) => {
         e.preventDefault()
 
         console.log(inputs);
+
+        if(!inputs?.role){
+            errorMessage("User Role is Required")
+            return
+        }
+
+        if(!inputs?.courses_to_enroll){
+            errorMessage("Course to enroll is Required")
+            return
+        }
 
         try {
             setLoader(true)
@@ -71,6 +83,8 @@ const EnrollmentList = () => {
             console.log("Error Posting Enrollment", error.message);
         }
 
+        // console.log(singleInputs);
+
         ClearInputs()
     }
 
@@ -86,6 +100,8 @@ const EnrollmentList = () => {
         }
     }
 
+
+
     const FetchUserRoleDropDown = async () => {
         try {
             setLoader(true)
@@ -100,23 +116,28 @@ const EnrollmentList = () => {
     }
 
     const FetchEnrollmentById = async (_id) => {
+        // console.log(`https://myappsdevelopment.co.in/enrollment/singleenrollment?enrollmentid=${_id}`);
         try {
 
             const response = await axiosInstance.get(`https://myappsdevelopment.co.in/enrollment/singleenrollment?enrollmentid=${_id}`)
             const data = await response.data
-            setSingleInputs(data?.enrollment);
+            if(data?.enrollment){
+                setSingleInputs(data?.enrollment);
+                
+            }
+           
         } catch (error) {
             console.log("Error Fetching Enrollement Data By Id", error.message);
         }
     }
 
 
-    const UpdateEnrollment = async (e) => { 
+    const UpdateEnrollment = async (e) => {
         e.preventDefault()
-        console.log(singleInputs);
+        console.log(singleInputs.enrollmentId);
         try {
             console.log(singleInputs);
-            const response = await axiosInstance.patch("https://myappsdevelopment.co.in/enrollment/update", singleInputs)
+            const response = await axiosInstance.patch("https://myappsdevelopment.co.in/enrollment/update", {data: singleInputs})
             const data = await response.data
             successMessage(data.message)
             FetchEnrollment()
@@ -127,7 +148,7 @@ const EnrollmentList = () => {
         ClearInputs()
     }
 
-    
+
 
     const ClearInputs = () => {
         try {
@@ -161,7 +182,7 @@ const EnrollmentList = () => {
     useEffect(() => {
         FetchEnrollment()
         FetchUserRoleDropDown()
-        FetchEnrollmentById()
+
     }, [])
 
     // console.log(singleInputs);
@@ -217,9 +238,10 @@ const EnrollmentList = () => {
                                                     <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item.createdAt.split("T")[0]}</td>
                                                     <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
                                                         <p onClick={() => {
+                                                            FetchEnrollmentById(item?._id)
                                                             setIsOpen(true)
                                                             setFlag(false)
-                                                            FetchEnrollmentById(item?._id)
+
                                                             setSingleInputs({ ...singleInputs, enrollmentId: item?._id })
                                                         }}><CiEdit /></p>
                                                         <p onClick={() => DeleteEnrollment(item._id)}><MdDelete /></p>
@@ -298,7 +320,7 @@ const EnrollmentList = () => {
                                         <td><TablePagination
                                             rowsPerPageOptions={[5, 10, 100]}
                                             component="div"
-                                            count={1}
+                                            count={EnrollmentList.length}
                                             rowsPerPage={rowsPerPage}
                                             page={page}
                                             onPageChange={handleChangePage}

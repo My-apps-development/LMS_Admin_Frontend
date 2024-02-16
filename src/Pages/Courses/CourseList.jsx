@@ -23,10 +23,27 @@ const CourseList = () => {
 
     const [loader, setLoader] = useState(false)
 
+    const [categoryList, setCategoryList] = useState([])
+
+    const [video, setVideo] = useState(null)
+
+    const [postVideo, setPostVideo] = useState(null)
+
+
+    const [CourseInputs, setCourseInputs] = useState({
+        CoursName: "",
+        description: "",
+        videos:"",
+        inrolled_users: "",
+        source: "",
+        status: "",
+        categoryId: ""
+    })
 
 
 
 
+    // const thumbnailURL = ${baseURL}/public/Upload_Category/${categoryname}/${upload_thumbnail};
 
     const style = {
         position: 'absolute',
@@ -76,6 +93,88 @@ const CourseList = () => {
         setIsSubModalOpen(false)
     }
 
+    const handleChange = (e) => {
+        e.preventDefault()
+
+        setCourseInputs({ ...CourseInputs, [e.target.name]: e.target.value })
+
+
+    }
+
+    const handleChangeVedioFile = (e) => {
+        // e.preventDefault()
+
+        // console.log(e);
+
+        const file = e.target.files[0]
+      
+        
+        setPostVideo(file)
+
+
+
+
+    }
+
+    const PostCourse = async (e) => {
+        e.preventDefault()
+        console.log(CourseInputs);
+
+
+        // CoursName: "",
+        // description: "",
+        // video_link: "",
+        // inrolled_users: "",
+        // source: "",
+        // status: "",
+        // categoryId: 
+
+        const formData = new FormData()
+        formData.append("CoursName", CourseInputs.CoursName)
+        formData.append("description", CourseInputs.description)
+        formData.append("inrolled_users", CourseInputs.inrolled_users)
+        formData.append("source", CourseInputs.source)
+        formData.append("status", CourseInputs.status)
+        formData.append("categoryId", CourseInputs.categoryId)
+        formData.append("videos", CourseInputs.videos)
+
+        formData.append("video_link", postVideo)
+
+        // console.log(image,11111111)
+
+
+        // file.append("video_link", 
+
+        try {
+            console.log(formData, 22222)
+            const response = await axiosInstance.post("/homepage/addCourse", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            })
+            const data = await response.data
+            console.log(data);
+            fetchCourses()
+            setIsOpen(false)
+        } catch (error) {
+            console.log("Error Creating course", error.message);
+        }
+
+    }
+
+    const fetchCategories = async () => {
+        try {
+            const response = await axiosInstance.get("/category/fetch")
+            const data = await response.data
+            setCategoryList(data.categories);
+        } catch (error) {
+            console.log("Error fetching categories data", error.message);
+        }
+    }
+
+    // console.log(categoryList);
+
+
 
     const fetchCourses = async () => {
 
@@ -99,6 +198,7 @@ const CourseList = () => {
     // }
 
     const FetchChapters = async () => {
+
         try {
             const response = await axiosInstance.get("/homepage/fetchChapters")
             const data = await response.data
@@ -121,9 +221,39 @@ const CourseList = () => {
         }
     }
 
+    const FetchChapterById = async () => {
+
+        // const data1 = []
+
+        for (let courseId in courseList) {
+
+            // console.log(courseList[courseId]._id);
+
+            //  console.log( `/homepage/singlechapter?chapterid=${courseList[courseId]._id}` )
+
+            try {
+                const response = await axiosInstance.get(`/homepage/singlechapter?chapterid=${courseList[courseId]._id}`)
+                const data = await response.data
+                console.log(data);
+            } catch (error) {
+                console.log("Error Fetching by chapters by id", error.message);
+            }
+
+        }
+        // try{
+        //     const response = await axiosInstance.get(`/homepage/singlechapter?chapterid=65c5c1a9613d6a4e283b4dff`)
+        //     const data = await response.data
+        //     console.log(data);
+        // } catch(error) {
+        //     console.log("Error Fetching by chapters by id", error.message);
+        // }
+    }
+
     useEffect(() => {
         fetchCourses()
         FetchChapters()
+        fetchCategories()
+        FetchChapterById()
     }, [])
 
 
@@ -364,26 +494,36 @@ const CourseList = () => {
                                 <h1 className="text-2xl">Add Course</h1>
                                 <button className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-20" onClick={handleCloseModal}>Close</button>
                             </div>
-                            <div>
+                            <form onSubmit={PostCourse}>
                                 <div className="grid grid-cols-2">
                                     <div className="flex flex-col p-2 gap-3">
                                         <label htmlFor="">Course Name</label>
-                                        <input type="text" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
+                                        <input type="text" name="CoursName" id="CoursName" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" />
                                     </div>
 
                                     <div className="flex flex-col p-2 gap-3">
                                         <label htmlFor="">Category</label>
-                                        <input type="text" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
+                                        <select name="categoryId" id="categoryId" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" >
+                                            <option value="Choose Option">Choose Options</option>
+                                            {
+                                                categoryList?.map((item, index) => {
+                                                    return (
+                                                        <option key={index} value={item?._id}>{item?.categories}</option>
+                                                    )
+                                                })
+                                            }
+                                        </select>
+                                        {/* <input type="text" name="categoryId" id="categoryId" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" /> */}
                                     </div>
 
                                     <div className="flex flex-col p-2 gap-3">
                                         <label htmlFor="">Enrolled Users</label>
-                                        <input type="text" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
+                                        <input type="text" name="inrolled_users" id="inrolled_users" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" />
                                     </div>
 
                                     <div className="flex flex-col p-2 gap-3">
                                         <label htmlFor="">Vedios</label>
-                                        <input type="text" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
+                                        <input type="text" name="videos" id="videos" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" />
                                     </div>
                                 </div>
                                 <div className="flex flex-col gap-2">
@@ -391,7 +531,7 @@ const CourseList = () => {
 
                                     <div className="flex flex-col p-2 gap-3">
                                         <label htmlFor="">Video/Chapters</label>
-                                        <input type="text" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
+                                        <input type="file" name="Upload_Category" id="Upload_Category" onChange={handleChangeVedioFile} className="p-3 border-2 border-gray-600 rounded-lg" />
                                     </div>
 
                                     <label htmlFor="" className="p-2">Source</label>
@@ -401,31 +541,31 @@ const CourseList = () => {
 
 
                                         <div className="flex justify-center items-center p-2 gap-3">
-                                            <input type="radio" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
+                                            <input type="radio" name="source" id="source" value="Youtube" onChange={handleChange} checked={CourseInputs.source == "Youtube"} className="p-3 border-2 border-gray-600 rounded-lg" />
                                             <label htmlFor="">Youtube</label>
 
                                         </div>
 
                                         <div className="flex justify-center items-center p-2 gap-3">
-                                            <input type="radio" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
+                                            <input type="radio" name="source" id="source" value="vimeo" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={CourseInputs.source == "vimeo"} />
                                             <label htmlFor="">Vimeo</label>
 
                                         </div>
 
                                         <div className="flex justify-center items-center p-2 gap-3">
-                                            <input type="radio" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
+                                            <input type="radio" name="source" id="source" value="Dropbox" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={CourseInputs.source == "Dropbox"} />
                                             <label htmlFor="">Drop Box</label>
 
                                         </div>
 
                                         <div className="flex justify-center items-center p-2 gap-3">
-                                            <input type="radio" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
+                                            <input type="radio" name="source" id="source" value="embed" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={CourseInputs.source == "embed"} />
                                             <label htmlFor="">embed</label>
 
                                         </div>
 
                                         <div className="flex justify-center items-center p-2 gap-3">
-                                            <input type="radio" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
+                                            <input type="radio" name="source" id="source" value="Upload" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={CourseInputs.source == "Upload"} />
                                             <label htmlFor="">Upload</label>
 
                                         </div>
@@ -434,12 +574,12 @@ const CourseList = () => {
 
                                     <div className="flex flex-col p-2 gap-3">
                                         <label htmlFor="">Link</label>
-                                        <input type="text" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
+                                        <input type="text" name="" id="" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" />
                                     </div>
 
                                     <div className="flex flex-col p-2 gap-3">
                                         <label htmlFor="">Description</label>
-                                        <textarea name="" id="" cols="10" rows="5" className="p-3 border-2 border-gray-600 rounded-lg" ></textarea>
+                                        <textarea name="description" id="description" cols="10" rows="5" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" ></textarea>
                                     </div>
 
                                     <div className="flex justify-start items-center py-4 px-2">
@@ -454,19 +594,19 @@ const CourseList = () => {
                                         </div>
                                         <div className="flex">
                                             <div className="flex justify-center items-center p-2 gap-3">
-                                                <input type="radio" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
+                                                <input type="radio" name="status" id="status" value="Active" checked={CourseInputs.status == "Active"} onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" />
                                                 <label>Active</label>
 
                                             </div>
 
                                             <div className="flex justify-center items-center p-2 gap-3">
-                                                <input type="radio" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
+                                                <input type="radio" name="status" id="status" value="Pending" checked={CourseInputs.status == "Pending"} onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" />
                                                 <label htmlFor="">Pending</label>
 
                                             </div>
 
                                             <div className="flex justify-center items-center p-2 gap-3">
-                                                <input type="radio" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
+                                                <input type="radio" name="status" id="status" value="Inactive" checked={CourseInputs.status == "Inactive"} onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" />
                                                 <label htmlFor="">Inactive</label>
 
                                             </div>
@@ -479,7 +619,7 @@ const CourseList = () => {
                                         <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg">{isFlag ? "Add Category" : "Update Category"}</button>
                                     </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </Box>
                 </Modal>
