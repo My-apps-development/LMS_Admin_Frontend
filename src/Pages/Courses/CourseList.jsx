@@ -29,6 +29,8 @@ const CourseList = () => {
 
     const [postVideo, setPostVideo] = useState(null)
 
+    const [loading, setLoading] = useState(false);
+
 
     const [CourseInputs, setCourseInputs] = useState({
         CoursName: "",
@@ -97,8 +99,6 @@ const CourseList = () => {
         e.preventDefault()
 
         setCourseInputs({ ...CourseInputs, [e.target.name]: e.target.value })
-
-
     }
 
     const handleChangeVedioFile = (e) => {
@@ -140,7 +140,7 @@ const CourseList = () => {
 
         formData.append("video_link", postVideo)
 
-        // console.log(image,11111111)
+        console.log(formData)
 
 
         // file.append("video_link", 
