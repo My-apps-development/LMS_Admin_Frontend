@@ -43,7 +43,8 @@ const AssessmentList = () => {
     correct_option: "",
     marks: "",
     courseId: "",
-    chapterId: ""
+    chapterId: "",
+    _id:""
   })
 
 
@@ -175,6 +176,8 @@ const AssessmentList = () => {
 
   }
 
+  console.log(Quiz);
+
 
   const FetchChapters = async () => {
     try {
@@ -202,12 +205,27 @@ const AssessmentList = () => {
     }
   }
 
+  console.log(singleInputs);
+
   const UpdateQuestionById = async (e) => {
     e.preventDefault()
-    console.log("update by id");
+    console.log("update by id", singleInputs._id);
+
+    const formData = new FormData()
+    formData.append("quetionId", singleInputs._id)
+    formData.append("question", singleInputs.question)
+    formData.append("option_A", singleInputs.option_A)
+    formData.append("option_B", singleInputs.option_B)
+    formData.append("option_C", singleInputs.option_C)
+    formData.append("option_D", singleInputs.option_D)
+    formData.append("correct_option", singleInputs.correct_option)
+    formData.append("marks", singleInputs.marks)
+    formData.append("chapterId", singleInputs.chapterId)
+    formData.append("courseId", singleInputs.courseId)
+
     try {
       setLoader(true)
-      const response = await axiosInstance.patch("/Quiz/update", singleInputs)
+      const response = await axiosInstance.patch("/Quiz/update", formData)
       const data = await response.data
       successMessage(data.message);
       fetchQuestion()
@@ -310,12 +328,12 @@ const AssessmentList = () => {
                     <tr className="bg-gray-100 text-center border-b text-sm text-gray-600" key={index}>
                       <td className="border-r">  <input type="checkbox" /></td>
                       <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{index + 1 + page * rowsPerPage}</td>
-                      <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item.question}</td>
-                      <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                        <option value="1">1. {item.option_A}</option>
-                        <option value="2">2. {item.option_B}</option>
-                        <option value="3">3. {item.option_C}</option>
-                        <option value="4">4. {item.option_D}</option>
+                      <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500  text-start ml-5">{item.question}</td>
+                      <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500  text-start">
+                        <option value="1" className=" text-start ml-5">1. {item.option_A}</option>
+                        <option value="2" className=" text-start ml-5">2. {item.option_B}</option>
+                        <option value="3" className=" text-start ml-5">3. {item.option_C}</option>
+                        <option value="4" className=" text-start ml-5">4. {item.option_D}</option>
                       </td>
                       <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item.correct_option}</td>
                       <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
@@ -366,7 +384,7 @@ const AssessmentList = () => {
             <Box sx={style}>
               <div className="w-full font-semibold text-gray-600 flex flex-col gap-5">
                 <div className="flex justify-between items-center w-full text-black">
-                  <h1 className="text-2xl">Add/Edit User</h1>
+                  <h1 className="text-2xl">{Flag ? "Add Question" : "Edit Question"}</h1>
                   <button className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-20" onClick={handleClose}>Close</button>
                 </div>
 
@@ -374,7 +392,7 @@ const AssessmentList = () => {
                   <div className="grid grid-cols-2">
                     <div className="flex flex-col p-2 gap-3">
                       <label htmlFor="">Select Course</label>
-                      <select name="courseId" id="" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange}>
+                      <select name="courseId" id="" className="p-3 border-2 border-gray-600 rounded-lg" value={Flag ? inputs.courseId : singleInputs.courseId} onChange={handleChange}>
                         <option value="Choose Option">Choose Option</option>
 
                         {
@@ -390,7 +408,7 @@ const AssessmentList = () => {
 
                     <div className="flex flex-col p-2 gap-3">
                       <label htmlFor="">Video/Chapters</label>
-                      <select name="chapterId" id="" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange}>
+                      <select name="chapterId" id="" className="p-3 border-2 border-gray-600 rounded-lg" value={Flag ? inputs?.chapterId : singleInputs?.chapterId} onChange={handleChange}>
                         <option value="Choose Option">Choose Option</option>
 
                         {
@@ -453,7 +471,7 @@ const AssessmentList = () => {
                   </div>
 
                   <div className="w-full flex justify-center items-center gap-5">
-                    <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg" onClick={() => setOpen(false)}>Cancel</button>
+                    {/* <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg" onClick={() => setOpen(false)}>Cancel</button> */}
                     <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-40 rounded-lg">{Flag ? "Add Question" : " Update Question"}</button>
                   </div>
 

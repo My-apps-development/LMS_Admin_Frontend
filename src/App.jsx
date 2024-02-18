@@ -15,13 +15,14 @@ import Certificate from './Pages/Certificate/Certificate'
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify'
 import ProtectedWrapper from './Utils/ProtectedRoute'
+import Company from './Pages/Company/Company'
 
 
 function App() {
 
 
   return (
-    <>
+    <div className=''>
       <BrowserRouter>
       <ToastContainer />
         <Routes>
@@ -34,13 +35,14 @@ function App() {
           <Route path='/Course/Enrollment' element={<ProtectedWrapper><EnrollmentCourse /></ProtectedWrapper>} />
           <Route path='/Assessment/List' element={<ProtectedWrapper><AssessmentList /></ProtectedWrapper>} />
           <Route path='/Certificate' element={<ProtectedWrapper><Certificate /></ProtectedWrapper>} />
+          <Route path='/Company' element={<ProtectedWrapper><Company /></ProtectedWrapper>} />
 
           <Route path='/Users' element={<ProtectedWrapper><User /></ProtectedWrapper>} />
           <Route path='*' element={<NotFound />} />
 
         </Routes>
       </BrowserRouter>
-    </>
+    </div>
   )
 }
 

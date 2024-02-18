@@ -1,0 +1,91 @@
+import { useEffect, useState } from "react"
+import { axiosInstance } from "../../Utils/AxiosSetUp"
+import Loader from "../../Utils/Loader"
+
+
+const CompanyList = () => {
+    const [companyList, setCompanyList] = useState([])
+    const [loader, setLoader] = useState(false)
+
+    const fetchCompanyList = async () => {
+        try {
+            setLoader(true)
+            const response = await axiosInstance.get("/company/fetch")
+            const data = await response.data
+            setCompanyList(data.companies);
+            setLoader(false)
+        } catch (error) {
+            console.log("Error Fetching company details", error.message);
+        }
+    }
+
+    useEffect(() => {
+        fetchCompanyList()
+    }, [])
+    return (
+        <div className="ml-56 mt-16 w-auto p-3 font-semibold text-gray-600" >
+            {
+                loader ? <Loader /> : <div className="w-full">
+                    <table className="w-full">
+                        <thead>
+                            <tr className=" border-b">
+                                <th className="border-r">
+                                    <input type="checkbox" />
+                                </th>
+                                <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                                    <h1 className="flex items-center justify-center">#</h1>
+                                </th>
+                                <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                                    <h1 className="flex items-center justify-center">Name</h1>
+                                </th>
+                                <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                                    <h1 className="flex items-center justify-center">Email</h1>
+                                </th>
+                                <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                                    <h1 className="flex items-center justify-center">Phone</h1>
+                                </th>
+                                <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                                    <h1 className="flex items-center justify-center">User</h1>
+                                </th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                companyList.map((item, index) => {
+                                    return (
+                                        <tr className="bg-gray-100 text-center border-b text-sm text-gray-600" key={index}>
+
+                                            <td className="border-r">  <input type="checkbox" /></td>
+                                            <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                                                <h1 className="flex items-center justify-center">{index + 1}</h1>
+                                            </td>
+                                            <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                                                <h1 className="flex items-center justify-center">{item.name}</h1>
+                                            </td>
+                                            <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                                                <h1 className="flex items-center justify-center">{item.email}</h1>
+                                            </td>
+                                            <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                                                <h1 className="flex items-center justify-center">{item.phone}</h1>
+                                            </td>
+                                            <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                                                <h1 className="flex items-center justify-center">User</h1>
+                                            </td>
+
+
+                                        </tr>
+                                    )
+                                })
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    )
+}
+
+export default CompanyList

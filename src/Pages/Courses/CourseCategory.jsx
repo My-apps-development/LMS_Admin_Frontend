@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import AdminDashboard from "../Dashboard/AdminDashboard"
 import { FaPlus } from "react-icons/fa6";
-import { Box, Modal } from "@mui/material";
+import { Box, Divider, Modal } from "@mui/material";
 import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
 import { axiosInstance } from "../../Utils/AxiosSetUp";
-import { successMessage } from "../../Utils/notificationManager";
+import { errorMessage, successMessage } from "../../Utils/notificationManager";
 import Loader from "../../Utils/Loader";
 
 
@@ -30,6 +30,8 @@ const CourseCategory = () => {
     })
 
     const [flag, setFlag] = useState(true)
+    const [filterCategory, setFilterCategory] = useState([])
+
 
     const [inputs, setInputs] = useState({
         categories: "",
@@ -65,24 +67,51 @@ const CourseCategory = () => {
     const UpdateCategory = async (e) => {
         e.preventDefault()
 
-        const UpdateFromData = new FormData
-        UpdateFromData.set("categories", singleCategory.categories)
-        UpdateFromData.set("totalsubCategory", singleCategory.totalsubCategory)
-        UpdateFromData.set("Uploade_Category",postImage)
-        UpdateFromData.set("id", singleCategory.id)
+        if(!singleCategory.categories){
+            errorMessage("Category is Required")
+            return
+        }
 
-        console.log(singleCategory);
+        if(!singleCategory.totalsubCategory){
+            errorMessage("total Subcategory Required")
+            return
+        }
+
+        if(!postImage){
+            errorMessage("Image is Required")
+            return
+        }
+
+
+
+        // console.log(singleCategory);
+
+        const formData = new FormData();
+        formData.append('id', singleCategory._id);
+        formData.append('categories', singleCategory.categories);
+        formData.append('totalsubCategory', singleCategory.totalsubCategory);
+        // formData.append('SubCategory_parent', singleCategory.SubCategory_parent);
+        formData.append('Upload_Category', postImage);
 
         try {
-            const response = await axiosInstance.patch("https://myappsdevelopment.co.in/category/update", UpdateFromData)
+            setLoader(true)
+            const response = await axiosInstance.patch("https://myappsdevelopment.co.in/category/update", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            })
             const data = await response.data
-            console.log(data);
+            successMessage(data.message);
+            setImage(null)
+            FetchCategories()
+            setAddModalOpen(false)
+            setLoader(false)
         } catch (error) {
             console.log("Error Updating data", error.message)
         }
     }
 
-    console.log(singleCategory);
+    // console.log(singleCategory);
 
 
 
@@ -170,11 +199,29 @@ const CourseCategory = () => {
         formData.append('SubCategory_parent', inputs.SubCategory_parent);
         formData.append('Upload_Category', postImage);
 
-        
+
+
+        if (!inputs.categories) {
+            errorMessage("Category is Required")
+            return
+        }
+
+        if (!inputs.totalsubCategory) {
+            errorMessage("Subcategory is required")
+            return
+        }
+
+        if (!postImage) {
+            errorMessage("Image is required")
+            return
+        }
+
+
 
 
 
         try {
+            setLoader(true)
             const response = await axiosInstance.post("/category/create", formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -183,8 +230,10 @@ const CourseCategory = () => {
             const data = await response.data
             successMessage(data.message);
             FetchCategories()
-            
+            ClearInputs()
+            setImage(null)
             setAddModalOpen(false)
+            setLoader(false)
         } catch (error) {
             console.log("error posting data", error.message);
         }
@@ -197,20 +246,86 @@ const CourseCategory = () => {
 
 
         try {
+            setLoader(true)
             const response = await axiosInstance.get(`/category/fetch/subcategory`)
             const data = await response.data
             setSubCategoryList(data.Subcategories);
+            setLoader(false)
+
         } catch (error) {
             console.log("Error fetching Sub Category List");
         }
     }
+
+    const filterSubCategories = () => {
+
+      
+
+        const newArr = [];
+
+        for (const category of categoryList) {
+            const filterSubcategories = subCategoryList.filter((subCategory) => category._id === subCategory.categoryId);
+            newArr.push({
+               
+                subCategories: filterSubcategories,
+            });
+        }
+        
+        console.log(newArr[0].subCategories);
+
+        const finalResult = newArr.map((item)=> item.subCategories)
+        setSubCategory(finalResult);
+
+        // setSubCategory(newArr)
+        
+
+
+
+        // const filterSubcategorie = subCategoryList.filter((i)=>categoryList.some((j)=> j._id == i.categoryId))
+
+        // setSubCategory(filterSubcategorie)
+
+
+     
+
+        // const n = categoryList.filter((n)=>subCategoryList.filter((m)=>m.categoryId == n._id))
+
+        // console.log(n);
+
+        // console.log(newArr);
+    }
+
+
+
+
+    // console.log(categoryList);
+
+    // const filterSubcategories = subCategoryList.filter((item)=>{
+
+    //     console.log(categoryList._id);
+    //     item.categoryId == categoryList._id
+    // })
+    // console.log(filterSubcategories);
+
+
+    // const filterSubcategories = subCategoryList.filter((subcategory)=>categoryList.some((category)=>category.id != subcategory.categoryId))
+    // console.log(filterSubcategories);
+
+
 
 
 
     const fetchCategoryById = async (categoryid) => {
         setAddModalOpen(true)
         setFlag(false)
+
+        const filteredData = categoryList.filter((cat) => cat._id === categoryid)
+        const filterSubcategory = subCategoryList.filter((sub) => sub.categoryId == categoryid)
+
+        console.log(filteredData);
+        console.log(filterSubcategory);
         try {
+            setLoader(true)
             const response = await axiosInstance.get(`category/singlecategory?categoryid=${categoryid}`, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -219,6 +334,7 @@ const CourseCategory = () => {
             const data = await response.data
             setSingleCategory(data.category);
             setImage(data.category.upload_thumbnail);
+            setLoader(false)
             // setSingleCategory({...singleCategory, id:data.category._id})
         }
         catch (error) {
@@ -259,6 +375,7 @@ const CourseCategory = () => {
                 totalsubCategory: "",
                 Upload_Category: null
             }))
+            setImage(null)
         } catch (error) {
             console.log("error clearing input fields", error.message);
         }
@@ -266,11 +383,22 @@ const CourseCategory = () => {
 
 
     useEffect(() => {
-        FetchCategories()
-        FetchSubCategories()
+        const fetchData = async () => {
+            try {
+                setLoader(true);
+                await FetchCategories();
+                await FetchSubCategories();
+                 filterSubCategories(); // Move filterSubCategories here
+                setLoader(false);
+            } catch (error) {
+                console.log("Error fetching data", error.message);
+            }
+        };
+
+        fetchData();
     }, [])
 
-    // console.log(subCategoryList);
+    console.log(subCategory);
 
     return (
         <div className="w-full">
@@ -304,34 +432,21 @@ const CourseCategory = () => {
                                         <p className="text-sm">{item.totalsubCategory} sub categories</p>
                                     </div>
                                     {/* {
-                                        Subcategory.map((item, index) => {
+                                        subCategory && subCategory.map((item, index) => {
                                             return (
-                                                <div className="flex justify-between items-center gap-2" key={index}>
+                                                <div className="flex justify-between items-center gap-2 " key={index}>
                                                     <p>{item.title}</p>
                                                     <div className="flex justify-center items-center gap-2">
-                                                        <p onClick={handleEditSubmodal}><CiEdit /></p>
+                                                        <p><CiEdit /></p>
                                                         <p><MdDelete /></p>
                                                     </div>
+
                                                 </div>
                                             )
                                         })
                                     } */}
 
-                                    {/* <div className="flex justify-between items-center gap-2">
-                        <p>Sub Category 2</p>
-                        <div className="flex justify-center items-center gap-2">
 
-                            <p onClick={handleEditSubmodal}><CiEdit /></p>
-                            <p><MdDelete /></p>
-                        </div>
-                    </div>
-                    <div className="flex justify-between items-center gap-2">
-                        <p>Sub Category 2</p>
-                        <div className="flex justify-center items-center gap-2">
-                            <p><CiEdit /></p>
-                            <p><MdDelete /></p>
-                        </div>
-                    </div> */}
                                     <div className="flex justify-between items-center gap-2 text-2xl">
                                         <p className="text-blue-500 cursor-pointer" onClick={() => fetchCategoryById(item?._id)}><CiEdit /></p>
                                         <p className="text-red-500 cursor-pointer" onClick={() => DeleteCategory(item._id)}><MdDelete /></p>
@@ -341,243 +456,12 @@ const CourseCategory = () => {
                         )
                     })}
 
-                    {/* <div className="border-2 shadow-lg flex flex-col gap-3 p-3 rounded-lg">
-        <div>
-            <img src="https://img.freepik.com/premium-photo/woman-standing-by-potted-plants_1048944-16402036.jpg?t=st=1706787923~exp=1706788523~hmac=c2a58b2e44fde18bbe73065ee3ec83536c363ff3f098ea6a57ec1ba9795607a9" alt="" className="rounded-lg object-cover" />
-        </div>
-        <div>
-            <h1 className="text-2xl">Introduction</h1>
-            <p className="text-sm">3 sub categories</p>
-        </div>
-        <div className="flex justify-between items-center gap-2">
-            <p>App Introduction</p>
-            <div className="flex justify-center items-center gap-2">
-                <p><CiEdit /></p>
-                <p><MdDelete /></p>
-            </div>
-        </div>
-        <div className="flex justify-between items-center gap-2">
-            <p>Sub Category 2</p>
-            <div className="flex justify-center items-center gap-2">
 
-                <p onClick={handleEditSubmodal}><CiEdit /></p>
-                <p><MdDelete /></p>
-            </div>
-        </div>
-        <div className="flex justify-between items-center gap-2">
-            <p>Sub Category 2</p>
-            <div className="flex justify-center items-center gap-2">
-                <p><CiEdit /></p>
-                <p><MdDelete /></p>
-            </div>
-        </div>
-        <div className="flex justify-between items-center gap-2 text-2xl">
-            <p className="text-blue-500" onClick={handleEdit}><CiEdit /></p>
-            <p className="text-red-500"><MdDelete /></p>
-        </div>
-    </div>
-
-    <div className="border-2 shadow-lg flex flex-col gap-3 p-3 rounded-lg">
-        <div>
-            <img src="https://img.freepik.com/premium-photo/woman-standing-by-potted-plants_1048944-16402036.jpg?t=st=1706787923~exp=1706788523~hmac=c2a58b2e44fde18bbe73065ee3ec83536c363ff3f098ea6a57ec1ba9795607a9" alt="" className="rounded-lg object-cover" />
-        </div>
-        <div>
-            <h1 className="text-2xl">Introduction</h1>
-            <p className="text-sm">3 sub categories</p>
-        </div>
-        <div className="flex justify-between items-center gap-2">
-            <p>App Introduction</p>
-            <div className="flex justify-center items-center gap-2">
-                <p><CiEdit /></p>
-                <p><MdDelete /></p>
-            </div>
-        </div>
-        <div className="flex justify-between items-center gap-2">
-            <p>Sub Category 2</p>
-            <div className="flex justify-center items-center gap-2">
-                <p><CiEdit /></p>
-                <p><MdDelete /></p>
-            </div>
-        </div>
-        <div className="flex justify-between items-center gap-2">
-            <p>Sub Category 2</p>
-            <div className="flex justify-center items-center gap-2">
-                <p><CiEdit /></p>
-                <p><MdDelete /></p>
-            </div>
-        </div>
-        <div className="flex justify-between items-center gap-2 text-2xl">
-            <p className="text-blue-500" onClick={handleEdit}><CiEdit /></p>
-            <p className="text-red-500"><MdDelete /></p>
-        </div>
-    </div>
-
-    <div className="border-2 shadow-lg flex flex-col gap-3 p-3 rounded-lg">
-        <div>
-            <img src="https://img.freepik.com/premium-photo/woman-standing-by-potted-plants_1048944-16402036.jpg?t=st=1706787923~exp=1706788523~hmac=c2a58b2e44fde18bbe73065ee3ec83536c363ff3f098ea6a57ec1ba9795607a9" alt="" className="rounded-lg object-cover" />
-        </div>
-        <div>
-            <h1 className="text-2xl">Introduction</h1>
-            <p className="text-sm">3 sub categories</p>
-        </div>
-        <div className="flex justify-between items-center gap-2">
-            <p>App Introduction</p>
-            <div className="flex justify-center items-center gap-2">
-                <p><CiEdit /></p>
-                <p><MdDelete /></p>
-            </div>
-        </div>
-        <div className="flex justify-between items-center gap-2">
-            <p>Sub Category 2</p>
-            <div className="flex justify-center items-center gap-2">
-                <p><CiEdit /></p>
-                <p><MdDelete /></p>
-            </div>
-        </div>
-        <div className="flex justify-between items-center gap-2">
-            <p>Sub Category 2</p>
-            <div className="flex justify-center items-center gap-2">
-                <p><CiEdit /></p>
-                <p><MdDelete /></p>
-            </div>
-        </div>
-        <div className="flex justify-between items-center gap-2 text-2xl">
-            <p className="text-blue-500" onClick={handleEdit}><CiEdit /></p>
-            <p className="text-red-500"><MdDelete /></p>
-        </div>
-    </div>
-
-    <div className="border-2 shadow-lg flex flex-col gap-3 p-3 rounded-lg">
-        <div>
-            <img src="https://img.freepik.com/premium-photo/woman-standing-by-potted-plants_1048944-16402036.jpg?t=st=1706787923~exp=1706788523~hmac=c2a58b2e44fde18bbe73065ee3ec83536c363ff3f098ea6a57ec1ba9795607a9" alt="" className="rounded-lg object-cover" />
-        </div>
-        <div>
-            <h1 className="text-2xl">Introduction</h1>
-            <p className="text-sm">3 sub categories</p>
-        </div>
-        <div className="flex justify-between items-center gap-2">
-            <p>App Introduction</p>
-            <div className="flex justify-center items-center gap-2">
-                <p><CiEdit /></p>
-                <p><MdDelete /></p>
-            </div>
-        </div>
-        <div className="flex justify-between items-center gap-2">
-            <p>Sub Category 2</p>
-            <div className="flex justify-center items-center gap-2">
-                <p><CiEdit /></p>
-                <p><MdDelete /></p>
-            </div>
-        </div>
-        <div className="flex justify-between items-center gap-2">
-            <p>Sub Category 2</p>
-            <div className="flex justify-center items-center gap-2">
-                <p><CiEdit /></p>
-                <p><MdDelete /></p>
-            </div>
-        </div>
-        <div className="flex justify-between items-center gap-2 text-2xl">
-            <p className="text-blue-500" onClick={handleEdit}><CiEdit /></p>
-            <p className="text-red-500"><MdDelete /></p>
-        </div>
-    </div>
-
-    <div className="border-2 shadow-lg flex flex-col gap-3 p-3 rounded-lg">
-        <div>
-            <img src="https://img.freepik.com/premium-photo/woman-standing-by-potted-plants_1048944-16402036.jpg?t=st=1706787923~exp=1706788523~hmac=c2a58b2e44fde18bbe73065ee3ec83536c363ff3f098ea6a57ec1ba9795607a9" alt="" className="rounded-lg object-cover" />
-        </div>
-        <div>
-            <h1 className="text-2xl">Introduction</h1>
-            <p className="text-sm">3 sub categories</p>
-        </div>
-        <div className="flex justify-between items-center gap-2">
-            <p>App Introduction</p>
-            <div className="flex justify-center items-center gap-2">
-                <p><CiEdit /></p>
-                <p><MdDelete /></p>
-            </div>
-        </div>
-        <div className="flex justify-between items-center gap-2">
-            <p>Sub Category 2</p>
-            <div className="flex justify-center items-center gap-2">
-                <p><CiEdit /></p>
-                <p><MdDelete /></p>
-            </div>
-        </div>
-        <div className="flex justify-between items-center gap-2">
-            <p>Sub Category 2</p>
-            <div className="flex justify-center items-center gap-2">
-                <p><CiEdit /></p>
-                <p><MdDelete /></p>
-            </div>
-        </div>
-        <div className="flex justify-between items-center gap-2 text-2xl">
-            <p className="text-blue-500" onClick={handleEdit}><CiEdit /></p>
-            <p className="text-red-500"><MdDelete /></p>
-        </div>
-    </div> */}
 
                 </div>
             </div>}
             <div>
-                {/* <Modal
-                    open={open}
-                >
-                    <Box sx={style}>
-                        <div className="text-xs text-gray-600 font-semibold">
-                            <div className="flex justify-between items-center w-full text-black">
-                                <h1 className="text-2xl">Edit Category</h1>
-                                <button className="border-[#B32073] bg-[#B32073] p-2 rounded-lg w-20 text-lg text-white" onClick={handleClose}>Close</button>
-                            </div>
-                            <div className="flex w-full gap-5 p-2">
-                                <div className="w-[50%]">
-                                    <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">Category Title</label>
-                                        <input type="text" name="firstname" id="firstname" placeholder="Defensive Driving" className="border-2 border-gray-600 rounded-lg text-lg p-2 " />
-                                    </div>
 
-                                    <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">Total Subcategories</label>
-                                        <input type="text" name="firstname" id="firstname" placeholder="3" className="border-2 border-gray-600 rounded-lg text-lg p-2 " />
-                                    </div>
-
-                                    <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">SubCategory/Parent</label>
-                                        <input type="text" name="firstname" id="firstname" placeholder="Safe Driving" className="border-2 border-gray-600 rounded-lg text-lg p-2 " />
-                                        <input type="text" name="firstname" id="firstname" placeholder="Safe Driving" className="border-2 border-gray-600 rounded-lg text-lg p-2 " />
-                                        <input type="text" name="firstname" id="firstname" placeholder="Sub category 3" className=" border-2 border-gray-600 rounded-lg text-lg p-2 " />
-                                    </div>
-
-
-
-                                    <div className="flex justify-start items-center py-4 px-2">
-                                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-36"><FaPlus /> Add Subcategory</button>
-                                    </div>
-
-
-                                    <div className="w-full flex justify-center items-center gap-5">
-                                        <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button>
-                                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg">Add/Edit Category</button>
-                                    </div>
-
-                                </div>
-                                <div className="w-[50%]">
-                                    <div className="border-2 shadow-lg flex flex-col gap-3 p-3 rounded-lg">
-                                        <div>
-                                            <img src="https://img.freepik.com/premium-photo/woman-standing-by-potted-plants_1048944-16402036.jpg?t=st=1706787923~exp=1706788523~hmac=c2a58b2e44fde18bbe73065ee3ec83536c363ff3f098ea6a57ec1ba9795607a9" alt="" className="rounded-lg object-cover" />
-                                        </div>
-                                        <div>
-                                            <h1 className="text-2xl text-[#B32073]">Upload Thumbnail Image</h1>
-                                            <p className="text-sm">Upload Course Image for your product.</p>
-                                            <p className="capitalize">file format <b className="text-black">jpeg, png</b> Recommended size 425 X 371</p>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </Box>
-                </Modal> */}
             </div>
             <div>
                 <Modal
@@ -598,7 +482,7 @@ const CourseCategory = () => {
                                 <input type="text" name="firstname" id="firstname" placeholder="Defensive Driving" className="border-2 border-gray-600 rounded-lg text-lg p-2 " />
                             </div>
                             <div className="w-full flex justify-center items-center gap-5 p-5">
-                                <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button>
+                                {/* <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button> */}
                                 <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-38 rounded-lg">Add Course</button>
                             </div>
                         </div>
@@ -635,13 +519,13 @@ const CourseCategory = () => {
 
 
                                     <div className="flex justify-start items-center py-4 px-2">
-                                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-36"><FaPlus /> Add Subcategory</button>
+                                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-36 hover:scale-95 hover:duration-300"><FaPlus /> Add Subcategory</button>
                                     </div>
 
 
                                     <div className="w-full flex justify-center items-center gap-5">
-                                        <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button>
-                                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg" type="submit">{flag ? "Add Category" : "Update Category"}</button>
+                                        {/* <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button> */}
+                                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg hover:scale-95 hover:duration-300" type="submit">{flag ? "Add Category" : "Update Category"}</button>
                                     </div>
 
                                 </form>
@@ -657,7 +541,7 @@ const CourseCategory = () => {
                                             <p className="text-sm">Upload Course Image for your product.</p>
                                             <p className="capitalize">file format <b className="text-black">jpeg, png</b> Recommended size 425 X 371</p>
 
-                                            <input type="file" name="Upload_Category" id="Upload_Category" onChange={handleChangeImage} />
+                                            <input type="file" name="Upload_Category" id="Upload_Category" accept="image/*" onChange={handleChangeImage} />
                                         </div>
 
                                     </div>

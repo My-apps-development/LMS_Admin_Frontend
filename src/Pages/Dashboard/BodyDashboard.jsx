@@ -33,6 +33,7 @@ const BodyDashboard = () => {
     const [courseList, setCourseList] = useState([])
     const [QuestionList, setQuestionList] = useState([])
     const [UserList, setUserList] = useState([])
+    const [chapterList, setChapterList] = useState([])
 
 
 
@@ -67,62 +68,72 @@ const BodyDashboard = () => {
         }
     }
 
+    const fetchChapters = async () => {
+        try {
+            const response = await axiosInstance.get("/homepage/fetchChapters")
+            const data = await response.data
+            setChapterList(data.chapter);
+        } catch(error){
+            console.log("Error Fetching Chapters", error.message);
+        }
+    }
 
 
     useEffect(() => {
         fetchCourses()
         fetchQuestions()
         fetchUsers()
+        fetchChapters()
     }, [])
     return (
         <>
 
-            <div className=" ml-56 flex flex-col font-semibold justify-center items-center mt-32 w-[85%]">
+            <div className=" ml-56 flex flex-col font-semibold justify-center items-center mt-8 mb-10 w-[85%]">
 
                 <div className="flex justify-start items-center p-3 w-full">
-                    <h1 className="text-2xl text-gray-800">DashBoard</h1>
+                    <h1 className="text-2xl text-gray-700">Dashboard</h1>
                 </div>
                 <div className="grid grid-cols-4 p-5 gap-5 w-[100%] text-xl ">
                     <div className="flex flex-col gap-5 justify-center items-start border-2 p-2 rounded-lg shadow-lg">
                         <p className="text-[#B32073] ml-5 mt-3"><IoBookSharp /></p>
-                        <p className="ml-5">Total Courses</p>
+                        <p className="ml-5 text-gray-500">Total Courses</p>
                         <p className="ml-5">{courseList.length}</p>
                     </div>
                     <div className="flex flex-col gap-5 justify-center items-start border-2 p-2 rounded-lg shadow-lg">
                         <p className="text-[#B32073] ml-5 mt-3"><PiVideoFill /></p>
-                        <p className="ml-5">Total Lessons</p>
-                        <p className="ml-5">12</p>
+                        <p className="ml-5 text-gray-500">Total Chapters</p>
+                        <p className="ml-5">{chapterList.length}</p>
                     </div>
                     <div className="flex flex-col gap-5 justify-center items-start border-2 p-2 rounded-lg shadow-lg">
                         <p className="text-[#B32073] ml-5 mt-3"><HiMiniNewspaper /></p>
-                        <p className="ml-5">Completed Courses</p>
+                        <p className="ml-5 text-gray-500">Completed Courses</p>
                         <p className="ml-5">12</p>
                     </div>
                     <div className="flex flex-col gap-5 justify-center items-start border-2 p-2 rounded-lg shadow-lg">
                         <p className="text-[#B32073] ml-5 mt-3"><FaUsers /></p>
-                        <p className="ml-5">Total Completed Course</p>
+                        <p className="ml-5 text-gray-500">Total Completed Course</p>
                         <p className="ml-5">{UserList.length}</p>
                     </div>
                 </div>
                 <div className="grid grid-cols-4 p-5 gap-5 w-[100%] text-xl ">
                     <div className="flex flex-col gap-5 justify-center items-start border-2 p-2 rounded-lg shadow-lg">
                         <p className="text-[#B32073] ml-5 mt-3"><IoNewspaperSharp /></p>
-                        <p className="ml-5">Total Questions</p>
+                        <p className="ml-5 text-gray-500">Total Questions</p>
                         <p className="ml-5">{QuestionList.length}</p>
                     </div>
                     <div className="flex flex-col gap-5 justify-center items-start border-2 p-2 rounded-lg shadow-lg">
                         <p className="text-[#B32073] ml-5 mt-3"><MdOutlineOndemandVideo /></p>
-                        <p className="ml-5">Answered Questions</p>
+                        <p className="ml-5 text-gray-500">Answered Questions</p>
                         <p className="ml-5">12</p>
                     </div>
                     <div className="flex flex-col gap-5 justify-center items-start border-2 p-2 rounded-lg shadow-lg">
                         <p className="text-[#B32073] ml-5 mt-3"><MdOutlineAssignment /></p>
-                        <p className="ml-5">Completed Assignments</p>
+                        <p className="ml-5 text-gray-500">Completed Assignments</p>
                         <p className="ml-5">12</p>
                     </div>
                     <div className="flex flex-col gap-5 justify-center items-start border-2 p-2 rounded-lg shadow-lg">
                         <p className="text-[#B32073] ml-5 mt-3"><MdOutlineAssignment /></p>
-                        <p className="ml-5">Total Certificates</p>
+                        <p className="ml-5 text-gray-500">Total Certificates</p>
                         <p className="ml-5">12</p>
                     </div>
                 </div>
@@ -130,16 +141,16 @@ const BodyDashboard = () => {
                 <div className="w-[100%] flex gap-5">
                     <div className="w-[70%] shadow-xl p-3 ml-5">
                         <div className="flex justify-between items-center">
-                            <h1>Active User (Students) </h1>
-                            <p className="border-2 px-4 py-2 rounded-lg bg-[#B32073] text-white">Jan 2024 &gt;</p>
+                            <h1 className="text-gray-700">Active User (Students) </h1>
+                            <p className="border-2 px-4 py-2 rounded-lg bg-[#B32073] w-40 text-center text-white">Jan 2024 &gt;</p>
                         </div>
                         <div className="w-[100%]">
-                            <Bar data={userData} />
+                            <Bar data={userData}/>
                         </div>
                     </div>
                     <div className="w-[25%] shadow-xl p-3">
                         <div className="flex justify-start items-center w-[100%] p-2">
-                            <h1>Users List</h1>
+                            <h1 className="text-gray-700">Users List</h1>
                         </div>
                         <div className="flex flex-col gap-3 w-auto text-sm">
                             {
