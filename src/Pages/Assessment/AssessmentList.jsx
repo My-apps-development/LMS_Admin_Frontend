@@ -8,6 +8,7 @@ import { axiosInstance } from "../../Utils/AxiosSetUp";
 import { Redactor } from '@texttree/notepad-rcl';
 import { errorMessage, successMessage } from "../../Utils/notificationManager";
 import Loader from "../../Utils/Loader";
+// import JoditEditor from "jodit-react";
 
 
 const AssessmentList = () => {
@@ -176,7 +177,7 @@ const AssessmentList = () => {
 
   }
 
-  console.log(Quiz);
+  // console.log(Quiz);
 
 
   const FetchChapters = async () => {
@@ -212,7 +213,7 @@ const AssessmentList = () => {
     console.log("update by id", singleInputs._id);
 
     const formData = new FormData()
-    formData.append("quetionId", singleInputs._id)
+   
     formData.append("question", singleInputs.question)
     formData.append("option_A", singleInputs.option_A)
     formData.append("option_B", singleInputs.option_B)
@@ -225,7 +226,8 @@ const AssessmentList = () => {
 
     try {
       setLoader(true)
-      const response = await axiosInstance.patch("/Quiz/update", formData)
+      console.log(`/Quiz/update?quetionId=${singleInputs?._id}`);
+      const response = await axiosInstance.patch(`/Quiz/update?quetionId=${singleInputs?._id}`, formData)
       const data = await response.data
       successMessage(data.message);
       fetchQuestion()

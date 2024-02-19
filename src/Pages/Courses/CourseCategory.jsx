@@ -276,40 +276,13 @@ const CourseCategory = () => {
         const finalResult = newArr.map((item)=> item.subCategories)
         setSubCategory(finalResult);
 
-        // setSubCategory(newArr)
         
-
-
-
-        // const filterSubcategorie = subCategoryList.filter((i)=>categoryList.some((j)=> j._id == i.categoryId))
-
-        // setSubCategory(filterSubcategorie)
-
-
-     
-
-        // const n = categoryList.filter((n)=>subCategoryList.filter((m)=>m.categoryId == n._id))
-
-        // console.log(n);
-
-        // console.log(newArr);
     }
 
 
 
 
-    // console.log(categoryList);
 
-    // const filterSubcategories = subCategoryList.filter((item)=>{
-
-    //     console.log(categoryList._id);
-    //     item.categoryId == categoryList._id
-    // })
-    // console.log(filterSubcategories);
-
-
-    // const filterSubcategories = subCategoryList.filter((subcategory)=>categoryList.some((category)=>category.id != subcategory.categoryId))
-    // console.log(filterSubcategories);
 
 
 

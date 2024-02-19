@@ -11,59 +11,58 @@ const Login = () => {
   const [inputs, setInputs] = useState({ email: "", password: "" })
 
 
-  
+
 
   const handleChange = async (e) => {
     e.preventDefault()
 
-    setInputs( { ...inputs,[e.target.name]: e.target.value })
+    setInputs({ ...inputs, [e.target.name]: e.target.value })
 
   }
 
   // console.log(inputs);
 
 
-  const handleSubmitData = async(e) => {
+  const handleSubmitData = async (e) => {
     e.preventDefault()
 
-    if(!inputs.email){
-       errorMessage("email required")
-       return
+    if (!inputs.email) {
+      errorMessage("email required")
+      return
     }
 
-    if(!inputs.password){
-     errorMessage("password required")
-     return
+    if (!inputs.password) {
+      errorMessage("password required")
+      return
     }
 
     try {
       const response = await axiosInstance.post("/adminlogin", inputs)
-      
-        console.log(response,111111)
-        if(response.error){
-        errorMessage(response.error)
-        return
-        }
-      
+
+      // console.log(response,111111)
+      // if(response.error){
+      // errorMessage(response.error)
+      // return
+      // }
+
       const data = await response.data
-      if(response.statusText==="OK"){
+      console.log(data);
+      if (response.statusText === "OK") {
         localStorage.setItem("token", JSON.stringify(data.token))
         localStorage.setItem("role", JSON.stringify(data.admin.role))
         localStorage.setItem("admin", JSON.stringify(data.admin))
+        console.log(data);
         successMessage(data.message)
         navigate("/")
       }
-      else{
-        console.log(response)
-        errorMessage(response.error)
-      }
-      
+     
+
     } catch (error) {
-      
+      errorMessage(error.response.data.message)
       console.log("Cannot post login details");
     }
 
-    
+
 
   }
 

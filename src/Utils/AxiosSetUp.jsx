@@ -10,5 +10,8 @@ console.log('AXIOS TOKEN', userToken)
 
 export const axiosInstance = axios.create({
     baseURL: BASE_URL,
-    headers: userToken ? { Authorization: `Bearer ${userToken}` } : null,
+    headers: {
+        Authorization: userToken ? `Bearer ${userToken}` : null,
+        'Content-Type': 'multipart/form-data'
+    }
 })

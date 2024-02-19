@@ -2,6 +2,8 @@ import { FiSearch } from "react-icons/fi";
 import { IoMdNotificationsOutline } from "react-icons/io"
 
 const Header = () => {
+    const adminData = JSON.parse(localStorage.getItem("admin"))
+    // console.log(adminData);
     return (
         <div className="flex justify-between items-center p-2 w-[100%] font-semibold mt-2">
             <div className="flex justify-center items-center p-2 border-2 w-[50%] ml-20 rounded-lg shadow-xl">
@@ -19,8 +21,8 @@ const Header = () => {
                 </div>
 
                 <div className="w-full">
-                    <h1 className="text-gray-700">John Doe</h1>
-                    <p className="text-gray-500">johndoe@gmail.com</p>
+                    <h1 className="text-gray-700">{adminData.fullname}</h1>
+                    <p className="text-gray-500">{adminData.email}</p>
                 </div>
             </div>
         </div>
