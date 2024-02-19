@@ -24,13 +24,13 @@ const User = () => {
     firstName: "",
     lastName: "",
     fullname: "",
-    mob_number: "",
+    mobile: "",
     email: "",
     license_num: "",
     role: "",
     aadhar_num: "",
     course: "",
-    upload_license: ""
+  
 
   })
 
@@ -38,7 +38,7 @@ const User = () => {
     firstName: "",
     lastName: "",
     fullname: "",
-    mob_number: "",
+    mobile: "",
     email: "",
     license_num: "",
     role: "",
@@ -52,7 +52,7 @@ const User = () => {
 
   const [courseList, setCourseList] = useState([])
 
-  const [image, setImage] = useState()
+  const [image, setImage] = useState(null)
 
   const [loader, setLoader] = useState(false)
 
@@ -65,10 +65,12 @@ const User = () => {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 800,
+    width: 850,
+    height:600,
     bgcolor: 'background.paper',
     border: '2px solid transparent',
     boxShadow: 24,
+    overflowY:'scroll',
     p: 4,
   };
 
@@ -139,13 +141,13 @@ const User = () => {
       setUserInputs((prevInputs) => ({
         ...prevInputs,
         [e.target.name]: e.target.value,
-        fullname: e.target.name === 'firstname' ? e.target.value + (prevInputs.lastname || '') : (prevInputs.firstname || '') + e.target.value
+        fullname: e.target.name === 'firstName' ? e.target.value + (prevInputs.lastName || '') : (prevInputs.firstName || '') + e.target.value
       }))
       :
       setSingleInputs((prevInputs) => ({
         ...prevInputs,
         [e.target.name]: e.target.value,
-        fullname: e.target.name === 'firstname' ? e.target.value + (prevInputs.lastname || '') : (prevInputs.firstname || '') + e.target.value
+        fullname: e.target.name === 'firstName' ? e.target.value + (prevInputs.lastName || '') : (prevInputs.firstName || '') + e.target.value
       }))
   }
 
@@ -162,7 +164,7 @@ const User = () => {
       return
     }
 
-    if (!userInputs.mob_number) {
+    if (!userInputs.mobile) {
       errorMessage("Mobile Number Required")
       return
     }
@@ -186,21 +188,28 @@ const User = () => {
 
     console.log(userInputs);
 
+    console.log(image);
+
     const fD = new FormData()
     fD.append("firstName", userInputs.firstName)
     fD.append("lastName", userInputs.lastName)
-    fD.append("mob_number", userInputs.mob_number)
+    fD.append("fullname", userInputs.fullname)
+    fD.append("mobile", userInputs.mobile)
     fD.append("license_num", userInputs.license_num)
     fD.append("role", userInputs.role)
     fD.append("aadhar_num", userInputs.aadhar_num)
-    fD.append("Upload_Category", image)
+    fD.append("upload_license", image)
+    fD.append("email", userInputs.email)
+    fD.append("course", userInputs.course)
 
 
     try {
-      const response = await axiosInstance.post("/adduser", fD, { headers: { 'Content-Type': 'multipart/form-data' } })
+      const response = await axiosInstance.post("/adduser", fD)
       const data = await response.data
+      successMessage(data.message);
+      FetchUsers()
+      setOpen(false)
 
-      console.log(data);
 
 
     } catch (error) {
@@ -208,18 +217,30 @@ const User = () => {
       console.log("Error Posting data", error.message);
     }
 
-    ClearInputs()
+    // ClearInputs()
   }
 
   const handleUpdateUSer = async (e) => {
     e.preventDefault()
 
+    const UpdatedFormData = new FormData()
+    UpdatedFormData.append("firstName", singleInputs.firstName)
+    UpdatedFormData.append("lastName", singleInputs.lastName)
+    UpdatedFormData.append("fullname", singleInputs.fullname)
+    UpdatedFormData.append("mobile", singleInputs.mobile)
+    UpdatedFormData.append("license_num", singleInputs.license_num)
+    UpdatedFormData.append("role", singleInputs.role)
+    UpdatedFormData.append("aadhar_num", singleInputs.aadhar_num)
+    UpdatedFormData.append("upload_license", image)
+    UpdatedFormData.append("email", singleInputs.email)
+    UpdatedFormData.append("course", singleInputs.course)
 
 
     try {
-      const response = await axiosInstance.patch("/userUpdate", singleInputs)
+      const response = await axiosInstance.patch(`/userUpdate?id=${singleInputs._id}`, UpdatedFormData)
       const data = await response.data
-      console.log(data);
+      successMessage(data.message);
+      FetchUsers()
     } catch (error) {
       console.log("error updating data", error.message);
     }
@@ -236,6 +257,8 @@ const User = () => {
   // }
 
   const handleDelete = async (_id) => {
+
+    console.log(_id);
 
     try {
       setLoader(true)
@@ -285,7 +308,7 @@ const User = () => {
         firstName: "",
         lastName: "",
         fullname: "",
-        mob_number: "",
+        mobile: "",
         email: "",
         license_num: "",
         role: "",
@@ -357,7 +380,7 @@ const User = () => {
                     return (
                       <tr className="bg-gray-100 text-center border-b text-sm text-gray-600" key={index}>
                         <td className="border-r">  <input type="checkbox" /></td>
-                        <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item.fullname}</td>
+                        <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item.firstName} {item.lastName}</td>
                         <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item.role}</td>
                         <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item.mob_number}</td>
                         <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item.email}</td>
@@ -411,50 +434,50 @@ const User = () => {
             <Box sx={style}>
               <div className="w-full font-semibold text-gray-600 flex flex-col gap-5">
                 <div className="flex justify-between items-center w-full text-black">
-                  <h1 className="text-2xl">Add/Edit User</h1>
+                  <h1 className="text-2xl">{flag ? "Add User" : "Update User"}</h1>
                   <button className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-20" onClick={handleClose}>Close</button>
                 </div>
                 <form onSubmit={flag ? handleSubmit : handleUpdateUSer}>
                   <div className="grid grid-cols-2">
                     <div className="flex flex-col p-2 gap-3">
                       <label htmlFor="">First Name</label>
-                      <input type="text" name="firstName" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.firstname : singleInputs?.firstName} />
+                      <input type="text" name="firstName" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.firstName : singleInputs?.firstName} />
                     </div>
 
                     <div className="flex flex-col p-2 gap-3">
                       <label htmlFor="">Last Name</label>
-                      <input type="text" name="lastName" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.lastname : singleInputs?.lastName} />
+                      <input type="text" name="lastName" id="lastName" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.lastName : singleInputs?.lastName} />
                     </div>
 
                     <div className="flex flex-col p-2 gap-3">
                       <label htmlFor="">Mobile</label>
-                      <input type="text" name="mob_number" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.mob_number : singleInputs?.mob_number} />
+                      <input type="number" name="mobile" id="mobile" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.mobile : singleInputs?.mobile} />
                     </div>
 
                     <div className="flex flex-col p-2 gap-3">
                       <label htmlFor="">Email</label>
-                      <input type="text" name="email" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.email : singleInputs?.email} />
+                      <input type="text" name="email" id="email" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.email : singleInputs?.email} />
                     </div>
 
                     <div className="flex flex-col p-2 gap-3">
                       <label htmlFor="">Upload License</label>
-                      <input type="file" name="upload_license" id="image" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeImage} />
+                      <input type="file" name="upload_license" id="upload_license" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeImage} />
                     </div>
 
                     <div className="flex flex-col p-2 gap-3">
                       <label htmlFor="">License Number</label>
-                      <input type="text" name="license_num" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.license_num : singleInputs?.license_num} />
+                      <input type="text" name="license_num" id="license_num" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.license_num : singleInputs?.license_num} />
                     </div>
 
                     <div className="flex flex-col p-2 gap-3">
                       <label htmlFor="">Role</label>
-                      <input type="text" name="role" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange}
+                      <input type="text" name="role" id="role" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange}
                         value={flag ? userInputs?.role : singleInputs?.role} />
                     </div>
 
                     <div className="flex flex-col p-2 gap-3">
                       <label htmlFor="">Aadhar</label>
-                      <input type="text" name="aadhar_num" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.aadhar_num : singleInputs?.aadhar_num} />
+                      <input type="text" name="aadhar_num" id="aadhar_num" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.aadhar_num : singleInputs?.aadhar_num} />
                     </div>
 
 
@@ -463,7 +486,7 @@ const User = () => {
 
                   <div className="flex flex-col p-2 gap-3">
                     <label htmlFor="">Course To Enroll</label>
-                    <select name="course" id="" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange}>
+                    <select name="course" id="course" className="p-3 border-2 border-gray-600 rounded-lg" value={flag ? userInputs?.course : singleInputs?.course} onChange={handleChange}>
                       <option value="Driver">Choose Options</option>
                       {
                         courseList.map((item, index) => {
@@ -475,9 +498,24 @@ const User = () => {
                     </select>
                   </div>
 
+                  <div className="flex flex-col gap-3 p-2">
+                    <label htmlFor="">Status</label>
+                    <div className=" flex gap-5">
+                      <input type="radio" name="status" id="status" />
+                      <p>Active</p>
+
+                      <input type="radio" name="status" id="status" />
+                      <p>Pending</p>
+
+                      <input type="radio" name="status" id="status" />
+                      <p>InActive</p>
+                      
+                    </div>
+                  </div>
+
 
                   <div className="w-full flex justify-center items-center gap-5">
-                    <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button>
+                    {/* <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button> */}
                     <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg">{flag ? "Add User" : "Update User"}</button>
                   </div>
                 </form>

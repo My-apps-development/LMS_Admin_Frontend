@@ -15,6 +15,7 @@
     "@mui/material": "^5.15.7",
     "@texttree/notepad-rcl": "^2.3.0",
     "axios": "^1.6.7",
+    "jodit-react": "^4.0.9",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",

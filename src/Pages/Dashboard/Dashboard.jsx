@@ -7,7 +7,7 @@ import BodyDashboard from "./BodyDashboard"
 const Dashboard = () => {
    
     return (
-        <div className="w-[100%]">
+        <div className="w-[100%] bg-slate-100">
             <AdminDashboard />
             
             <BodyDashboard />

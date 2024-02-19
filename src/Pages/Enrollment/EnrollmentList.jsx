@@ -20,7 +20,10 @@ const EnrollmentList = () => {
     const [inputs, setInputs] = useState({ role: "", courses_to_enroll: "" })
     const [loader, setLoader] = useState(false)
     const [Flag, setFlag] = useState(true)
-    const [singleInputs, setSingleInputs] = useState({ role: "", courses_to_enroll: "", enrollmentId: "" })
+    const [singleInputs, setSingleInputs] = useState({ role: "", courses_to_enroll: "" })
+
+    const [courseList, setCourseList] = useState([])
+    const [userList, setUserList] = useState([])
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -115,6 +118,28 @@ const EnrollmentList = () => {
         }
     }
 
+    const fetchCourses = async () => {
+        try {
+            const response = await axiosInstance.get("/homepage/courses")
+            const data = await response.data
+            setCourseList(data.Courses);
+        } catch(error) {
+            console.log("Error Fetching Courses", error.message);
+        }
+    }
+
+    const fetchUsers = async() => {
+        try {
+            const response = await axiosInstance.get("/users")
+            const data = await response.data
+           setUserList(data.users);
+        } catch(error){
+            console.log("Error Fetching Users", error.message);
+        }
+    }
+
+    console.log(userList);
+
     const FetchEnrollmentById = async (_id) => {
         // console.log(`https://myappsdevelopment.co.in/enrollment/singleenrollment?enrollmentid=${_id}`);
         try {
@@ -135,9 +160,16 @@ const EnrollmentList = () => {
     const UpdateEnrollment = async (e) => {
         e.preventDefault()
         console.log(singleInputs.enrollmentId);
+
+        const formData = new FormData()
+        formData.append("enrollmentId", singleInputs._id)
+        formData.append("role", singleInputs.role)
+        formData.append("courses_to_enroll", singleInputs.courses_to_enroll)
+
+
         try {
             console.log(singleInputs);
-            const response = await axiosInstance.patch("https://myappsdevelopment.co.in/enrollment/update", {data: singleInputs})
+            const response = await axiosInstance.patch("https://myappsdevelopment.co.in/enrollment/update", formData)
             const data = await response.data
             successMessage(data.message)
             FetchEnrollment()
@@ -182,6 +214,8 @@ const EnrollmentList = () => {
     useEffect(() => {
         FetchEnrollment()
         FetchUserRoleDropDown()
+        fetchCourses()
+        fetchUsers()
 
     }, [])
 
@@ -221,9 +255,9 @@ const EnrollmentList = () => {
                                         <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
                                             <h1 className="flex items-center justify-center">Action</h1>
                                         </th>
-                                        <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                                        {/* <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
                                             <h1 className="flex items-center justify-center"><PiDotsThreeOutlineFill /></h1>
-                                        </th>
+                                        </th> */}
 
                                     </tr>
                                 </thead>
@@ -233,8 +267,8 @@ const EnrollmentList = () => {
                                             return (
                                                 <tr className="bg-gray-100 text-center border-b text-sm text-gray-600" key={index}>
                                                     <td className="border-r">  <input type="checkbox" /></td>
-                                                    <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item.role}</td>
-                                                    <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item.courses_to_enroll}</td>
+                                                    <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 capitalize">{item.role}</td>
+                                                    <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 capitalize">{item.courses_to_enroll}</td>
                                                     <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item.createdAt.split("T")[0]}</td>
                                                     <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
                                                         <p onClick={() => {
@@ -246,71 +280,14 @@ const EnrollmentList = () => {
                                                         }}><CiEdit /></p>
                                                         <p onClick={() => DeleteEnrollment(item._id)}><MdDelete /></p>
                                                     </td>
-                                                    <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                                                    {/* <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
                                                         <p className="flex items-center justify-center"><PiDotsThreeOutlineFill /></p>
-                                                    </td>
+                                                    </td> */}
                                                 </tr>
                                             )
                                         })
                                     }
-                                    {/* <tr className="bg-gray-100 text-center border-b text-sm text-gray-600">
-                                    <td className="border-r">  <input type="checkbox" /></td>
-                                    <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">Driver</td>
-                                    <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">Introduction</td>
-                                    <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">21/02/2024</td>
-                                    <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
-                                        <p><CiEdit /></p>
-                                        <p><MdDelete /></p>
-                                    </td>
-                                    <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                                        <p className="flex items-center justify-center"><PiDotsThreeOutlineFill /></p>
-                                    </td>
-                                </tr>
-    
-    
-                                <tr className="bg-gray-100 text-center border-b text-sm text-gray-600">
-                                    <td className="border-r">  <input type="checkbox" /></td>
-                                    <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">Driver</td>
-                                    <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">Introduction</td>
-                                    <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">21/02/2024</td>
-                                    <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
-                                        <p><CiEdit /></p>
-                                        <p><MdDelete /></p>
-                                    </td>
-                                    <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                                        <p className="flex items-center justify-center"><PiDotsThreeOutlineFill /></p>
-                                    </td>
-                                </tr>
-    
-    
-                                <tr className="bg-gray-100 text-center border-b text-sm text-gray-600">
-                                    <td className="border-r">  <input type="checkbox" /></td>
-                                    <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">Driver</td>
-                                    <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">Introduction</td>
-                                    <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">21/02/2024</td>
-                                    <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
-                                        <p><CiEdit /></p>
-                                        <p><MdDelete /></p>
-                                    </td>
-                                    <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                                        <p className="flex items-center justify-center"><PiDotsThreeOutlineFill /></p>
-                                    </td>
-                                </tr>
-    
-    
-                                <tr className="bg-gray-100 text-center border-b text-sm text-gray-600">
-                                    <td className="border-r">  <input type="checkbox" /></td>
-                                    <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">Driver</td>
-                                    <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">Introduction</td>
-                                    <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">21/02/2024</td>
-                                    <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
-                                        <p><CiEdit /></p>
-                                        <p><MdDelete /></p>
-                                    </td>
-                                    <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                                        <p className="flex items-center justify-center"><PiDotsThreeOutlineFill /></p>
-                                    </td>
-                                </tr> */}
+                                    
                                 </tbody>
                             </table>
                             <table>
@@ -347,18 +324,30 @@ const EnrollmentList = () => {
                                 <label htmlFor="">User Role</label>
                                 <select name="role" id="" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={Flag ? inputs?.role : singleInputs?.role}>
                                     <option>choose option</option>
-                                    <option value={userRole["role-1"]}>{userRole["role-1"]}</option>
-                                    <option value={userRole["role-2"]}>{userRole["role-2"]}</option>
-                                    <option value={userRole["role-3"]}>{userRole["role-3"]}</option>
+                                    {
+                                        userList?.map((item)=>{
+                                            return (
+                                                <option key={item?._id} value={item?.role}>{item?.role}</option>
+                                            )
+                                        })
+                                    }
+                                   
                                 </select>
                             </div>
                             <div className="flex flex-col p-2 gap-3">
                                 <label htmlFor="">Course To Enroll</label>
                                 <select name="courses_to_enroll" id="" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={Flag ? inputs?.courses_to_enroll : singleInputs?.courses_to_enroll}>
                                     <option>choose option</option>
-                                    <option value={userRole["role-1"]}>{userRole["role-1"]}</option>
+                                    {
+                                        courseList.map((item)=>{
+                                            return (
+                                                <option key={item?._id} value={item?.title}>{item?.title}</option>
+                                            )
+                                        })
+                                    }
+                                    {/* <option value={userRole["role-1"]}>{userRole["role-1"]}</option>
                                     <option value={userRole["role-2"]}>{userRole["role-2"]}</option>
-                                    <option value={userRole["role-3"]}>{userRole["role-3"]}</option>
+                                    <option value={userRole["role-3"]}>{userRole["role-3"]}</option> */}
                                 </select>
                             </div>
                             <div className="w-full flex justify-center items-center">
