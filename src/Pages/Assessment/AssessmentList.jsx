@@ -45,7 +45,7 @@ const AssessmentList = () => {
     marks: "",
     courseId: "",
     chapterId: "",
-    _id:""
+    _id: ""
   })
 
 
@@ -106,6 +106,8 @@ const AssessmentList = () => {
       setOpen(false)
       setLoader(false)
     } catch (error) {
+      setLoader(false)
+      errorMessage(error.response.data.message)
       console.log("Error Posting Data", error.message)
     }
 
@@ -117,12 +119,15 @@ const AssessmentList = () => {
       setLoader(true)
       const response = await axiosInstance.get("https://myappsdevelopment.co.in/homepage/courses")
       const data = await response.data
-      setCoursesList(data.Courses);
+      
+      setCoursesList(data.coursewithcategory);
       setLoader(false)
     } catch (error) {
       console.log("Error Fetching Course", error.message);
     }
   }
+
+  // console.log(courseList);
 
 
   const style = {
@@ -152,6 +157,9 @@ const AssessmentList = () => {
   // };
 
   const totalQuizLength = Quiz.length
+
+
+  console.log(Quiz);
 
 
   const handleChangePage = (event, newPage) => {
@@ -193,7 +201,7 @@ const AssessmentList = () => {
 
   const FetchSingleQuestionById = async (questionid) => {
 
-    console.log(questionid);
+    // console.log(questionid);
 
     try {
       setLoader(true)
@@ -206,14 +214,14 @@ const AssessmentList = () => {
     }
   }
 
-  console.log(singleInputs);
+  // console.log(singleInputs);
 
   const UpdateQuestionById = async (e) => {
     e.preventDefault()
     console.log("update by id", singleInputs._id);
 
     const formData = new FormData()
-   
+
     formData.append("question", singleInputs.question)
     formData.append("option_A", singleInputs.option_A)
     formData.append("option_B", singleInputs.option_B)
@@ -227,7 +235,7 @@ const AssessmentList = () => {
     try {
       setLoader(true)
       console.log(`/Quiz/update?quetionId=${singleInputs?._id}`);
-      const response = await axiosInstance.patch(`/Quiz/update?quetionId=${singleInputs?._id}`, formData)
+      const response = await axiosInstance.patch(`/Quiz/update?quetionId=${singleInputs?._id}`, formData, { headers: { 'Content-Type': 'application/json' } })
       const data = await response.data
       successMessage(data.message);
       fetchQuestion()
@@ -288,7 +296,7 @@ const AssessmentList = () => {
   return (
     <div>
       <AdminDashboard />
-      <div className="ml-56 mt-16 w-auto p-3 font-semibold text-gray-600">
+      <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300">
         <div className="p-2 ">
           <h1 className="text-2xl">Assessment</h1>
         </div>
@@ -296,7 +304,7 @@ const AssessmentList = () => {
           <h1>Question List</h1>
           <button className="p-2 border-2 border-[#B32073] bg-[#B32073] text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-38" onClick={handleOpen}><FaPlus />Add Question</button>
         </div>
-        <div className="w-full mt-5">
+        <div className="w-full mt-5 bg-white rounded-lg">
           <table className="w-[100%]">
             <thead>
               <tr className=" border-b">
@@ -400,7 +408,7 @@ const AssessmentList = () => {
                         {
                           courseList?.map((item, index) => {
                             return (
-                              <option key={index} value={item?._id}>{item?.title}</option>
+                              <option key={index} value={item?.course?._id}>{item?.course?.title}</option>
                             )
                           })
                         }
@@ -427,7 +435,7 @@ const AssessmentList = () => {
 
                   <div className="flex flex-col p-2 gap-3">
                     <label htmlFor="">Question</label>
-                    <Redactor />
+                  
                     <input type="text" name="question" id="question" value={Flag ? inputs?.question : singleInputs?.question} className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
                   </div>
 
@@ -460,13 +468,13 @@ const AssessmentList = () => {
                     <div className="flex flex-col p-2">
                       <label htmlFor="">Correct Answer</label>
                       <div className="flex gap-4">
-                        <input type="radio" name="correct_option" id="correct_option_A" value="A" checked={Flag ? inputs.correct_option === 'A' : singleInputs.correct_option === 'A'} onChange={handleChange} />
+                        <input type="radio" name="correct_option" id="correct_option_A" value={Flag? inputs?.option_A : singleInputs?.option_A} checked={Flag ? inputs.correct_option === inputs?.option_A : singleInputs.correct_option === singleInputs?.option_A} onChange={handleChange} />
                         <label htmlFor="">A</label>
-                        <input type="radio" name="correct_option" id="correct_option_B" value="B" checked={Flag ? inputs.correct_option === 'B' : singleInputs.correct_option === 'B'} onChange={handleChange} />
+                        <input type="radio" name="correct_option" id="correct_option_B" value={Flag? inputs?.option_B : singleInputs?.option_B} checked={Flag ? inputs.correct_option === inputs?.option_B : singleInputs.correct_option === singleInputs?.option_B}onChange={handleChange} />
                         <label htmlFor="">B</label>
-                        <input type="radio" name="correct_option" id="correct_option_C" value="C" checked={Flag ? inputs.correct_option === 'C' : singleInputs.correct_option === 'C'} onChange={handleChange} />
+                        <input type="radio" name="correct_option" id="correct_option_C" value={Flag? inputs?.option_C : singleInputs?.option_C} checked={Flag ? inputs.correct_option === inputs?.option_C : singleInputs.correct_option === singleInputs?.option_C}onChange={handleChange} />
                         <label htmlFor="">C</label>
-                        <input type="radio" name="correct_option" id="correct_option_D" value="D" checked={Flag ? inputs.correct_option === 'D' : singleInputs.correct_option === 'D'} onChange={handleChange} />
+                        <input type="radio" name="correct_option" id="correct_option_D" value={Flag? inputs?.option_D : singleInputs?.option_D} checked={Flag ? inputs.correct_option === inputs?.option_D : singleInputs.correct_option === singleInputs?.option_D}onChange={handleChange} />
                         <label htmlFor="">D</label>
                       </div>
                     </div>

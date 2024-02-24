@@ -16,6 +16,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify'
 import ProtectedWrapper from './Utils/ProtectedRoute'
 import Company from './Pages/Company/Company'
+import AssignmentRecord from './Pages/Assessment/Assignment'
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
           <Route path='/Enrollment/List' element={<ProtectedWrapper><EnrollmentList /></ProtectedWrapper>} />
           <Route path='/Course/Enrollment' element={<ProtectedWrapper><EnrollmentCourse /></ProtectedWrapper>} />
           <Route path='/Assessment/List' element={<ProtectedWrapper><AssessmentList /></ProtectedWrapper>} />
+          <Route path='/Assessment/Record' element={<ProtectedWrapper><AssignmentRecord /></ProtectedWrapper>} />
           <Route path='/Certificate' element={<ProtectedWrapper><Certificate /></ProtectedWrapper>} />
           <Route path='/Company' element={<ProtectedWrapper><Company /></ProtectedWrapper>} />
 
