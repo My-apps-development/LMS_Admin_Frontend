@@ -5,10 +5,10 @@ import { useEffect, useRef, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import { axiosInstance } from "../../Utils/AxiosSetUp";
-import { successMessage } from "../../Utils/notificationManager";
+import { errorMessage, successMessage } from "../../Utils/notificationManager";
 
 import Loader from "../../Utils/Loader";
-import { MdKeyboardArrowDown } from "react-icons/md";
+import { MdDelete, MdKeyboardArrowDown } from "react-icons/md";
 import { IoIosArrowUp } from "react-icons/io";
 
 
@@ -31,12 +31,12 @@ const CourseList = () => {
 
     const [postVideo, setPostVideo] = useState(null)
 
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
 
     const [uploadProgress, setUploadProgress] = useState(0);
 
     const [singleCourse, setSingleCourse] = useState({
-        CoursName: "",
+        title: "",
         description: "",
         videos: "",
         inrolled_users: "",
@@ -50,7 +50,7 @@ const CourseList = () => {
     const [selectedSource, setSelectedSource] = useState("")
 
     const [CourseInputs, setCourseInputs] = useState({
-        CoursName: "",
+        title: "",
         description: "",
         videos: "",
         inrolled_users: "",
@@ -61,7 +61,33 @@ const CourseList = () => {
 
     const [accordianFlag, setAccordianFlag] = useState(false)
 
+    const [chapterFlag, setChapterFlag] = useState(false)
+
+    const [chapters, setChapters] = useState({
+        title: "",
+        description: "",
+        courseId: "",
+        categoryId: "",
+        video_link: "",
+        source: ""
+    })
+
+    const [singleChapter, setSingleChapter] = useState({
+        title: "",
+        description: "",
+        courseId: "",
+        categoryId: "",
+        video_link: "",
+        source: ""
+    })
+
     const fileInputRef = useRef()
+
+    const [chapterList, setChapterList] = useState([])
+
+    // const [AddChapter, setAddChapter] = useState(false)
+
+
 
 
 
@@ -100,6 +126,7 @@ const CourseList = () => {
 
 
     const handleOpenModal = () => {
+        setFlag(true)
         setIsOpen(true)
     }
 
@@ -123,25 +150,118 @@ const CourseList = () => {
             setSelectedSource(e.target.value)
         }
 
-        if(e.target.value == "Upload"){
+        if (e.target.value == "Upload") {
             fileInputRef.current.click()
         }
 
         flag ? setCourseInputs({ ...CourseInputs, [e.target.name]: e.target.value }) : setSingleCourse({ ...singleCourse, [e.target.name]: e.target.value })
     }
 
-    console.log(selectedSource);
+    // console.log(selectedSource);
 
     const handleChangeVedioFile = (e) => {
         const file = e.target.files[0]
         setPostVideo(file)
     }
 
+
+
+    const handleChangeChapterFile = (e) => {
+        e.preventDefault()
+
+        console.log(fileInputRef);
+
+        const file = e.target.files[0]
+        setPostVideo(file)
+
+    }
+
+    const handleChangeChapter = (e) => {
+        e.preventDefault()
+
+        if (e.target.name == "source") {
+            setSelectedSource(e.target.value)
+        }
+
+
+
+        if (e.target.value == "Upload") {
+            setChapters((prevChapters) => ({ ...prevChapters, video_link: "" }))
+            fileInputRef.current.click()
+        }
+
+        setChapters({ ...chapters, [e.target.name]: e.target.value })
+
+    }
+
+    const PostChapter = async (e) => {
+        e.preventDefault()
+
+        const postChapter = new FormData()
+        postChapter.append("title", chapters.title)
+        postChapter.append("courseId", chapters.courseId)
+        postChapter.append("categoryId", chapters.categoryId)
+        postChapter.append("source", chapters.source)
+        postChapter.append("description", chapters.description)
+        postChapter.append("video_link", postVideo)
+
+        try {
+            const response = await axiosInstance.post("/homepage/addChapters", postChapter, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                onUploadProgress: (progressEvent) => {
+                    const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    setUploadProgress(percentCompleted);
+                }
+            })
+            const data = await response.data
+            console.log(data);
+            successMessage(data.message)
+            FetchChapters()
+            setIsSubModalOpen(false)
+        } catch (error) {
+            setLoader(false)
+            errorMessage(error?.response?.data?.message)
+            console.log("Error Posting Chapters", error.message)
+        }
+    }
+
+    const UpdateChapters = async (e) => {
+        e.preventDefault()
+
+        const updateChapter = new FormData()
+        updateChapter.append("title", singleChapter.title)
+        updateChapter.append("courseId", singleChapter.courseId)
+        updateChapter.append("categoryId", singleChapter.categoryId)
+        updateChapter.append("source", singleChapter.source)
+        updateChapter.append("description", singleChapter.description)
+        updateChapter.append("video_link", postVideo)
+        console.log(postVideo);
+        console.log(updateChapter);
+
+        try {
+            const response = await axiosInstance.patch("https://myappsdevelopment.co.in/homepage/updateChapters?chapterId=65c5c1a9613d6a4e283b4dff", updateChapter, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                onUploadProgress: (progressEvent) => {
+                    const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    setUploadProgress(percentCompleted);
+                }
+            })
+            const data = await response.data
+            console.log(data);
+        } catch (error) {
+            console.log("Error Updating Chapter By Id", error.message);
+        }
+    }
+
     const PostCourse = async (e) => {
         e.preventDefault()
 
         const formData = new FormData()
-        formData.append("CoursName", CourseInputs.CoursName)
+        formData.append("title", CourseInputs.title)
         formData.append("description", CourseInputs.description)
         formData.append("inrolled_users", CourseInputs.inrolled_users)
         formData.append("source", CourseInputs.source)
@@ -170,35 +290,25 @@ const CourseList = () => {
             setIsOpen(false)
             setLoader(false)
         } catch (error) {
+            errorMessage(error.response.data.message)
+            setLoader(false)
             console.log("Error Creating course", error.message);
         }
 
     }
 
 
-    const ClearInputs = () => {
-        try {
-            CourseInputs((prevState) => ({
-                prevState,
-                CoursName: "",
-                description: "",
-                videos: "",
-                inrolled_users: "",
-                source: "",
-                status: "",
-                categoryId: ""
-            }))
-        } catch (error) {
-            console.log("error clearing input fields", error.message);
-        }
-    }
+
 
     const fetchCategories = async () => {
         try {
+            setLoader(true)
             const response = await axiosInstance.get("/category/fetch")
             const data = await response.data
             setCategoryList(data.categories);
+            setLoader(false)
         } catch (error) {
+            setLoader(false)
             console.log("Error fetching categories data", error.message);
         }
     }
@@ -213,9 +323,10 @@ const CourseList = () => {
             const response = await axiosInstance.get("/homepage/courses")
             const data = await response.data
             // console.log(data);
-            setCoursesList(data.Courses);
+            setCoursesList(data.coursewithcategory);
             setLoader(false)
         } catch (error) {
+            setLoader(false)
             console.log("error fetching data", error.message);
         }
     }
@@ -223,19 +334,16 @@ const CourseList = () => {
 
 
 
-    // const fetchCourseById = async () => {
-    //     try {
-    //         const response = await axiosInstance.get(``)
-    //     }
-    // }
-
     const FetchChapters = async () => {
 
         try {
+            setLoader(true)
             const response = await axiosInstance.get("/homepage/fetchChapters")
             const data = await response.data
-            console.log(data)
+            setChapterList(data.chapter)
+            setLoader(false)
         } catch (error) {
+            setLoader(false)
             console.log("Error Fetching Chapters", error.message);
         }
     }
@@ -249,29 +357,41 @@ const CourseList = () => {
             fetchCourses()
             setLoader(false)
         } catch (error) {
+            setLoader(false)
             console.log("Deleting data Failed", error.message);
         }
     }
 
-    const FetchChapterById = async () => {
 
-        // const data1 = []
-
-        for (let courseId in courseList) {
-
-            console.log(courseId);
-
-        }
-
-    }
 
     const UpdateCourse = async (e) => {
         e.preventDefault()
+
+        const UpdatedFormData = new FormData()
+
+        UpdatedFormData.append("title", singleCourse.title)
+        UpdatedFormData.append("description", singleCourse.description)
+        UpdatedFormData.append("inrolled_users", singleCourse.inrolled_users)
+        UpdatedFormData.append("source", singleCourse.source)
+        UpdatedFormData.append("status", singleCourse.status)
+        UpdatedFormData.append("categoryId", singleCourse.categoryId)
+        UpdatedFormData.append("videos", singleCourse.videos)
+        UpdatedFormData.append("video_link", postVideo)
         try {
-            const response = await axiosInstance.patch("/homepage/updateCourse", singleCourse)
+            setLoader(true)
+            const response = await axiosInstance.patch(`/homepage/updateCourse?courseId=${singleCourse._id}`, UpdatedFormData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            })
             const data = await response.data
+            successMessage(data?.message)
+            fetchCourses()
+            setIsOpen(false)
             console.log(data);
+            setLoader(false)
         } catch (error) {
+            setLoader(false)
             console.log("error updating code", error.message);
         }
     }
@@ -280,15 +400,82 @@ const CourseList = () => {
         setFlag(false)
         console.log(flag);
 
-        const filterCourse = courseList.filter((item) => item._id == _id)
-        setSingleCourse(filterCourse);
 
-        const response = await axiosInstance.get(`https://myappsdevelopment.co.in/homepage/singlecourse?courseid=${_id} `)
-        const data = await response.data
-        console.log(data);
-        setSingleCourse(data.Courses);
+
+        try {
+            setLoader(true)
+            const response = await axiosInstance.get(`https://myappsdevelopment.co.in/homepage/singlecourse?courseid=${_id} `)
+            const data = await response.data
+            console.log(data);
+            setSingleCourse(data.Courses);
+            setLoader(false)
+        } catch (error) {
+            setLoader(false)
+            console.log("Error Fetching Chapters By Id", error.message)
+        }
 
     }
+
+    const FetchChapterById = async (_id) => {
+
+        try {
+            const response = await axiosInstance.get(`/homepage/singlechapter?chapterid=${_id}`)
+            const data = await response.data
+            setSingleChapter(data.chapters);
+        } catch (error) {
+            setLoader(false)
+            console.log("Error Fetching Chapters By Id", error.message);
+        }
+    }
+
+    // const UpdateChapterById = async (e,_id) => {
+    //     e.preventDefault()
+    //     console.log(_id);
+    // try{
+    //     const response = await axiosInstance.patch(`/homepage/updateChapters?chapterId=${_id}`)
+    //     const data = await response.data
+    //     console.log(data);
+    // } catch(error){
+    //     console.log("Error Updating Chapter by Id", error.message);
+    // }
+    // }
+
+    const DeleteChapterById = async (_id) => {
+        console.log(_id);
+        try {
+            setLoader(true)
+            const response = await axiosInstance.delete("/homepage/deleteChapters", { data: { chapterId: _id } })
+            const data = await response.data
+            successMessage(data.message)
+            FetchChapters()
+            setLoader(false)
+        } catch (error) {
+            setLoader(false)
+            console.log("Error Deleting chapter by Id", error.message);
+        }
+    }
+
+    const ClearInputs = () => {
+        try {
+            CourseInputs((prevState) => ({
+                prevState,
+                title: "",
+                description: "",
+                videos: "",
+                inrolled_users: "",
+                source: "",
+                status: "",
+                categoryId: ""
+            }))
+        } catch (error) {
+            setLoader(false)
+            console.log("error clearing input fields", error.message);
+        }
+    }
+
+
+    // console.log(chapterList);
+    // console.log(courseList);
 
     useEffect(() => {
         fetchCourses()
@@ -298,14 +485,17 @@ const CourseList = () => {
     }, [])
 
 
-    // console.log(courseList);
+    console.log(courseList);
 
     return (
 
-        <div className="w-full">
+        <div className="w-full ">
 
             <AdminDashboard />
-            <div className="ml-52 mt-10 w-auto p-3 flex flex-col font-semibold text-gray-600">
+            <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300">
+                {
+                    !courseList.length ? <div className="text-2xl"> Oops...! No Courses Found </div> : null
+                }
                 {
                     loader ? <Loader /> : <div>
                         <div>
@@ -315,7 +505,7 @@ const CourseList = () => {
                                 </div>
                                 <div >
                                     <div className="flex justify-between items-center">
-                                        <p>Total 5 video courses are available</p>
+                                        <p>Total {courseList?.length} video courses are available</p>
                                         <button className="p-2 border-2 border-[#B32073] bg-[#B32073] flex justify-center items-center gap-3  text-white hover:bg-pink-800" onClick={handleOpenModal}><FaPlus />Add Course</button>
                                     </div>
                                 </div>
@@ -325,40 +515,62 @@ const CourseList = () => {
 
                         <div className="grid grid-cols-3 gap-5 mt-5 p-2 w-[100%] max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1">
                             {
-                                courseList.map((item, index) => {
+                                courseList?.map((item, index) => {
                                     return (
-                                        <div className="w-[100%] h-50 border-2 shadow-xl p-2 rounded-lg hover:scale-95 duration-300" key={index} >
+                                        <div className="w-[100%] h-50 border-2 shadow-xl p-2 rounded-lg hover:scale-95 duration-300 bg-white" key={index} >
                                             <div className="flex flex-col gap-2 ">
-                                                <h1 className="text-xl text-gray-600 capitalize">{item.title}</h1>
+                                                <h1 className="text-xl text-gray-600 capitalize">{item?.course?.title}</h1>
 
                                                 <div className="flex justify-between items-center gap-2 text-xs">
-                                                    <p className="text-gray-400">Category: <span className="text-blue-500">{item.title}</span></p>
-                                                    <p className="text-gray-400">Vedios: <span className="text-blue-500">{item.videoCount}</span></p>
+                                                    <p className="text-gray-400">Category: <span className="text-blue-500">{item?.category?.categories}</span></p>
+                                                    <p className="text-gray-400">Vedios: <span className="text-blue-500">{item?.course?.videoCount}</span></p>
                                                 </div>
                                                 <div className="flex justify-between items-center py-2 text-xs">
-                                                    <p className="text-gray-400">status: <span className="text-green-600">{item.status}</span></p>
-                                                    <p className="text-gray-400">Enrolled User: <span className="text-blue-500">{item.inrolled_users}</span></p>
+                                                    <p className="text-gray-400">status: <span className="text-green-600">{item?.course?.status}</span></p>
+                                                    <p className="text-gray-400">Enrolled User: <span className="text-blue-500">{item?.course?.inrolled_users}</span></p>
                                                 </div>
                                             </div>
                                             <Divider />
-                                            <div className="flex justify-between items-center py-2">
-                                                <div>
+                                            <div className="flex justify-between flex-col items-center py-2 w-full">
+                                                {
+                                                    chapterList?.filter(it => it.courseId === item.course?._id)?.map((i, index) => {
+
+                                                        return (
+                                                            <div className="flex justify-between items-center gap-2 border-b-2 w-full cursor-pointer" key={index}>
+                                                                <div className="flex justify-start items-start flex-col">
+                                                                    <p>{i?.title}</p>
+                                                                    <p className="text-gray-400 text-xs">Source: {i?.source}</p>
+                                                                </div>
+                                                                <div className="flex justify-center items-center gap-5 w-28 h-14 font-2xl font-bold">
+                                                                    <p className="font-2xl p-2" onClick={() => {
+                                                                        FetchChapterById(i?._id)
+                                                                        setChapterFlag(false)
+                                                                        handleOpenSubModal(true)
+                                                                    }}><CiEdit /></p>
+                                                                    <p className="font-2xl p-2" onClick={() => DeleteChapterById(i?._id)}><MdDelete /></p>
+                                                                </div>
+
+                                                            </div>
+                                                        )
+                                                    })
+                                                }
+                                                {/* <div>
                                                     <h1 className="text-gray-600 text-sm">{item.description}</h1>
                                                     <p className="text-gray-400 text-xs">Source: {item.source}</p>
                                                 </div>
                                                 <div className="flex gap-2 text-gray-400 text-2xl">
                                                     <p onClick={handleOpenSubModal} className="border-2 border-gray-400 rounded-lg p-1"><CiEdit /></p>
                                                     <p className="border-2 border-gray-400 rounded-lg p-1"><RiDeleteBin5Fill /></p>
-                                                </div>
+                                                </div> */}
                                             </div>
                                             <Divider />
                                             <div className="flex justify-between items-center text-2xl py-2">
                                                 <button className="text-blue-400 border-2 p-1 rounded-lg border-blue-400 font-extrabold" onClick={() => {
                                                     setIsOpen(true)
                                                     setIsFlag(false)
-                                                    fetchCourseById(item?._id)
+                                                    fetchCourseById(item?.course?._id)
                                                 }}><CiEdit /></button>
-                                                <button className="text-red-600 font-extrabold border-red-600 border-2 p-1 rounded" onClick={() => handleDeleteCourse(item?._id)}><RiDeleteBin5Fill /></button>
+                                                <button className="text-red-600 font-extrabold border-red-600 border-2 p-1 rounded" onClick={() => handleDeleteCourse(item?.course?._id)}><RiDeleteBin5Fill /></button>
                                             </div>
                                         </div>
                                     )
@@ -386,7 +598,7 @@ const CourseList = () => {
                                 <div className="grid grid-cols-2">
                                     <div className="flex flex-col p-2 gap-3">
                                         <label htmlFor="">Course Name</label>
-                                        <input type="text" name="CoursName" id="CoursName" onChange={handleChange} value={isFlag ? CourseInputs.CoursName : singleCourse.title} className="p-3 border-2 border-gray-600 rounded-lg" />
+                                        <input type="text" name="title" id="title" onChange={handleChange} value={isFlag ? CourseInputs.title : singleCourse.title} className="p-3 border-2 border-gray-600 rounded-lg" />
                                     </div>
 
                                     <div className="flex flex-col p-2 gap-3">
@@ -493,10 +705,10 @@ const CourseList = () => {
 
 
 
-                                
+
                                 <div className="flex flex-col gap-2">
 
-{/* 
+                                    {/* 
                                     <div className="flex flex-col p-2 gap-3">
                                         <label htmlFor="">Video/Chapters</label>
                                         <input type="file" name="Upload_Category" id="Upload_Category" onChange={handleChangeVedioFile} className="p-3 border-2 border-gray-600 rounded-lg" />
@@ -561,7 +773,10 @@ const CourseList = () => {
                                     </div> */}
 
                                     <div className="flex justify-start items-center py-4 px-2">
-                                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-36"><FaPlus /> Add Chapters</button>
+                                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-36" onClick={() => {
+                                            setChapterFlag(true)
+                                            handleOpenSubModal(true)
+                                        }}><FaPlus /> Add Chapters</button>
                                     </div>
 
 
@@ -609,77 +824,147 @@ const CourseList = () => {
                     <Box sx={styleSubModal}>
                         <div className="text-xs overflow-y-visible font-semibold text-gray-600">
                             <div className="flex justify-between items-center w-full text-black">
-                                <h1 className="text-2xl">Edit / Video Chapter</h1>
+                                <h1 className="text-2xl">{chapterFlag ? "Add Chapter" : "Update Chapter"}</h1>
                                 <button className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-20" onClick={handleCloseSubModal}>Close</button>
                             </div>
-                            <div className="mt-10">
-                                <div className="grid grid-cols-2">
-                                    <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">First Name</label>
-                                        <input type="text" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
-                                    </div>
+                            <form action="" onSubmit={chapterFlag ? PostChapter : UpdateChapters}>
+                                <div className="mt-10">
+                                    <div className="grid grid-cols-2">
+                                        <div className="flex flex-col p-2 gap-3">
+                                            <label htmlFor="">Parent Course Name</label>
+                                            <select className="p-3 border-2 border-gray-600 rounded-lg" name="courseId" onChange={handleChangeChapter} value={chapterFlag ? chapters?.courseId : singleChapter?.courseId}>
+                                                <option value="">Choose Option</option>
+                                                {
+                                                    courseList?.map((item) => {
+                                                        return (
+                                                            <option value={item?.course?._id} key={item?.course?._id}>{item?.course?.title}</option>
+                                                        )
+                                                    })
+                                                }
+                                            </select>
+                                            {/* <input type="text" name="courseId" id="courseId" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter}/> */}
+                                        </div>
 
-                                    <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">First Name</label>
-                                        <input type="text" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
+                                        <div className="flex flex-col p-2 gap-3">
+                                            <label htmlFor="">Category</label>
+                                            <select className="p-3 border-2 border-gray-600 rounded-lg" name="categoryId" onChange={handleChangeChapter} value={chapterFlag ? chapters?.categoryId : singleChapter?.categoryId}>
+                                                <option value="">Choose Option</option>
+                                                {
+                                                    categoryList?.map((item) => {
+                                                        return (
+                                                            <option value={item?._id} key={item?._id}>{item?.categories}</option>
+                                                        )
+                                                    })
+                                                }
+                                            </select>
+                                            {/* <input type="text" name="categoryId" id="categoryId" className="p-3 border-2 border-gray-600 rounded-lg"  onChange={handleChangeChapter}/> */}
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <div className="flex flex-col p-2 gap-3">
+                                            <label htmlFor="">Vedio Title</label>
+                                            <input type="text" className=" p-3 border-2 border-gray-600 rounded-lg" name="title" id="title" onChange={handleChangeChapter} value={chapterFlag ? chapters?.title : singleChapter?.title} />
+                                        </div>
+                                        <div className="flex flex-col p-2 gap-3">
+                                            <label htmlFor="">Video/Chapters</label>
+                                            <input type="file" name="video_link" id="video_link" className="hidden p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapterFile} ref={fileInputRef} />
+                                        </div>
+
+                                        {uploadProgress > 0 && <p>Uploading: {uploadProgress}%</p>}
+
+                                        <div className="flex flex-col p-2 gap-3">
+                                            <div className="flex justify-start items-start">
+                                                <h1>Source</h1>
+                                            </div>
+                                            <div className="flex p-2 gap-3">
+                                                <div className="flex justify-center items-center p-2 gap-3">
+                                                    <input type="radio" name="source" id="source" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value="Youtube" checked={chapterFlag ? chapters?.source == "Youtube" : singleChapter?.source == "Youtube"} />
+                                                    <label htmlFor="">Youtube</label>
+
+                                                </div>
+
+                                                <div className="flex justify-center items-center p-2 gap-3">
+                                                    <input type="radio" name="source" id="source" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value="Vimeo" checked={chapterFlag ? chapters?.source == "Vimeo" : singleChapter?.source == "vimeo"} />
+                                                    <label htmlFor="">Vimeo</label>
+
+                                                </div>
+
+                                                <div className="flex justify-center items-center p-2 gap-3">
+                                                    <input type="radio" name="source" id="source" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value="Drop Box" checked={chapterFlag ? chapters.source == "Dropbox" : singleChapter?.source == "Dropbox"} />
+                                                    <label htmlFor="">Drop Box</label>
+
+                                                </div>
+
+                                                <div className="flex justify-center items-center p-2 gap-3">
+                                                    <input type="radio" name="source" id="source" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value="embed" checked={chapters.source == "embed"} />
+                                                    <label htmlFor="">embed</label>
+
+                                                </div>
+
+                                                <div className="flex justify-center items-center p-2 gap-3">
+                                                    <input type="radio" name="source" id="source" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value="Upload" checked={chapters.source == "Upload"} />
+                                                    <label htmlFor="">Upload</label>
+
+                                                </div>
+                                            </div>
+
+
+
+                                        </div>
+
+                                        <div className="flex flex-col p-2 gap-3">
+                                            <label htmlFor="">Link</label>
+                                            {selectedSource !== "Upload" && (
+                                                <input
+                                                    type="text"
+                                                    name="video_link"
+                                                    id="video_link"
+                                                    onChange={handleChangeChapter}
+                                                    className="p-3 border-2 border-gray-600 rounded-lg"
+                                                />
+                                            )}
+                                        </div>
+
+                                        <div className="flex flex-col p-2 gap-3">
+                                            <label htmlFor="">Description</label>
+                                            <textarea name="description" id="" cols="10" rows="5" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value={chapterFlag ? chapters?.description : singleChapter?.description}></textarea>
+                                        </div>
+
+                                        <div className="flex flex-col justify-center items-start p-2 gap-3">
+
+                                            <div>
+                                                <label htmlFor=""> Status </label>
+                                            </div>
+                                            <div className="flex">
+                                                <div className="flex justify-center items-center p-2 gap-3">
+                                                    <input type="radio" name="status" id="status" value={chapterFlag ? chapters?.status : singleChapter?.status} onChange={handleChangeChapter} className="p-3 border-2 border-gray-600 rounded-lg" />
+                                                    <label>Active</label>
+
+                                                </div>
+
+                                                <div className="flex justify-center items-center p-2 gap-3">
+                                                    <input type="radio" name="status" id="status" value={chapterFlag ? chapters?.status : singleChapter?.status} onChange={handleChangeChapter} className="p-3 border-2 border-gray-600 rounded-lg" />
+                                                    <label htmlFor="">Pending</label>
+
+                                                </div>
+
+                                                <div className="flex justify-center items-center p-2 gap-3">
+                                                    <input type="radio" name="status" id="status" value={chapterFlag ? chapters?.status : singleChapter?.status} onChange={handleChangeChapter} className="p-3 border-2 border-gray-600 rounded-lg" />
+                                                    <label htmlFor="">Inactive</label>
+
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+                                        <div className="w-full flex justify-center items-center gap-5 p-2">
+                                            <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button>
+                                            <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg" type="submit">{chapterFlag ? "Add Chapter" : "Update Chapter"}</button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="flex flex-col gap-2">
-                                    <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">Video/Chapters</label>
-                                        <input type="text" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
-                                    </div>
-
-                                    <div className="flex p-2 gap-3">
-
-                                        <div className="flex justify-center items-center p-2 gap-3">
-                                            <input type="radio" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
-                                            <label htmlFor="">Youtube</label>
-
-                                        </div>
-
-                                        <div className="flex justify-center items-center p-2 gap-3">
-                                            <input type="radio" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
-                                            <label htmlFor="">Vimeo</label>
-
-                                        </div>
-
-                                        <div className="flex justify-center items-center p-2 gap-3">
-                                            <input type="radio" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
-                                            <label htmlFor="">Drop Box</label>
-
-                                        </div>
-
-                                        <div className="flex justify-center items-center p-2 gap-3">
-                                            <input type="radio" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
-                                            <label htmlFor="">embed</label>
-
-                                        </div>
-
-                                        <div className="flex justify-center items-center p-2 gap-3">
-                                            <input type="radio" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
-                                            <label htmlFor="">Upload</label>
-
-                                        </div>
-
-                                    </div>
-
-                                    <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">Link</label>
-                                        <input type="text" name="firstname" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" />
-                                    </div>
-
-                                    <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">Description</label>
-                                        <textarea name="" id="" cols="10" rows="5" className="p-3 border-2 border-gray-600 rounded-lg" ></textarea>
-                                    </div>
-
-                                    <div className="w-full flex justify-center items-center gap-5 p-2">
-                                        <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button>
-                                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg">Update Video</button>
-                                    </div>
-                                </div>
-                            </div>
+                            </form>
                         </div>
                     </Box>
                 </Modal>

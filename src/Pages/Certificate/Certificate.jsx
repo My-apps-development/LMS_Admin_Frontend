@@ -6,6 +6,7 @@ import { useState } from "react"
 const Certificate = () => {
 
     const [isOpen, setIsOpen] = useState(false)
+    const [courseList, setCourseList] = useState([])
 
     const style = {
         position: 'absolute',
@@ -25,7 +26,7 @@ const Certificate = () => {
     return (
         <div>
             <AdminDashboard />
-            <div className="ml-56 mt-16 w-auto p-3 font-semibold text-gray-600">
+            <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300 h-screen">
                 <div className="w-full justify-between items-center flex p-2">
                     <h1 className="text-2xl">Certificate</h1>
                     <button type="button" className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-40" onClick={() => setIsOpen(true)}>Add Certificate</button>
@@ -36,7 +37,7 @@ const Certificate = () => {
                     <Box sx={style}>
                         <div className="text-xs overflow-y-visible font-semibold text-gray-600">
                             <div className="flex justify-between items-center w-full text-black">
-                                <h1 className="text-2xl">Add Course</h1>
+                                <h1 className="text-2xl">Add Certificate</h1>
                                 <button className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-20" onClick={()=>setIsOpen(false)}>Close</button>
                             </div>
                             <div className="flex flex-col mt-10">

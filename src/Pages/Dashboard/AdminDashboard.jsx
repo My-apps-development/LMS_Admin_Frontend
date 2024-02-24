@@ -5,10 +5,10 @@ import SideMenu from "./SideMenu"
 const AdminDashboard = () => {
     return (
         <div className="flex">
-            <div className="w-[20%]">
+            <div className="w-[18%]">
                 <SideMenu />
             </div>
-            <div className="w-[85%] ">
+            <div className="w-full shadow-xl">
                 <Header />
                 
             </div>

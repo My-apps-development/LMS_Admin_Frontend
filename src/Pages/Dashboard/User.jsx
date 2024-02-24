@@ -30,7 +30,7 @@ const User = () => {
     role: "",
     aadhar_num: "",
     course: "",
-  
+    status: ""
 
   })
 
@@ -43,7 +43,8 @@ const User = () => {
     license_num: "",
     role: "",
     aadhar_num: "",
-    course: ""
+    course: "",
+    status: ""
 
   })
 
@@ -66,11 +67,11 @@ const User = () => {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 850,
-    height:600,
+    height: 600,
     bgcolor: 'background.paper',
     border: '2px solid transparent',
     boxShadow: 24,
-    overflowY:'scroll',
+    overflowY: 'scroll',
     p: 4,
   };
 
@@ -119,7 +120,7 @@ const User = () => {
     //   setOpen(false)
     // }
 
-    
+
   }
 
 
@@ -201,10 +202,11 @@ const User = () => {
     fD.append("upload_license", image)
     fD.append("email", userInputs.email)
     fD.append("course", userInputs.course)
+    fD.append("status", userInputs.status)
 
 
     try {
-      const response = await axiosInstance.post("/adduser", fD)
+      const response = await axiosInstance.post("/adduser", fD, { headers: { "Content-Type": "multipart/form-data" } })
       const data = await response.data
       successMessage(data.message);
       FetchUsers()
@@ -213,7 +215,7 @@ const User = () => {
 
 
     } catch (error) {
-
+      errorMessage(error.response.data.message)
       console.log("Error Posting data", error.message);
     }
 
@@ -222,6 +224,38 @@ const User = () => {
 
   const handleUpdateUSer = async (e) => {
     e.preventDefault()
+
+    if (!singleInputs.firstName) {
+      errorMessage("Firstname Required")
+      return
+    }
+
+    if (!singleInputs.lastName) {
+      errorMessage("Lastname Required")
+      return
+    }
+
+    if (!singleInputs.mobile) {
+      errorMessage("Mobile Number Required")
+      return
+    }
+
+    if (!singleInputs.email) {
+      errorMessage("Email Required")
+      return
+    }
+
+    if (!singleInputs.license_num) {
+      errorMessage("License Required")
+    }
+
+    if (!singleInputs.role) {
+      errorMessage("Role Required")
+    }
+
+    if (!singleInputs.aadhar_num) {
+      errorMessage("Aadhar Required")
+    }
 
     const UpdatedFormData = new FormData()
     UpdatedFormData.append("firstName", singleInputs.firstName)
@@ -234,6 +268,7 @@ const User = () => {
     UpdatedFormData.append("upload_license", image)
     UpdatedFormData.append("email", singleInputs.email)
     UpdatedFormData.append("course", singleInputs.course)
+    UpdatedFormData.append("status", singleInputs.status)
 
 
     try {
@@ -241,6 +276,7 @@ const User = () => {
       const data = await response.data
       successMessage(data.message);
       FetchUsers()
+      setOpen(false)
     } catch (error) {
       console.log("error updating data", error.message);
     }
@@ -280,9 +316,11 @@ const User = () => {
 
   const FetchCourse = async () => {
     try {
+      setLoader(true)
       const response = await axiosInstance.get("/homepage/courses")
       const data = await response.data
-      setCourseList(data.Courses);
+      setCourseList(data?.coursewithcategory);
+      setLoader(false)
     } catch (error) {
       console.log("error fetching course", error.message);
     }
@@ -321,6 +359,8 @@ const User = () => {
     }
   }
 
+  console.log(courseList);
+
 
 
   console.log(singleInputs);
@@ -334,16 +374,17 @@ const User = () => {
   return (
     <div>
       <AdminDashboard />
-      <div className="ml-56 mt-12 w-auto p-3 font-semibold text-gray-600">
-        <div className="p-2 ">
+      <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300">
+        <div className="p-2 flex justify-start items-start gap-2 flex-col">
           <h1 className="text-2xl">Users</h1>
+          <p>Total {userList?.length} Users in Table </p>
         </div>
         <div className="flex justify-between items-center p-2">
           <h1>User List</h1>
           <button className="p-2 border-2 border-[#B32073] bg-[#B32073] text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-32" onClick={handleOpen}><FaPlus />Add</button>
         </div>
         <div>
-          {loader ? <Loader /> : <div className="w-full mt-5">
+          {loader ? <Loader /> : <div className="w-full mt-5 bg-white rounded-lg">
             <table className="w-[100%]">
               <thead>
                 <tr className=" border-b">
@@ -357,11 +398,12 @@ const User = () => {
                     <h1 className="flex items-center justify-center">Registered Role</h1>
                   </th>
                   <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                    <h1 className="flex items-center justify-center">Mobile</h1>
-                  </th>
-                  <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
                     <h1 className="flex items-center justify-center">Email</h1>
                   </th>
+                  <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                    <h1 className="flex items-center justify-center">Mobile</h1>
+                  </th>
+
                   <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
                     <h1 className="flex items-center justify-center">Aadhaar</h1>
                   </th>
@@ -380,12 +422,13 @@ const User = () => {
                     return (
                       <tr className="bg-gray-100 text-center border-b text-sm text-gray-600" key={index}>
                         <td className="border-r">  <input type="checkbox" /></td>
-                        <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item.firstName} {item.lastName}</td>
-                        <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item.role}</td>
-                        <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item.mob_number}</td>
-                        <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item.email}</td>
-                        <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item.aadhar_num}</td>
-                        <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">status</td>
+                        <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.firstName} {item?.lastName}</td>
+                        <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.role}</td>
+                        <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.email}</td>
+                        <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.mob_number}</td>
+
+                        <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.aadhar_num}</td>
+                        <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.status}</td>
                         <td className="p-2 border-r cursor-pointer font-semibold text-gray-500 flex gap-2 text-2xl justify-around ">
                           <p onClick={() => {
 
@@ -422,7 +465,7 @@ const User = () => {
             </table>
           </div>}
 
-          
+
         </div>
         <div>
           <Modal
@@ -489,9 +532,9 @@ const User = () => {
                     <select name="course" id="course" className="p-3 border-2 border-gray-600 rounded-lg" value={flag ? userInputs?.course : singleInputs?.course} onChange={handleChange}>
                       <option value="Driver">Choose Options</option>
                       {
-                        courseList.map((item, index) => {
+                        courseList?.map((item, index) => {
                           return (
-                            <option key={index} value={item?._id}>{item?.title}</option>
+                            <option key={index} value={item?.course?._id}>{item?.course?.title}</option>
                           )
                         })
                       }
@@ -501,15 +544,15 @@ const User = () => {
                   <div className="flex flex-col gap-3 p-2">
                     <label htmlFor="">Status</label>
                     <div className=" flex gap-5">
-                      <input type="radio" name="status" id="status" />
+                      <input type="radio" name="status" id="status" onChange={handleChange} value="active" checked={flag ? userInputs?.status == "active" : singleInputs?.status == "active"} />
                       <p>Active</p>
 
-                      <input type="radio" name="status" id="status" />
+                      <input type="radio" name="status" id="status" onChange={handleChange} value="pending" checked={flag ? userInputs?.status == "pending" : singleInputs?.status == "pending"} />
                       <p>Pending</p>
 
-                      <input type="radio" name="status" id="status" />
+                      <input type="radio" name="status" id="status" onChange={handleChange} value="Inactive" checked={flag ? userInputs?.status == "Inactive" : singleInputs?.status == "Inactive"} />
                       <p>InActive</p>
-                      
+
                     </div>
                   </div>
 

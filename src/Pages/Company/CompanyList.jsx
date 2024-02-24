@@ -23,9 +23,9 @@ const CompanyList = () => {
         fetchCompanyList()
     }, [])
     return (
-        <div className="ml-56 mt-16 w-auto p-3 font-semibold text-gray-600" >
+        <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300 h-dvh">
             {
-                loader ? <Loader /> : <div className="w-full">
+                loader ? <Loader /> : <div className="w-full bg-white rounded-lg">
                     <table className="w-full">
                         <thead>
                             <tr className=" border-b">

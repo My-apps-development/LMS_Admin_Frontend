@@ -20,7 +20,7 @@ const EnrollmentList = () => {
     const [inputs, setInputs] = useState({ role: "", courses_to_enroll: "" })
     const [loader, setLoader] = useState(false)
     const [Flag, setFlag] = useState(true)
-    const [singleInputs, setSingleInputs] = useState({ role: "", courses_to_enroll: "" })
+    const [singleInputs, setSingleInputs] = useState({ role: "", courses_to_enroll: "", _id: "" })
 
     const [courseList, setCourseList] = useState([])
     const [userList, setUserList] = useState([])
@@ -160,16 +160,29 @@ const EnrollmentList = () => {
     const UpdateEnrollment = async (e) => {
         e.preventDefault()
         console.log(singleInputs.enrollmentId);
+        console.log(`/enrollment/update?enrollmentId=${singleInputs._id}`);
 
+        if(!singleInputs.role){
+            errorMessage("User role is required")
+            return
+        }
+
+        if(!singleInputs.courses_to_enroll){
+            errorMessage("Course to enroll is required")
+            return
+        }
+        
         const formData = new FormData()
-        formData.append("enrollmentId", singleInputs._id)
+        // formData.append("enrollmentId", singleInputs._id)
         formData.append("role", singleInputs.role)
         formData.append("courses_to_enroll", singleInputs.courses_to_enroll)
 
 
         try {
             console.log(singleInputs);
-            const response = await axiosInstance.patch("https://myappsdevelopment.co.in/enrollment/update", formData)
+            const response = await axiosInstance.patch(`/enrollment/update?enrollmentId=${singleInputs._id}`, formData, {headers: {
+                'Content-Type': 'application/json',
+            }})
             const data = await response.data
             successMessage(data.message)
             FetchEnrollment()
@@ -223,7 +236,7 @@ const EnrollmentList = () => {
     return (
         <div className="w-full">
             <AdminDashboard />
-            <div className="ml-56 mt-16 w-auto p-3 font-semibold text-gray-600">
+            <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300">
                 <div className="p-2 ">
                     <h1 className="text-2xl">Enrollment</h1>
                 </div>
@@ -236,8 +249,8 @@ const EnrollmentList = () => {
                 </div>
                 <div>
                     {
-                        loader ? <Loader /> : <div className="w-full mt-5">
-                            <table className="w-[100%]">
+                        loader ? <Loader /> : <div className="w-full mt-5 bg-white rounded-lg">
+                            <table className="w-[100%] ">
                                 <thead>
                                     <tr className=" border-b">
                                         <th className="border-r">
@@ -339,7 +352,7 @@ const EnrollmentList = () => {
                                 <select name="courses_to_enroll" id="" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={Flag ? inputs?.courses_to_enroll : singleInputs?.courses_to_enroll}>
                                     <option>choose option</option>
                                     {
-                                        courseList.map((item)=>{
+                                        courseList?.map((item)=>{
                                             return (
                                                 <option key={item?._id} value={item?.title}>{item?.title}</option>
                                             )
