@@ -8,8 +8,8 @@ import { axiosInstance } from "../../Utils/AxiosSetUp";
 import { errorMessage, successMessage } from "../../Utils/notificationManager";
 
 import Loader from "../../Utils/Loader";
-import { MdDelete, MdKeyboardArrowDown } from "react-icons/md";
-import { IoIosArrowUp } from "react-icons/io";
+import { MdDelete } from "react-icons/md";
+// import { IoIosArrowUp } from "react-icons/io";
 
 
 const CourseList = () => {
@@ -59,7 +59,7 @@ const CourseList = () => {
         categoryId: ""
     })
 
-    const [accordianFlag, setAccordianFlag] = useState(false)
+    // const [accordianFlag, setAccordianFlag] = useState(false)
 
     const [chapterFlag, setChapterFlag] = useState(false)
 
@@ -84,6 +84,10 @@ const CourseList = () => {
     const fileInputRef = useRef()
 
     const [chapterList, setChapterList] = useState([])
+
+    const [language, setLanguage] = useState([])
+
+    const [roles, setRoles] = useState([])
 
     // const [AddChapter, setAddChapter] = useState(false)
 
@@ -126,7 +130,7 @@ const CourseList = () => {
 
 
     const handleOpenModal = () => {
-        setFlag(true)
+        setIsFlag(true)
         setIsOpen(true)
     }
 
@@ -190,11 +194,14 @@ const CourseList = () => {
             fileInputRef.current.click()
         }
 
-        setChapters({ ...chapters, [e.target.name]: e.target.value })
+        chapterFlag ? setChapters({ ...chapters, [e.target.name]: e.target.value }) : setSingleChapter({ ...singleChapter, [e.target.name]: e.target.value })
 
     }
 
     const PostChapter = async (e) => {
+
+        console.log(flag);
+
         e.preventDefault()
 
         const postChapter = new FormData()
@@ -230,6 +237,8 @@ const CourseList = () => {
     const UpdateChapters = async (e) => {
         e.preventDefault()
 
+        console.log(flag);
+
         const updateChapter = new FormData()
         updateChapter.append("title", singleChapter.title)
         updateChapter.append("courseId", singleChapter.courseId)
@@ -241,7 +250,8 @@ const CourseList = () => {
         console.log(updateChapter);
 
         try {
-            const response = await axiosInstance.patch("https://myappsdevelopment.co.in/homepage/updateChapters?chapterId=65c5c1a9613d6a4e283b4dff", updateChapter, {
+            setLoader(true)
+            const response = await axiosInstance.patch("/homepage/updateChapters?chapterId=65c5c1a9613d6a4e283b4dff", updateChapter, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -251,10 +261,16 @@ const CourseList = () => {
                 }
             })
             const data = await response.data
-            console.log(data);
+            successMessage(data?.message)
+            setIsSubModalOpen(false)
+            setLoader(false)
         } catch (error) {
+            setLoader(false)
+            errorMessage(error.response.data.message)
             console.log("Error Updating Chapter By Id", error.message);
         }
+
+        ClearInputs()
     }
 
     const PostCourse = async (e) => {
@@ -309,6 +325,7 @@ const CourseList = () => {
             setLoader(false)
         } catch (error) {
             setLoader(false)
+            errorMessage(error.response.data.message)
             console.log("Error fetching categories data", error.message);
         }
     }
@@ -327,6 +344,7 @@ const CourseList = () => {
             setLoader(false)
         } catch (error) {
             setLoader(false)
+            errorMessage(error.response.data.message)
             console.log("error fetching data", error.message);
         }
     }
@@ -344,9 +362,12 @@ const CourseList = () => {
             setLoader(false)
         } catch (error) {
             setLoader(false)
+            errorMessage(error.response.data.message)
             console.log("Error Fetching Chapters", error.message);
         }
     }
+
+
     const handleDeleteCourse = async (_id) => {
         console.log(_id);
         try {
@@ -358,6 +379,7 @@ const CourseList = () => {
             setLoader(false)
         } catch (error) {
             setLoader(false)
+            errorMessage(error.response.data.message)
             console.log("Deleting data Failed", error.message);
         }
     }
@@ -392,6 +414,7 @@ const CourseList = () => {
             setLoader(false)
         } catch (error) {
             setLoader(false)
+            errorMessage(error.response.data.message)
             console.log("error updating code", error.message);
         }
     }
@@ -411,6 +434,7 @@ const CourseList = () => {
             setLoader(false)
         } catch (error) {
             setLoader(false)
+            errorMessage(error.response.data.message)
             console.log("Error Fetching Chapters By Id", error.message)
         }
 
@@ -424,6 +448,7 @@ const CourseList = () => {
             setSingleChapter(data.chapters);
         } catch (error) {
             setLoader(false)
+            errorMessage(error.response.data.message)
             console.log("Error Fetching Chapters By Id", error.message);
         }
     }
@@ -440,18 +465,40 @@ const CourseList = () => {
     // }
     // }
 
-    const DeleteChapterById = async (_id) => {
+    const DeleteChapterById = async (_id, courseId) => {
         console.log(_id);
+        console.log(courseId);
         try {
             setLoader(true)
-            const response = await axiosInstance.delete("/homepage/deleteChapters", { data: { chapterId: _id } })
+            const response = await axiosInstance.delete("/homepage/deleteChapters", { data: { chapterId: _id, courseId: courseId } })
             const data = await response.data
             successMessage(data.message)
             FetchChapters()
             setLoader(false)
         } catch (error) {
             setLoader(false)
+            errorMessage(error.response.data.message)
             console.log("Error Deleting chapter by Id", error.message);
+        }
+    }
+
+    const Languages = async () => {
+        try {
+            const response = await axiosInstance.get("/enrollment/masterlanguage")
+            const data = await response?.data
+            setLanguage(data?.Language);
+        } catch(error){
+            console.log("Error Fetching Languages", error.message)
+        }
+    }
+
+    const MasterRoles = async () => {
+        try{
+            const response = await axiosInstance.get("/enrollment/masterroles")
+            const data = await response?.data
+            setRoles(data?.roles);
+        } catch(error){
+            console.log("Error Fetching Master Roles", error.message)
         }
     }
 
@@ -474,18 +521,22 @@ const CourseList = () => {
     }
 
 
-    // console.log(chapterList);
-    // console.log(courseList);
+    console.log(chapterList);
+    console.log(courseList);
 
     useEffect(() => {
         fetchCourses()
         FetchChapters()
         fetchCategories()
+        Languages()
+        MasterRoles()
         // FetchChapterById()
     }, [])
 
 
-    console.log(courseList);
+
+
+
 
     return (
 
@@ -523,7 +574,7 @@ const CourseList = () => {
 
                                                 <div className="flex justify-between items-center gap-2 text-xs">
                                                     <p className="text-gray-400">Category: <span className="text-blue-500">{item?.category?.categories}</span></p>
-                                                    <p className="text-gray-400">Vedios: <span className="text-blue-500">{item?.course?.videoCount}</span></p>
+                                                    <p className="text-gray-400">Videos: <span className="text-blue-500">{item?.course?.videoCount}</span></p>
                                                 </div>
                                                 <div className="flex justify-between items-center py-2 text-xs">
                                                     <p className="text-gray-400">status: <span className="text-green-600">{item?.course?.status}</span></p>
@@ -547,7 +598,7 @@ const CourseList = () => {
                                                                         setChapterFlag(false)
                                                                         handleOpenSubModal(true)
                                                                     }}><CiEdit /></p>
-                                                                    <p className="font-2xl p-2" onClick={() => DeleteChapterById(i?._id)}><MdDelete /></p>
+                                                                    <p className="font-2xl p-2" onClick={() => DeleteChapterById(i?._id, item.course?._id)}><MdDelete /></p>
                                                                 </div>
 
                                                             </div>
@@ -595,7 +646,7 @@ const CourseList = () => {
                                 <button className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-20" onClick={handleCloseModal}>Close</button>
                             </div>
                             <form onSubmit={flag ? PostCourse : UpdateCourse}>
-                                <div className="grid grid-cols-2">
+                                <div className="grid grid-cols-2 mt-5">
                                     <div className="flex flex-col p-2 gap-3">
                                         <label htmlFor="">Course Name</label>
                                         <input type="text" name="title" id="title" onChange={handleChange} value={isFlag ? CourseInputs.title : singleCourse.title} className="p-3 border-2 border-gray-600 rounded-lg" />
@@ -616,36 +667,127 @@ const CourseList = () => {
                                         {/* <input type="text" name="categoryId" id="categoryId" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" /> */}
                                     </div>
 
-                                    <div className="flex flex-col p-2 gap-3">
+
+
+                                    {/* <div className="flex flex-col p-2 gap-3">
                                         <label htmlFor="">Enrolled Users</label>
                                         <input type="text" name="inrolled_users" id="inrolled_users" onChange={handleChange} value={isFlag ? CourseInputs.inrolled_users : singleCourse.inrolled_users} className="p-3 border-2 border-gray-600 rounded-lg" />
-                                    </div>
-
+                                    </div> */}
+                                    {/* 
                                     <div className="flex flex-col p-2 gap-3">
                                         <label htmlFor="">Vedios</label>
                                         <input type="text" name="videos" id="videos" value={isFlag ? CourseInputs.videos : singleCourse.videoCount} onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" />
+                                    </div> */}
+                                </div>
+
+                                
+
+                                <div className="grid grid-cols-2">
+                                    <div className="flex flex-col p-2 gap-3">
+                                        <label htmlFor="">Role</label>
+                                        <select name="role" id="role" className="p-3 border-2 border-gray-600 rounded-lg">
+                                            <option value="">Choose Role</option>
+                                            {
+                                                roles?.map((item, index)=> {
+                                                    return(
+                                                        <option key={index} value={item}>{item}</option>
+                                                    )
+                                                })
+                                            }
+                                       
+                                        </select>
+                                        {/* <input type="text" name="role" id="role" className="p-3 border-2 border-gray-600 rounded-lg"/> */}
                                     </div>
+
+                                    <div className="flex flex-col p-2 gap-3">
+                                        <label htmlFor="">language</label>
+                                        <select name="role" id="role" className="p-3 border-2 border-gray-600 rounded-lg">
+                                            <option value="">Choose Role</option>
+                                            {
+                                                language?.map((item, index)=>{
+                                                    return (
+                                                        <option key={index} value={item}>{item}</option>
+                                                    )
+                                                })
+                                            }
+                                        
+                                        </select>
+                                        {/* <input type="text" name="language" id="language" className="p-3 border-2 border-gray-600 rounded-lg"/> */}
+                                    </div>
+                                </div>
+
+                                <div className="flex flex-col p-2 gap-3">
+
+                                    <div>
+                                        <label htmlFor="">Source</label>
+                                    </div>
+
+                                    <div className="flex p-2 gap-3">
+                                        <div className="flex justify-center items-center p-2 gap-3">
+                                            <input type="radio" name="source" id="source" value="Youtube" onChange={handleChange} checked={flag ? CourseInputs.source == "Youtube" : singleCourse.source && singleCourse.source.toLowerCase() === "youtube"} className="p-3 border-2 border-gray-600 rounded-lg" />
+                                            <label htmlFor="">Youtube</label>
+
+                                        </div>
+
+                                        <div className="flex justify-center items-center p-2 gap-3">
+                                            <input type="radio" name="source" id="source" value="vimeo" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={flag ? CourseInputs.source == "vimeo" : singleCourse.source == "vimeo"} />
+                                            <label htmlFor="">Vimeo</label>
+
+                                        </div>
+
+                                        <div className="flex justify-center items-center p-2 gap-3">
+                                            <input type="radio" name="source" id="source" value="Dropbox" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={flag ? CourseInputs.source == "Dropbox" : singleCourse.source == "Dropbox"} />
+                                            <label htmlFor="">Drop Box</label>
+
+                                        </div>
+
+                                        <div className="flex justify-center items-center p-2 gap-3">
+                                            <input type="radio" name="source" id="source" value="embed" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={flag ? CourseInputs.source == "embed" : singleCourse.source == "embed"} />
+                                            <label htmlFor="">embed</label>
+
+                                        </div>
+
+                                        <div className="flex justify-center items-center p-2 gap-3">
+                                            <input type="radio" name="source" id="source" value="Upload" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={flag ? CourseInputs.source == "Upload" : singleCourse.source == "Upload"} />
+                                            <label htmlFor="">Upload</label>
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                                <div className="flex justify-center items-start p-2 gap-3 flex-col w-full">
+                                    <label htmlFor="">Upload Video</label>
+                                    <input type="file" name="courselink" id="courselink" className="p-3 w-full border-2 border-gray-600 rounded-lg"/>
+                                </div>
+
+                                <div className="flex flex-col p-2 gap-3">
+                                    <label htmlFor="">Description</label>
+                                    <textarea name="description" id="description" value={isFlag ? CourseInputs.description : singleCourse.description} cols="10" rows="5" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" ></textarea>
                                 </div>
 
 
 
-                                <div className="flex flex-col">
+                                {/* <div className="flex flex-col">
                                     <label htmlFor="">Video/Chapters</label>
                                     <div className="flex font-semibold justify-between items-center p-2 bg-slate-200 rounded cursor-pointer mt-5" onClick={() => setAccordianFlag(!accordianFlag)}>
                                         <input type="text" name="chapter" id="chapter" className="border-2 p-2 w-[40%]" />
                                         <p className="font-bold text-2xl">{accordianFlag ? <MdKeyboardArrowDown /> : <IoIosArrowUp />}</p>
-                                    </div>
+                                    </div> */}
 
 
 
-                                    <div className={`${accordianFlag ? "flex flex-col" : "hidden"}`}>
+                                    {/* <div className={`${accordianFlag ? "flex flex-col" : "hidden"}`}> */}
 
-                                        <div className="flex flex-col p-2 gap-3">
+                                        {/* <div className="flex flex-col p-2 gap-3">
                                             <label htmlFor="">Video/Chapters</label>
                                             <input type="file" name="Upload_Category" id="Upload_Category" ref={fileInputRef} onChange={handleChangeVedioFile} className="p-3 border-2 border-gray-600 rounded-lg" />
-                                        </div>
+                                        </div> */}
                                         {uploadProgress > 0 && <p>Uploading: {uploadProgress}%</p>}
-                                        <div className="flex  p-2 gap-3">
+
+
+                                        {/* <div className="flex  p-2 gap-3">
 
                                             <label htmlFor="">Source</label>
 
@@ -680,9 +822,9 @@ const CourseList = () => {
                                             </div>
 
 
-                                        </div>
+                                        </div> */}
 
-                                        <div className="flex flex-col p-2 gap-3">
+                                        {/* <div className="flex flex-col p-2 gap-3">
                                             <label htmlFor="">Link</label>
                                             {selectedSource !== "Upload" && (
                                                 <input
@@ -693,15 +835,15 @@ const CourseList = () => {
                                                     className="p-3 border-2 border-gray-600 rounded-lg"
                                                 />
                                             )}
-                                        </div>
+                                        </div> */}
 
-
+{/* 
                                         <div className="flex flex-col p-2 gap-3">
                                             <label htmlFor="">Description</label>
                                             <textarea name="description" id="description" value={isFlag ? CourseInputs.description : singleCourse.description} cols="10" rows="5" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" ></textarea>
                                         </div>
                                     </div>
-                                </div>
+                                </div> */}
 
 
 
@@ -773,7 +915,7 @@ const CourseList = () => {
                                     </div> */}
 
                                     <div className="flex justify-start items-center py-4 px-2">
-                                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-36" onClick={() => {
+                                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-36" type="button" onClick={() => {
                                             setChapterFlag(true)
                                             handleOpenSubModal(true)
                                         }}><FaPlus /> Add Chapters</button>
@@ -809,7 +951,7 @@ const CourseList = () => {
                                     </div>
                                     <div className="w-full flex justify-center items-center gap-5 p-2">
                                         {/* <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button> */}
-                                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg">{isFlag ? "Add Category" : "Update Category"}</button>
+                                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg">{isFlag ? "Add Course" : "Update Course"}</button>
                                     </div>
                                 </div>
                             </form>
