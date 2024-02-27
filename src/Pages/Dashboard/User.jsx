@@ -15,6 +15,12 @@ const User = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [open, setOpen] = useState(false);
   const [flag, setFlag] = useState(true)
+  const [roles, setRoles] = useState([])
+  const [language, setLanguage] = useState([])
+
+  
+
+  const [approvalStatus, setApprovalStatus] = useState("Pending")
 
   // const [Image, setImage] = useState()
 
@@ -28,8 +34,8 @@ const User = () => {
     email: "",
     license_num: "",
     role: "",
-    aadhar_num: "",
-    course: "",
+    language: "",
+    company: "",
     status: ""
 
   })
@@ -42,8 +48,8 @@ const User = () => {
     email: "",
     license_num: "",
     role: "",
-    aadhar_num: "",
-    course: "",
+    language: "",
+    company: "",
     status: ""
 
   })
@@ -51,11 +57,13 @@ const User = () => {
 
   const [userList, setUserList] = useState([])
 
-  const [courseList, setCourseList] = useState([])
+  // const [courseList, setCourseList] = useState([])
 
   const [image, setImage] = useState(null)
 
   const [loader, setLoader] = useState(false)
+
+  const [companiesList, setCompaniesList] = useState([])
 
 
   const lengthOfTable = userList.length
@@ -123,6 +131,8 @@ const User = () => {
 
   }
 
+  // console.log(courseList);
+
 
   const FetchUsers = async () => {
     try {
@@ -175,6 +185,11 @@ const User = () => {
       return
     }
 
+    if(!image){
+      errorMessage("Upload License is Required")
+      return
+    }
+
     if (!userInputs.license_num) {
       errorMessage("License Required")
     }
@@ -183,8 +198,8 @@ const User = () => {
       errorMessage("Role Required")
     }
 
-    if (!userInputs.aadhar_num) {
-      errorMessage("Aadhar Required")
+    if (!userInputs.language) {
+      errorMessage("language Required")
     }
 
     console.log(userInputs);
@@ -198,10 +213,10 @@ const User = () => {
     fD.append("mobile", userInputs.mobile)
     fD.append("license_num", userInputs.license_num)
     fD.append("role", userInputs.role)
-    fD.append("aadhar_num", userInputs.aadhar_num)
+    fD.append("language", userInputs.language)
     fD.append("upload_license", image)
     fD.append("email", userInputs.email)
-    fD.append("course", userInputs.course)
+    fD.append("company", userInputs.company)
     fD.append("status", userInputs.status)
 
 
@@ -219,7 +234,7 @@ const User = () => {
       console.log("Error Posting data", error.message);
     }
 
-    // ClearInputs()
+    ClearInputs()
   }
 
   const handleUpdateUSer = async (e) => {
@@ -253,8 +268,8 @@ const User = () => {
       errorMessage("Role Required")
     }
 
-    if (!singleInputs.aadhar_num) {
-      errorMessage("Aadhar Required")
+    if (!singleInputs.language) {
+      errorMessage("language Required")
     }
 
     const UpdatedFormData = new FormData()
@@ -264,7 +279,7 @@ const User = () => {
     UpdatedFormData.append("mobile", singleInputs.mobile)
     UpdatedFormData.append("license_num", singleInputs.license_num)
     UpdatedFormData.append("role", singleInputs.role)
-    UpdatedFormData.append("aadhar_num", singleInputs.aadhar_num)
+    UpdatedFormData.append("language", singleInputs.language)
     UpdatedFormData.append("upload_license", image)
     UpdatedFormData.append("email", singleInputs.email)
     UpdatedFormData.append("course", singleInputs.course)
@@ -278,7 +293,9 @@ const User = () => {
       FetchUsers()
       setOpen(false)
     } catch (error) {
+      setLoader(false)
       console.log("error updating data", error.message);
+      errorMessage(error.response.data.message)
     }
     ClearInputs()
   }
@@ -314,17 +331,17 @@ const User = () => {
     console.log(_id);
   }
 
-  const FetchCourse = async () => {
-    try {
-      setLoader(true)
-      const response = await axiosInstance.get("/homepage/courses")
-      const data = await response.data
-      setCourseList(data?.coursewithcategory);
-      setLoader(false)
-    } catch (error) {
-      console.log("error fetching course", error.message);
-    }
-  }
+  // const FetchCourse = async () => {
+  //   try {
+  //     setLoader(true)
+  //     const response = await axiosInstance.get("/homepage/courses")
+  //     const data = await response.data
+  //     setCourseList(data?.coursewithcategory);
+  //     setLoader(false)
+  //   } catch (error) {
+  //     console.log("error fetching course", error.message);
+  //   }
+  // }
 
   const getSingleUserById = async (_id) => {
     try {
@@ -339,6 +356,18 @@ const User = () => {
     }
   }
 
+  const FetchCompanies = async () => {
+    try{
+      const response = await axiosInstance.get("/company/fetch")
+      const data = await response?.data
+      setCompaniesList(data?.companies);
+    } catch(error){
+      console.log("Error Fetching Companies", error.message)
+    }
+  }
+
+  console.log(companiesList);
+
   const ClearInputs = () => {
     try {
       setUserInputs((prevState) => ({
@@ -350,27 +379,66 @@ const User = () => {
         email: "",
         license_num: "",
         role: "",
-        aadhar_num: "",
-        course: ""
+        language: "",
+        course: "",
+        status:""
 
       }))
+      setImage(null)
     } catch (error) {
       console.log("error clearing input fields", error.message);
     }
   }
 
-  console.log(courseList);
+  const MasterRoles = async () => {
+    try {
+      const response = await axiosInstance.get("/enrollment/masterroles")
+      const data = await response?.data
+      setRoles(data?.roles);
+    } catch (error) {
+      console.log("Error Fetching Master Roles", error.message)
+    }
+  }
+
+  const MasterLanguages = async () => {
+    try {
+      const response = await axiosInstance.get("/enrollment/masterlanguage")
+      const data = await response?.data
+      setLanguage(data?.Language);
+    } catch (error) {
+      console.log("Error Fetching Master Roles", error.message)
+    }
+  }
+
+  // console.log(userInputs);
+
+  const statusColors = {
+    Pending: 'bg-yellow-200',
+    Approved: 'bg-green-200',
+    Rejected: 'bg-red-200',
+  };
+
+  const handleChangeApproval = (e) => {
+    e.preventDefault()
+
+    setApprovalStatus(e.target.value);
+
+
+  }
 
 
 
-  console.log(singleInputs);
+  // console.log(singleInputs);
   useEffect(() => {
     FetchUsers()
-    FetchCourse()
+    // FetchCourse()
+    MasterRoles()
+    MasterLanguages()
+    FetchCompanies()
     // getSingleUserById()
   }, [])
 
-  console.log(courseList);
+  // console.log(courseList);
   return (
     <div>
       <AdminDashboard />
@@ -405,11 +473,15 @@ const User = () => {
                   </th>
 
                   <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                    <h1 className="flex items-center justify-center">Aadhaar</h1>
+                    <h1 className="flex items-center justify-center">Language</h1>
                   </th>
                   <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
                     <h1 className="flex items-center justify-center">Status</h1>
                   </th>
+                  <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                    <h1 className="flex items-center justify-center">Approve</h1>
+                  </th>
+
                   <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
                     <h1 className="flex items-center justify-center">Action</h1>
                   </th>
@@ -427,8 +499,15 @@ const User = () => {
                         <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.email}</td>
                         <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.mob_number}</td>
 
-                        <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.aadhar_num}</td>
-                        <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.status}</td>
+                        <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.language}</td>
+                        <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 capitalize">{item?.status}</td>
+                        <td className={`p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 `}>
+                          <select name="approval" id="approval" className={`w-full p-2 outline-gray-500 ${statusColors[approvalStatus]}`} onChange={handleChangeApproval}>
+                            <option value="Pending">Pending</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Rejected">Rejected</option>
+                          </select>
+                        </td>
                         <td className="p-2 border-r cursor-pointer font-semibold text-gray-500 flex gap-2 text-2xl justify-around ">
                           <p onClick={() => {
 
@@ -436,7 +515,7 @@ const User = () => {
                             setOpen(true)
                             getSingleUserById(item?._id)
                           }}><CiEdit /></p>
-                          <p onClick={() => handleDelete(item._id)}><MdDelete /></p>
+                          {/* <p onClick={() => handleDelete(item._id)}><MdDelete /></p> */}
                         </td>
                       </tr>
                     )
@@ -514,13 +593,33 @@ const User = () => {
 
                     <div className="flex flex-col p-2 gap-3">
                       <label htmlFor="">Role</label>
-                      <input type="text" name="role" id="role" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange}
-                        value={flag ? userInputs?.role : singleInputs?.role} />
+                      <select name="role" id="role" className="p-3 border-2 border-gray-600 rounded-lg" value={flag ? userInputs?.role : singleInputs?.role} onChange={handleChange}>
+                        <option value="">Choose Role</option>
+                        {
+                          roles?.map((item, index)=>{
+                            return(
+                              <option value={item} key={index}>{item}</option>
+                            )
+                          })
+                        }
+                      </select>
+                      {/* <input type="text" name="role" id="role" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange}
+                        value={flag ? userInputs?.role : singleInputs?.role} /> */}
                     </div>
 
                     <div className="flex flex-col p-2 gap-3">
-                      <label htmlFor="">Aadhar</label>
-                      <input type="text" name="aadhar_num" id="aadhar_num" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.aadhar_num : singleInputs?.aadhar_num} />
+                      <label htmlFor="">Language</label>
+                      <select name="language" id="language" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.language : singleInputs?.language}>
+                        <option value="">Choose Language</option>
+                        {
+                          language?.map((item, index)=>{
+                            return(
+                              <option value={item} key={index}>{item}</option>
+                            )
+                          })
+                        }
+                      </select>
+                      {/* <input type="text" name="aadhar_num" id="aadhar_num" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.aadhar_num : singleInputs?.aadhar_num} /> */}
                     </div>
 
 
@@ -528,13 +627,13 @@ const User = () => {
                   </div>
 
                   <div className="flex flex-col p-2 gap-3">
-                    <label htmlFor="">Course To Enroll</label>
-                    <select name="course" id="course" className="p-3 border-2 border-gray-600 rounded-lg" value={flag ? userInputs?.course : singleInputs?.course} onChange={handleChange}>
+                    <label htmlFor="">Company</label>
+                    <select name="company" id="company" className="p-3 border-2 border-gray-600 rounded-lg" value={flag ? userInputs?.course : singleInputs?.course} onChange={handleChange}>
                       <option value="Driver">Choose Options</option>
                       {
-                        courseList?.map((item, index) => {
+                        companiesList?.map((item, index) => {
                           return (
-                            <option key={index} value={item?.course?._id}>{item?.course?.title}</option>
+                            <option key={index} value={item?._id}>{item?.name}</option>
                           )
                         })
                       }

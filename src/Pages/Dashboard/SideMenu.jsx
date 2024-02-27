@@ -6,7 +6,7 @@ import { AiOutlineSafetyCertificate } from "react-icons/ai";
 import { FaUserLarge } from "react-icons/fa6";
 import { MdSettings } from "react-icons/md";
 import { IoPower } from "react-icons/io5";
-import { RiMenu2Line } from "react-icons/ri";
+// import { RiMenu2Line } from "react-icons/ri";
 import { NavLink, useNavigate } from "react-router-dom";
 
 import { successMessage } from "../../Utils/notificationManager";
@@ -35,6 +35,8 @@ const SideMenu = () => {
         <div className="fixed">
             <aside className="w-56 h-screen flex justify-start items-center gap-2 text-sm flex-col  font-semibold shadow-xl">
                 <div className="mt-10">
+
+                    
                     <img src="https://s3-alpha-sig.figma.com/img/2b7a/e2a9/ab1815762d340c9974f3e447205cfc0a?Expires=1708905600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=aEPY7QuTi2wysCmyemLNF49y~3kWS2Be4A81pIWF0YkaTuOXL0VMlLm-vrmGzhbYyc9mCdxiXoxXwMQeyskHdMquey3pB4nak4-vwAMsAt9BhEjx5YGmH42rSXmt3NtOfGKRuL6RzaqyPMnVtRC9pdewImvJwmCbZQx7oSHuBHP2VajxjDtPinJVrz1af1q5vKsMdF8WscfHzXOsi717dmtITVa5RZQThfvlWrVrv0nhkDsewp3-YrAVmUjjHvP86x46oDhTyd646mHLQ8Bs6ab4zVJYjXRVeleeInPwSvineBiyTI7zjxt-cq7xwAC8EVbglq9D~0KSs-EwjORQ5Q__" alt="" className="w-16 h-16" />
                     
                 </div>
@@ -104,10 +106,10 @@ const SideMenu = () => {
                         </div>
                     </NavLink>
 
-                    <div className="p-2 hover:bg-gray-300 rounded-lg flex gap-2 w-full cursor-pointer hover:text-[#B32073]">
+                    {/* <div className="p-2 hover:bg-gray-300 rounded-lg flex gap-2 w-full cursor-pointer hover:text-[#B32073]">
                         <p className="flex justify-center items-center text-gray-500"><RiMenu2Line /></p>
                         <h1 className="text-xl hover:text-[#B32073] text-gray-500 w-full">Menu</h1>
-                    </div>
+                    </div> */}
 
                     <div className="p-2 hover:bg-gray-300 rounded-lg flex gap-2 w-full cursor-pointer hover:text-[#B32073]">
                         <p className="flex justify-center items-center text-gray-500"><MdSettings /></p>

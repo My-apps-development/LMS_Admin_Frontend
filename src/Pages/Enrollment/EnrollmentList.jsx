@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
-import { PiDotsThreeOutlineFill } from "react-icons/pi";
+// import { PiDotsThreeOutlineFill } from "react-icons/pi";
 import { axiosInstance } from "../../Utils/AxiosSetUp";
 import { errorMessage, successMessage } from "../../Utils/notificationManager";
 import Loader from "../../Utils/Loader";
@@ -83,6 +83,7 @@ const EnrollmentList = () => {
             setLoader(false)
 
         } catch (error) {
+            errorMessage(error?.response?.data?.message)
             console.log("Error Posting Enrollment", error.message);
         }
 
@@ -122,7 +123,8 @@ const EnrollmentList = () => {
         try {
             const response = await axiosInstance.get("/homepage/courses")
             const data = await response.data
-            setCourseList(data.Courses);
+            // console.log(data);
+            setCourseList(data.coursewithcategory);
         } catch(error) {
             console.log("Error Fetching Courses", error.message);
         }
@@ -138,10 +140,11 @@ const EnrollmentList = () => {
         }
     }
 
-    console.log(userList);
+ 
 
     const FetchEnrollmentById = async (_id) => {
-        // console.log(`https://myappsdevelopment.co.in/enrollment/singleenrollment?enrollmentid=${_id}`);
+        console.log(Flag);
+        console.log(`https://myappsdevelopment.co.in/enrollment/singleenrollment?enrollmentid=${_id}`);
         try {
 
             const response = await axiosInstance.get(`https://myappsdevelopment.co.in/enrollment/singleenrollment?enrollmentid=${_id}`)
@@ -155,6 +158,8 @@ const EnrollmentList = () => {
             console.log("Error Fetching Enrollement Data By Id", error.message);
         }
     }
+
+    console.log(singleInputs);
 
 
     const UpdateEnrollment = async (e) => {
@@ -224,6 +229,8 @@ const EnrollmentList = () => {
         }
     }
 
+   
+
     useEffect(() => {
         FetchEnrollment()
         FetchUserRoleDropDown()
@@ -232,7 +239,7 @@ const EnrollmentList = () => {
 
     }, [])
 
-    // console.log(singleInputs);
+    console.log(courseList);
     return (
         <div className="w-full">
             <AdminDashboard />
@@ -259,9 +266,9 @@ const EnrollmentList = () => {
                                         <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
                                             <h1 className="flex items-center justify-center">User Role</h1>
                                         </th>
-                                        <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                                        {/* <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
                                             <h1 className="flex items-center justify-center">Enrolled Courses</h1>
-                                        </th>
+                                        </th> */}
                                         <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
                                             <h1 className="flex items-center justify-center">Enrolled Date</h1>
                                         </th>
@@ -281,14 +288,13 @@ const EnrollmentList = () => {
                                                 <tr className="bg-gray-100 text-center border-b text-sm text-gray-600" key={index}>
                                                     <td className="border-r">  <input type="checkbox" /></td>
                                                     <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 capitalize">{item.role}</td>
-                                                    <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 capitalize">{item.courses_to_enroll}</td>
+                                                    {/* <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 capitalize">{item.courses_to_enroll}</td> */}
                                                     <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item.createdAt.split("T")[0]}</td>
                                                     <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
                                                         <p onClick={() => {
                                                             FetchEnrollmentById(item?._id)
-                                                            setIsOpen(true)
                                                             setFlag(false)
-
+                                                            setIsOpen(true)
                                                             setSingleInputs({ ...singleInputs, enrollmentId: item?._id })
                                                         }}><CiEdit /></p>
                                                         <p onClick={() => DeleteEnrollment(item._id)}><MdDelete /></p>
@@ -338,9 +344,9 @@ const EnrollmentList = () => {
                                 <select name="role" id="" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={Flag ? inputs?.role : singleInputs?.role}>
                                     <option>choose option</option>
                                     {
-                                        userList?.map((item)=>{
+                                        userRole?.map((item, index)=>{
                                             return (
-                                                <option key={item?._id} value={item?.role}>{item?.role}</option>
+                                                <option key={index} value={item}>{item}</option>
                                             )
                                         })
                                     }
@@ -354,13 +360,11 @@ const EnrollmentList = () => {
                                     {
                                         courseList?.map((item)=>{
                                             return (
-                                                <option key={item?._id} value={item?.title}>{item?.title}</option>
+                                                <option key={item?._id} value={item?.course?.title}>{item?.course?.title}</option>
                                             )
                                         })
                                     }
-                                    {/* <option value={userRole["role-1"]}>{userRole["role-1"]}</option>
-                                    <option value={userRole["role-2"]}>{userRole["role-2"]}</option>
-                                    <option value={userRole["role-3"]}>{userRole["role-3"]}</option> */}
+                                    
                                 </select>
                             </div>
                             <div className="w-full flex justify-center items-center">

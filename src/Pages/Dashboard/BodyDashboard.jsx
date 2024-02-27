@@ -20,7 +20,7 @@ const BodyDashboard = () => {
         datasets: [
             {
                 label: "Students",
-                data: [25, 50, 75, 100, 25, 43, 25],
+                data: [25, 50, 75, 100, 25, 43, 12],
                 backgroundColor: [
                     "#d24787"
                 ],
@@ -91,7 +91,17 @@ const BodyDashboard = () => {
         }
     }
 
-    console.log(courseList);
+    const fetchCertificates = async() => {
+        try{
+            const response = await axiosInstance.get("/certificate/insert")
+            const data = await response?.data
+            console.log(data);
+        } catch(error){
+            console.log("Error Fetching Certificates", error.message);
+        }
+    }
+
+   
 
 
     useEffect(() => {
@@ -99,6 +109,7 @@ const BodyDashboard = () => {
         fetchQuestions()
         fetchUsers()
         fetchChapters()
+        // fetchCertificates()
     }, [])
     return (
         <>
@@ -170,7 +181,7 @@ const BodyDashboard = () => {
                             </div>
                             <div className="flex flex-col gap-3 w-full text-sm">
                                 {
-                                    UserList.slice(0, 7).map((item, index) => {
+                                    UserList?.reverse().slice(0, 7)?.map((item, index) => {
                                         return (
                                             <div className="flex gap-3" key={index}>
                                                 <div className="w-[20%] flex justify-center items-center">

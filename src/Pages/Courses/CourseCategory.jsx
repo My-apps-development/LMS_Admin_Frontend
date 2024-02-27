@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import AdminDashboard from "../Dashboard/AdminDashboard"
 import { FaPlus } from "react-icons/fa6";
-import { Box, Divider, Modal } from "@mui/material";
+import { Box, Modal } from "@mui/material";
 import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
 import { axiosInstance } from "../../Utils/AxiosSetUp";
@@ -17,18 +17,19 @@ const CourseCategory = () => {
 
     const [categoryList, setCategoryList] = useState([])
     const [subCategoryList, setSubCategoryList] = useState([])
-    const [subCategory, setSubCategory] = useState([])
+    // const [subCategory, setSubCategory] = useState([])
     const [loader, setLoader] = useState(false)
     const [image, setImage] = useState(null)
     const [postImage, setPostImage] = useState(null)
 
     const [subCategoryFlag, setSubCategoryFlag] = useState(false)
 
+    const [roles, setRoles] = useState([])
+
     const [singleCategory, setSingleCategory] = useState({
-        categories: '',
-        totalsubCategory: '',
-        upload_thumbnail: '',
-        id: ""
+        categories: "",
+        role: "",
+        _id:""
     })
 
     const [singleSubCategory, setSingleSubCategory] = useState({
@@ -43,8 +44,14 @@ const CourseCategory = () => {
 
     const [inputs, setInputs] = useState({
         categories: "",
-        totalsubCategory: "",
+        role: "",
 
+    })
+
+    const [subCategoryInputs, setSubCategoryInputs] = useState({
+     
+        title: "",
+      
     })
 
 
@@ -92,8 +99,13 @@ const CourseCategory = () => {
     const handleChangeSubcategory = (e) => {
         e.preventDefault()
 
+       subCategoryFlag ?  setSubCategoryInputs({...subCategoryInputs, [e.target.name]: e.target.value}) : setSingleSubCategory({...singleSubCategory, [e.target.name]: e.target.value})
+        
+
 
     }
+
+    console.log(singleCategory);
 
     const style = {
         position: 'absolute',
@@ -121,6 +133,17 @@ const CourseCategory = () => {
         p: 4,
     };
 
+    const FetchMasterRoles = async () => {
+        try {
+            const response = await axiosInstance.get("/enrollment/masterroles")
+            const data = await response.data
+            setRoles(data?.roles)
+
+        } catch (error) {
+            console.log("Error Fetching master role", error.message)
+        }
+    }
+
 
 
     const PostCategory = async (e) => {
@@ -129,8 +152,7 @@ const CourseCategory = () => {
         console.log(inputs);
         const formData = new FormData();
         formData.append('categories', inputs.categories);
-        formData.append('totalsubCategory', inputs.totalsubCategory);
-        formData.append('SubCategory_parent', inputs.SubCategory_parent);
+        formData.append('role', inputs.role)
         formData.append('Upload_Category', postImage);
 
 
@@ -140,8 +162,8 @@ const CourseCategory = () => {
             return
         }
 
-        if (!inputs.totalsubCategory) {
-            errorMessage("Subcategory is required")
+        if (!inputs.role) {
+            errorMessage("Role is required")
             return
         }
 
@@ -216,10 +238,10 @@ const CourseCategory = () => {
             return
         }
 
-        if (!singleCategory.totalsubCategory) {
-            errorMessage("total Subcategory Required")
-            return
-        }
+        // if (!singleCategory.totalsubCategory) {
+        //     errorMessage("total Subcategory Required")
+        //     return
+        // }
 
         if (!postImage) {
             errorMessage("Image is Required")
@@ -287,6 +309,7 @@ const CourseCategory = () => {
         try {
             const response = await axiosInstance.get(`/category/singlesubcategory?subcategoryid=${_id}`)
             const data = await response.data
+            console.log(data);
             setSingleSubCategory(data?.subcategory);
         } catch (error) {
             console.log("Error Fetching Single Subcategory by Id", error.message);
@@ -295,34 +318,50 @@ const CourseCategory = () => {
 
     console.log(singleSubCategory);
 
-    const UpdateSubcategory = async(e) => {
+    const PostSubcategory = async (e) => {
+        e.preventDefault()
+
+        const formData = new FormData()
+        formData.append("title", subCategoryInputs?.title)
+        formData.append("categoryId", singleCategory?._id)
+
+        try {
+            const response = await axiosInstance.post("/category/add/subcategory", formData)
+            const data = await response?.data
+            console.log(data);
+        } catch(error){
+            console.log("Error Posting Sub Category", error.message)
+        }
+    }
+
+    const UpdateSubcategory = async (e) => {
         e.preventDefault()
 
         console.log(singleSubCategory);
-        
-        // const UpdateSubcategoryForm = new FormData()
-        // UpdateSubcategoryForm.append("subcategoryId")
-        // UpdateSubcategoryForm.append("subcategoryName")
-        // UpdateSubcategoryForm.append("categoryId")
 
-        // try{
-        //     const response = await axiosInstance.patch(`http://localhost:3000/category/update/subcategory`)
-        //     const data = await response.data
-        //     console.log(data);
-        // } catch(error) {
-        //     console.log("Error Updating Data", error.message);
-        // }
+        const UpdateSubcategoryForm = new FormData()
+        UpdateSubcategoryForm.append("title", singleSubCategory?.title)
+        // UpdateSubcategoryForm.append("subcategoryName")
+        UpdateSubcategoryForm.append("categoryId", singleCategory?._id)
+
+        try{
+            const response = await axiosInstance.patch(`category/update/subcategory?subcategoryId=${singleSubCategory?._id}`, UpdateSubcategoryForm)
+            const data = await response.data
+            successMessage(data?.message);
+        } catch(error) {
+            console.log("Error Updating Data", error.message);
+        }
     }
 
 
-    
+
 
 
 
     const DeleteSingleSubCategory = async (_id) => {
 
         console.log(_id);
-        if(window.confirm("Are you sure want to delete video")){
+        if (window.confirm("Are you sure want to delete video")) {
             try {
                 setLoader(true)
                 const response = await axiosInstance.delete("https://myappsdevelopment.co.in/category/delete/subcategory", { data: { id: _id } })
@@ -335,7 +374,7 @@ const CourseCategory = () => {
                 console.log("Error Fetching Single Sub Category", error.message);
             }
         }
-       
+
     }
 
     const ClearInputs = () => {
@@ -353,13 +392,17 @@ const CourseCategory = () => {
     }
 
 
+    // console.log(roles);
+
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoader(true);
+                FetchMasterRoles()
                 await FetchCategories();
                 await FetchSubCategories();
-               
+
                 setLoader(false);
             } catch (error) {
                 console.log("Error fetching data", error.message);
@@ -369,12 +412,12 @@ const CourseCategory = () => {
         fetchData();
     }, [])
 
-    console.log(categoryList);
+    // console.log(categoryList);
 
     return (
         <div className="w-full">
             <AdminDashboard />
-            {loader ? <Loader /> :    <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300">
+            {loader ? <Loader /> : <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300">
 
                 <div className="">
                     <div className="p-2 ">
@@ -390,6 +433,8 @@ const CourseCategory = () => {
 
                 <div className="grid grid-cols-4 gap-5 mt-5 p-2 w-[100%] max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 max-lg:text-xs">
 
+                    {!categoryList.length ? <div>Oops...! There is No Categories</div> : null}
+
                     {categoryList.map((item, index) => {
 
                         return (
@@ -400,7 +445,7 @@ const CourseCategory = () => {
                                     </div>
                                     <div>
                                         <h1 className="text-2xl">{item.categories}</h1>
-                                        <p className="text-sm">{item.totalsubCategory} sub categories</p>
+                                        {/* <p className="text-sm">{item.totalsubCategory} sub categories</p> */}
                                     </div>
                                     {
                                         subCategoryList.filter(it => it?.subcategory?.categoryId === item._id).map((i, index) => {
@@ -409,7 +454,7 @@ const CourseCategory = () => {
                                                     <p>{i?.subcategory?.title}</p>
                                                     <div className="flex justify-center items-center gap-2">
                                                         <p onClick={() => {
-                                                            setSubModalOpen(true), FetchSingleSubcategoryById(i?.subcategory?._id)
+                                                            setSubModalOpen(true), FetchSingleSubcategoryById(i?.subcategory?._id), setSubCategoryFlag(false)
                                                         }}><CiEdit /></p>
                                                         <p onClick={() => DeleteSingleSubCategory(i?.subcategory?._id)}><MdDelete /></p>
                                                     </div>
@@ -446,12 +491,23 @@ const CourseCategory = () => {
                                 <h1 className="text-2xl">{subCategoryFlag ? "Add Subcategory" : "Edit Subcategory"}</h1>
                                 <button className="border-[#B32073] bg-[#B32073] p-2 rounded-lg w-20 text-lg text-white" onClick={handleCloseSubmodal}>Close</button>
                             </div>
-                            <form action="" onClick={UpdateSubcategory}>
+                            <form action="" onClick={subCategoryFlag ? PostSubcategory : UpdateSubcategory }>
+
+                                <div className="flex flex-col p-2 gap-3">
+                                    <label htmlFor="">Parent</label>
+                                    <input type="text" name="" id="" placeholder="Defensive Driving" className="border-2 border-gray-600 rounded-lg text-lg p-2 " value={singleCategory?.categories} disabled />
+                                </div>
+
+
+
                                 <div className="flex flex-col p-2 gap-3">
                                     <label htmlFor="">Subcategory Title</label>
-                                    <input type="text" name="title" id="title" placeholder="Defensive Driving" className="border-2 border-gray-600 rounded-lg text-lg p-2 " value={singleSubCategory?.title} onChange={handleChangeSubcategory} />
+                                    <input type="text" name="title" id="title" placeholder="Subcategory" className="border-2 border-gray-600 rounded-lg text-lg p-2 " onChange={handleChangeSubcategory} />
                                 </div>
-                                <div className="flex flex-col p-2 gap-3">
+
+
+
+                                {/* <div className="flex flex-col p-2 gap-3">
                                     <label htmlFor="" className="text-sm">Parent</label>
                                     <select name="categoryId" id="categoryId" className="border-2 border-gray-600 rounded-lg text-lg p-2 " value={singleCategory?.categories} onChange={handleChangeSubcategory}>
                                         <option value="">Choose Category</option>
@@ -465,7 +521,7 @@ const CourseCategory = () => {
 
                                     </select>
 
-                                </div>
+                                </div> */}
                                 <div className="w-full flex justify-center items-center gap-5 p-5">
                                     {/* <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button> */}
                                     <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-38 rounded-lg">{subCategoryFlag ? "Add Subcategory" : "Update Subcategory"}</button>
@@ -492,17 +548,33 @@ const CourseCategory = () => {
                                         <input type="text" name="categories" id="categories" placeholder="Defensive Driving" className="border-2 border-gray-600 rounded-lg text-lg p-2 " value={flag ? inputs.categories : singleCategory.categories} onChange={handleChange} />
                                     </div>
 
+
                                     <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">Total Subcategories</label>
-                                        <input type="text" name="totalsubCategory" id="totalsubCategory" placeholder="3" className="border-2 border-gray-600 rounded-lg text-lg p-2 " value={flag ? inputs.totalsubCategory : singleCategory.totalsubCategory} onChange={handleChange} />
+                                        <label htmlFor="">Role</label>
+                                        <select name="role" id="role" className="p-3 border-2 border-gray-600 text-lg rounded-lg" onChange={handleChange}>
+                                            <option value="">Choose Role</option>
+                                            {
+                                                roles?.map((item, index) => {
+                                                    return (
+                                                        <option value={item} key={index} className="capitalize">{item}</option>
+                                                    )
+                                                })
+                                            }
+
+                                        </select>
                                     </div>
 
-                                 
+                                    {/* <div className="flex flex-col p-2 gap-3">
+                                        <label htmlFor="">Total Subcategories</label>
+                                        <input type="text" name="totalsubCategory" id="totalsubCategory" placeholder="3" className="border-2 border-gray-600 rounded-lg text-lg p-2 " value={flag ? inputs.totalsubCategory : singleCategory.totalsubCategory} onChange={handleChange} />
+                                    </div> */}
+
+
 
 
 
                                     <div className="flex justify-start items-center py-4 px-2">
-                                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-36 hover:scale-95 hover:duration-300" onClick={()=>{
+                                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-36 hover:scale-95 hover:duration-300" onClick={() => {
                                             setSubCategoryFlag(true), setSubModalOpen(true)
                                         }}><FaPlus /> Add Subcategory</button>
                                     </div>
