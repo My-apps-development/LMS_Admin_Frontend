@@ -78,7 +78,7 @@ const SideMenu = () => {
 
                         </div>
                     </div>
-                    <div className="w-[100%] text-gray-500 flex flex-col gap-1">
+                    {/* <div className="w-[100%] text-gray-500 flex flex-col gap-1">
                         <div onClick={() => setIsEnrollmentOpen(!isEnrollmentOpen)} className="flex p-2 justify-between items-center hover:text-[#B32073]">
                             <div className="flex justify-center items-center gap-2 hover:text-[#B32073]  text-gray-500">
                                 <p><FaBook /></p>
@@ -87,10 +87,10 @@ const SideMenu = () => {
                             <p><FaChevronDown /></p>
                         </div>
                         <div className={`sm ${isEnrollmentOpen ? "flex" : "hidden"} flex-col gap-5 mt-5`}>
-                            {/* <NavLink to="/Course/Enrollment" className={({ isActive, isPending }) => isPending ? "flex flex-row items-center duration-300 hover:shadow-xl hover:scale-105   pr-6" : isActive ? "flex flex-row items-center duration-300 scale-105 pr-6 bg-gray-300 text-[#B32073] rounded hover:text-[#B32073] hover:shadow-xl" : ""}><p className="hover:text-[#B32073] text-gray-500 p-3 rounded hover:bg-gray-300">Course Enrollment</p></NavLink> */}
+                            <NavLink to="/Course/Enrollment" className={({ isActive, isPending }) => isPending ? "flex flex-row items-center duration-300 hover:shadow-xl hover:scale-105   pr-6" : isActive ? "flex flex-row items-center duration-300 scale-105 pr-6 bg-gray-300 text-[#B32073] rounded hover:text-[#B32073] hover:shadow-xl" : ""}><p className="hover:text-[#B32073] text-gray-500 p-3 rounded hover:bg-gray-300">Course Enrollment</p></NavLink>
                             <NavLink to="/Enrollment/List" className={({ isActive, isPending }) => isPending ? "flex hover:text-[#B32073] flex-row items-center duration-300 hover:shadow-xl hover:scale-105   pr-6" : isActive ? "flex flex-row items-center duration-300 scale-105 pr-6 bg-gray-300 text-[#B32073] rounded hover:text-[#B32073] hover:shadow-xl" : ""}><p className="hover:text-[#B32073] p-3 rounded hover:bg-gray-300 text-gray-500">Enrollment List</p></NavLink>
                         </div>
-                    </div>
+                    </div> */}
 
                     <NavLink to="/users" className={({ isActive, isPending }) => isPending ? "flex hover:text-[#B32073] flex-row items-center duration-300 hover:shadow-xl hover:scale-105   pr-6" : isActive ? "flex flex-row items-center duration-300 scale-105 pr-6 bg-gray-300 text-[#B32073] rounded hover:text-[#B32073] hover:shadow-xl" : ""}>
                         <div className="p-2 hover:bg-gray-300 rounded-lg flex gap-2 w-full hover:text-[#B32073]">
