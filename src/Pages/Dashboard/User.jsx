@@ -497,7 +497,7 @@ const User = () => {
                         <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.firstName} {item?.lastName}</td>
                         <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.role}</td>
                         <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.email}</td>
-                        <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.mob_number}</td>
+                        <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.mobile}</td>
 
                         <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.language}</td>
                         <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 capitalize">{item?.status}</td>

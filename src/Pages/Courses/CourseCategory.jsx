@@ -417,7 +417,7 @@ const CourseCategory = () => {
     return (
         <div className="w-full">
             <AdminDashboard />
-            {loader ? <Loader /> : <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300">
+            {loader ? <Loader /> : <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300 h-screen">
 
                 <div className="">
                     <div className="p-2 ">
