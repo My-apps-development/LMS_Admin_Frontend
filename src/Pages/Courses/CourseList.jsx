@@ -1,15 +1,15 @@
 import { Box, Divider, Modal } from "@mui/material"
 import AdminDashboard from "../Dashboard/AdminDashboard"
 import { FaPlus } from "react-icons/fa6";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import { axiosInstance } from "../../Utils/AxiosSetUp";
 import { errorMessage, successMessage } from "../../Utils/notificationManager";
 
 import Loader from "../../Utils/Loader";
-import { MdDelete } from "react-icons/md";
-// import { IoIosArrowUp } from "react-icons/io";
+import { MdDelete, MdKeyboardArrowDown } from "react-icons/md";
+import { IoIosArrowUp } from "react-icons/io";
 
 
 const CourseList = () => {
@@ -35,6 +35,13 @@ const CourseList = () => {
 
     const [uploadProgress, setUploadProgress] = useState(0);
 
+    const [createChapter, setCreateChapter] = useState([{
+        title: "",
+        description: "",
+        source: "",
+        chapterLink: ""
+    }])
+
     const [singleCourse, setSingleCourse] = useState({
         title: "",
         description: "",
@@ -52,14 +59,15 @@ const CourseList = () => {
     const [CourseInputs, setCourseInputs] = useState({
         title: "",
         description: "",
-        videos: "",
-        inrolled_users: "",
         source: "",
+        language: "",
+        role: "",
         status: "",
-        categoryId: ""
+        categoryId: "",
+        courselink: ""
     })
 
-    // const [accordianFlag, setAccordianFlag] = useState(false)
+    const [accordianFlag, setAccordianFlag] = useState(false)
 
     const [chapterFlag, setChapterFlag] = useState(false)
 
@@ -81,7 +89,7 @@ const CourseList = () => {
         source: ""
     })
 
-    const fileInputRef = useRef()
+    // const fileInputRef = useRef()
 
     const [chapterList, setChapterList] = useState([])
 
@@ -154,14 +162,14 @@ const CourseList = () => {
             setSelectedSource(e.target.value)
         }
 
-        if (e.target.value == "Upload") {
-            fileInputRef.current.click()
-        }
+        // if (e.target.value == "Upload") {
+        //     fileInputRef.current.click()
+        // }
 
         flag ? setCourseInputs({ ...CourseInputs, [e.target.name]: e.target.value }) : setSingleCourse({ ...singleCourse, [e.target.name]: e.target.value })
     }
 
-    // console.log(selectedSource);
+    console.log(CourseInputs);
 
     const handleChangeVedioFile = (e) => {
         const file = e.target.files[0]
@@ -173,7 +181,7 @@ const CourseList = () => {
     const handleChangeChapterFile = (e) => {
         e.preventDefault()
 
-        console.log(fileInputRef);
+        // console.log(fileInputRef);
 
         const file = e.target.files[0]
         setPostVideo(file)
@@ -191,7 +199,7 @@ const CourseList = () => {
 
         if (e.target.value == "Upload") {
             setChapters((prevChapters) => ({ ...prevChapters, video_link: "" }))
-            fileInputRef.current.click()
+            // fileInputRef.current.click()
         }
 
         chapterFlag ? setChapters({ ...chapters, [e.target.name]: e.target.value }) : setSingleChapter({ ...singleChapter, [e.target.name]: e.target.value })
@@ -279,12 +287,12 @@ const CourseList = () => {
         const formData = new FormData()
         formData.append("title", CourseInputs.title)
         formData.append("description", CourseInputs.description)
-        formData.append("inrolled_users", CourseInputs.inrolled_users)
+        formData.append("language", CourseInputs.language)
         formData.append("source", CourseInputs.source)
+        formData.append("role", CourseInputs.role)
         formData.append("status", CourseInputs.status)
         formData.append("categoryId", CourseInputs.categoryId)
-        formData.append("videos", CourseInputs.videos)
-        formData.append("video_link", postVideo)
+        formData.append("courselink", CourseInputs.courselink)
 
         try {
             setLoader(true)
@@ -301,9 +309,9 @@ const CourseList = () => {
             const data = await response.data
             successMessage(data.message);
 
-            fetchCourses()
+            // fetchCourses()
             ClearInputs()
-            setIsOpen(false)
+            // setIsOpen(false)
             setLoader(false)
         } catch (error) {
             errorMessage(error.response.data.message)
@@ -487,17 +495,17 @@ const CourseList = () => {
             const response = await axiosInstance.get("/enrollment/masterlanguage")
             const data = await response?.data
             setLanguage(data?.Language);
-        } catch(error){
+        } catch (error) {
             console.log("Error Fetching Languages", error.message)
         }
     }
 
     const MasterRoles = async () => {
-        try{
+        try {
             const response = await axiosInstance.get("/enrollment/masterroles")
             const data = await response?.data
             setRoles(data?.roles);
-        } catch(error){
+        } catch (error) {
             console.log("Error Fetching Master Roles", error.message)
         }
     }
@@ -520,9 +528,18 @@ const CourseList = () => {
         }
     }
 
+    const handleChangeChapters = (index, key, value) => {
+    
+        const newChapters = [...chapters];
+        newChapters[index][key] = value;
+        setChapters(newChapters);
 
-    console.log(chapterList);
-    console.log(courseList);
+
+    }
+
+
+    // console.log(chapterList);
+    // console.log(courseList);
 
     useEffect(() => {
         fetchCourses()
@@ -548,7 +565,7 @@ const CourseList = () => {
                     !courseList.length ? <div className="text-2xl"> Oops...! No Courses Found </div> : null
                 }
                 {
-                    loader ? <Loader /> : <div>
+                    loader ? <Loader /> : <div className="h-screen">
                         <div>
                             <div>
                                 <div className="font-bold">
@@ -664,53 +681,45 @@ const CourseList = () => {
                                                 })
                                             }
                                         </select>
-                                        {/* <input type="text" name="categoryId" id="categoryId" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" /> */}
+
                                     </div>
 
 
 
-                                    {/* <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">Enrolled Users</label>
-                                        <input type="text" name="inrolled_users" id="inrolled_users" onChange={handleChange} value={isFlag ? CourseInputs.inrolled_users : singleCourse.inrolled_users} className="p-3 border-2 border-gray-600 rounded-lg" />
-                                    </div> */}
-                                    {/* 
-                                    <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">Vedios</label>
-                                        <input type="text" name="videos" id="videos" value={isFlag ? CourseInputs.videos : singleCourse.videoCount} onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" />
-                                    </div> */}
+
                                 </div>
 
-                                
+
 
                                 <div className="grid grid-cols-2">
                                     <div className="flex flex-col p-2 gap-3">
                                         <label htmlFor="">Role</label>
-                                        <select name="role" id="role" className="p-3 border-2 border-gray-600 rounded-lg">
+                                        <select name="role" id="role" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange}>
                                             <option value="">Choose Role</option>
                                             {
-                                                roles?.map((item, index)=> {
-                                                    return(
+                                                roles?.map((item, index) => {
+                                                    return (
                                                         <option key={index} value={item}>{item}</option>
                                                     )
                                                 })
                                             }
-                                       
+
                                         </select>
                                         {/* <input type="text" name="role" id="role" className="p-3 border-2 border-gray-600 rounded-lg"/> */}
                                     </div>
 
                                     <div className="flex flex-col p-2 gap-3">
                                         <label htmlFor="">language</label>
-                                        <select name="role" id="role" className="p-3 border-2 border-gray-600 rounded-lg">
-                                            <option value="">Choose Role</option>
+                                        <select name="language" id="language" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange}>
+                                            <option value="">Choose language</option>
                                             {
-                                                language?.map((item, index)=>{
+                                                language?.map((item, index) => {
                                                     return (
                                                         <option key={index} value={item}>{item}</option>
                                                     )
                                                 })
                                             }
-                                        
+
                                         </select>
                                         {/* <input type="text" name="language" id="language" className="p-3 border-2 border-gray-600 rounded-lg"/> */}
                                     </div>
@@ -757,9 +766,34 @@ const CourseList = () => {
 
                                 </div>
 
+                                <div className="flex flex-col p-2 gap-3">
+
+                                    {selectedSource !== "Upload" && (
+                                        <>
+                                            <label htmlFor="">Link</label>
+                                            <input
+                                                type="text"
+                                                name="courselink"
+                                                id="courselink"
+                                                onChange={handleChange}
+                                                className="p-3 border-2 border-gray-600 rounded-lg"
+                                            />
+                                        </>
+                                    )}
+                                </div>
+
                                 <div className="flex justify-center items-start p-2 gap-3 flex-col w-full">
-                                    <label htmlFor="">Upload Video</label>
-                                    <input type="file" name="courselink" id="courselink" className="p-3 w-full border-2 border-gray-600 rounded-lg"/>
+
+                                    {
+                                        selectedSource == "Upload" && (
+                                            <>
+                                                <label htmlFor="">Upload Video</label>
+                                                <input type="file" name="courselink" id="courselink" className="p-3 w-full border-2 border-gray-600 rounded-lg" />
+                                                {uploadProgress > 0 && <p>Uploading: {uploadProgress}%</p>}
+                                            </>
+                                        )
+                                    }
+
                                 </div>
 
                                 <div className="flex flex-col p-2 gap-3">
@@ -769,81 +803,227 @@ const CourseList = () => {
 
 
 
-                                {/* <div className="flex flex-col">
-                                    <label htmlFor="">Video/Chapters</label>
-                                    <div className="flex font-semibold justify-between items-center p-2 bg-slate-200 rounded cursor-pointer mt-5" onClick={() => setAccordianFlag(!accordianFlag)}>
-                                        <input type="text" name="chapter" id="chapter" className="border-2 p-2 w-[40%]" />
+                                {/* ---------------------------Chapters section starts------------------------------------ */}
+
+                                {
+                                    createChapter?.map((chapter, index) => {
+                                        return (
+                                            <div className="flex flex-col" key={index}>
+                                                <div className="flex font-semibold justify-between items-center p-2 border-2 rounded cursor-pointer mt-5" onClick={() => setAccordianFlag(!accordianFlag)}>
+                                                    <p>Chapters</p>
+                                                    <p className="font-bold text-2xl">{accordianFlag ? <MdKeyboardArrowDown /> : <IoIosArrowUp />}</p>
+                                                </div>
+
+                                                <div className={`${accordianFlag ? "flex flex-col" : "hidden"}`}>
+
+                                                    <div className="flex flex-col p-2 gap-3">
+                                                        <label htmlFor="">Chapter title</label>
+                                                        <input type="text" name="title" id="title" className="p-3 border-2 border-gray-600 rounded-lg" onChange={(e)=>handleChangeChapters(index, "title", e.target.value)} value={chapter.title}/>
+                                                    </div>
+
+                                                    {/* <div className="flex flex-col p-2 gap-3">
+                                            <label htmlFor="">Upload Video file</label>
+                                            <input type="file" name="Upload_Category" id="Upload_Category" onChange={handleChangeVedioFile} className="p-3 border-2 border-gray-600 rounded-lg" />
+                                        </div> */}
+
+
+
+                                                    <div className="flex flex-col p-2 gap-3">
+
+                                                        <div>
+                                                            <label htmlFor="">Source</label>
+                                                        </div>
+
+                                                        <div className="flex p-2 gap-3">
+                                                            <div className="flex justify-center items-center p-2 gap-3">
+                                                                <input type="radio" name="source" id="source" value="Youtube" onChange={(e)=>handleChangeChapters(index, "source", e.target.value)} checked={flag ? CourseInputs.source == "Youtube" : singleCourse.source && singleCourse.source.toLowerCase() === "youtube"} className="p-3 border-2 border-gray-600 rounded-lg" />
+                                                                <label htmlFor="">Youtube</label>
+
+                                                            </div>
+
+                                                            <div className="flex justify-center items-center p-2 gap-3">
+                                                                <input type="radio" name="source" id="source" value="vimeo" onChange={(e)=>handleChangeChapters(index, "source", e.target.value)} className="p-3 border-2 border-gray-600 rounded-lg" checked={flag ? CourseInputs.source == "vimeo" : singleCourse.source == "vimeo"} />
+                                                                <label htmlFor="">Vimeo</label>
+
+                                                            </div>
+
+                                                            <div className="flex justify-center items-center p-2 gap-3">
+                                                                <input type="radio" name="source" id="source" value="Dropbox" onChange={(e)=>handleChangeChapters(index, "source", e.target.value)}className="p-3 border-2 border-gray-600 rounded-lg" checked={flag ? CourseInputs.source == "Dropbox" : singleCourse.source == "Dropbox"} />
+                                                                <label htmlFor="">Drop Box</label>
+
+                                                            </div>
+
+                                                            <div className="flex justify-center items-center p-2 gap-3">
+                                                                <input type="radio" name="source" id="source" value="embed" onChange={(e)=>handleChangeChapters(index, "source", e.target.value)} className="p-3 border-2 border-gray-600 rounded-lg" checked={flag ? CourseInputs.source == "embed" : singleCourse.source == "embed"} />
+                                                                <label htmlFor="">embed</label>
+
+                                                            </div>
+
+                                                            <div className="flex justify-center items-center p-2 gap-3">
+                                                                <input type="radio" name="source" id="source" value="Upload" onChange={(e)=>handleChangeChapters(index, "source", e.target.value)} className="p-3 border-2 border-gray-600 rounded-lg" checked={flag ? CourseInputs.source == "Upload" : singleCourse.source == "Upload"} />
+                                                                <label htmlFor="">Upload</label>
+
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+
+
+                                                    <div className="flex flex-col p-2 gap-3">
+
+                                                        {selectedSource !== "Upload" && (
+                                                            <>
+                                                                <label htmlFor="">Link</label>
+                                                                <input
+                                                                    type="text"
+                                                                    name="chapterlink"
+                                                                    id="chapterlink"
+                                                                    onChange={(e)=>handleChangeChapters(index, "chapterlink", e.target.value)}
+                                                                    className="p-3 border-2 border-gray-600 rounded-lg"
+                                                                    value={chapter.chapterLink}
+                                                                />
+                                                            </>
+                                                        )}
+                                                    </div>
+
+                                                    <div className="flex justify-center items-start p-2 gap-3 flex-col w-full">
+
+                                                        {
+                                                            selectedSource == "Upload" && (
+                                                                <>
+                                                                    <label htmlFor="">Upload Video</label>
+                                                                    <input type="file" name="chapterlink" id="chapterlink" className="p-3 w-full border-2 border-gray-600 rounded-lg" onChange={(e)=>handleChangeChapters(index, "chapterlink", e.target.value)} value={chapter.chapterLink}/>
+                                                                    {uploadProgress > 0 && <p>Uploading: {uploadProgress}%</p>}
+                                                                </>
+                                                            )
+                                                        }
+
+                                                    </div>
+
+                                                    <div className="flex flex-col p-2 gap-3">
+                                                        <label htmlFor="">Description</label>
+                                                        <textarea name="description" id="description" value={chapter.description} cols="10" rows="5" onChange={(e)=>handleChangeChapters(index, "description", e.target.value)} className="p-3 border-2 border-gray-600 rounded-lg"></textarea>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        )
+                                    })
+                                }
+
+
+
+                                <div className="flex flex-col">
+
+
+                                    {/* <div className="flex font-semibold justify-between items-center p-2 border-2 rounded cursor-pointer mt-5" onClick={() => setAccordianFlag(!accordianFlag)}>
+                                        <p>Chapters</p>
                                         <p className="font-bold text-2xl">{accordianFlag ? <MdKeyboardArrowDown /> : <IoIosArrowUp />}</p>
                                     </div> */}
 
 
 
-                                    {/* <div className={`${accordianFlag ? "flex flex-col" : "hidden"}`}> */}
+                                    {/* <div className={`${accordianFlag ? "flex flex-col" : "hidden"}`}>
 
-                                        {/* <div className="flex flex-col p-2 gap-3">
-                                            <label htmlFor="">Video/Chapters</label>
-                                            <input type="file" name="Upload_Category" id="Upload_Category" ref={fileInputRef} onChange={handleChangeVedioFile} className="p-3 border-2 border-gray-600 rounded-lg" />
-                                        </div> */}
-                                        {uploadProgress > 0 && <p>Uploading: {uploadProgress}%</p>}
+                                        <div className="flex flex-col p-2 gap-3">
+                                            <label htmlFor="">Chapter title</label>
+                                            <input type="text" name="title" id="title" className="p-3 border-2 border-gray-600 rounded-lg" />
+                                        </div>
+
+                                     
 
 
-                                        {/* <div className="flex  p-2 gap-3">
 
-                                            <label htmlFor="">Source</label>
+                                        <div className="flex flex-col p-2 gap-3">
 
-                                            <div className="flex justify-center items-center p-2 gap-3">
-                                                <input type="radio" name="source" id="source" value="Youtube" onChange={handleChange} checked={flag ? CourseInputs.source == "Youtube" : singleCourse.source && singleCourse.source.toLowerCase() === "youtube"} className="p-3 border-2 border-gray-600 rounded-lg" />
-                                                <label htmlFor="">Youtube</label>
-
+                                            <div>
+                                                <label htmlFor="">Source</label>
                                             </div>
 
-                                            <div className="flex justify-center items-center p-2 gap-3">
-                                                <input type="radio" name="source" id="source" value="vimeo" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={flag ? CourseInputs.source == "vimeo" : singleCourse.source == "vimeo"} />
-                                                <label htmlFor="">Vimeo</label>
+                                            <div className="flex p-2 gap-3">
+                                                <div className="flex justify-center items-center p-2 gap-3">
+                                                    <input type="radio" name="source" id="source" value="Youtube" onChange={handleChange} checked={flag ? CourseInputs.source == "Youtube" : singleCourse.source && singleCourse.source.toLowerCase() === "youtube"} className="p-3 border-2 border-gray-600 rounded-lg" />
+                                                    <label htmlFor="">Youtube</label>
 
+                                                </div>
+
+                                                <div className="flex justify-center items-center p-2 gap-3">
+                                                    <input type="radio" name="source" id="source" value="vimeo" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={flag ? CourseInputs.source == "vimeo" : singleCourse.source == "vimeo"} />
+                                                    <label htmlFor="">Vimeo</label>
+
+                                                </div>
+
+                                                <div className="flex justify-center items-center p-2 gap-3">
+                                                    <input type="radio" name="source" id="source" value="Dropbox" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={flag ? CourseInputs.source == "Dropbox" : singleCourse.source == "Dropbox"} />
+                                                    <label htmlFor="">Drop Box</label>
+
+                                                </div>
+
+                                                <div className="flex justify-center items-center p-2 gap-3">
+                                                    <input type="radio" name="source" id="source" value="embed" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={flag ? CourseInputs.source == "embed" : singleCourse.source == "embed"} />
+                                                    <label htmlFor="">embed</label>
+
+                                                </div>
+
+                                                <div className="flex justify-center items-center p-2 gap-3">
+                                                    <input type="radio" name="source" id="source" value="Upload" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={flag ? CourseInputs.source == "Upload" : singleCourse.source == "Upload"} />
+                                                    <label htmlFor="">Upload</label>
+
+                                                </div>
                                             </div>
 
-                                            <div className="flex justify-center items-center p-2 gap-3">
-                                                <input type="radio" name="source" id="source" value="Dropbox" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={flag ? CourseInputs.source == "Dropbox" : singleCourse.source == "Dropbox"} />
-                                                <label htmlFor="">Drop Box</label>
 
-                                            </div>
-
-                                            <div className="flex justify-center items-center p-2 gap-3">
-                                                <input type="radio" name="source" id="source" value="embed" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={flag ? CourseInputs.source == "embed" : singleCourse.source == "embed"} />
-                                                <label htmlFor="">embed</label>
-
-                                            </div>
-
-                                            <div className="flex justify-center items-center p-2 gap-3">
-                                                <input type="radio" name="source" id="source" value="Upload" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={flag ? CourseInputs.source == "Upload" : singleCourse.source == "Upload"} />
-                                                <label htmlFor="">Upload</label>
-
-                                            </div>
+                                        </div>
 
 
-                                        </div> */}
+                                        <div className="flex flex-col p-2 gap-3">
 
-                                        {/* <div className="flex flex-col p-2 gap-3">
-                                            <label htmlFor="">Link</label>
                                             {selectedSource !== "Upload" && (
-                                                <input
-                                                    type="text"
-                                                    name="link"
-                                                    id="link"
-                                                    onChange={handleChange}
-                                                    className="p-3 border-2 border-gray-600 rounded-lg"
-                                                />
+                                                <>
+                                                    <label htmlFor="">Link</label>
+                                                    <input
+                                                        type="text"
+                                                        name="chapterlink"
+                                                        id="chapterlink"
+                                                        onChange={handleChange}
+                                                        className="p-3 border-2 border-gray-600 rounded-lg"
+                                                    />
+                                                </>
                                             )}
-                                        </div> */}
+                                        </div>
 
-{/* 
+                                        <div className="flex justify-center items-start p-2 gap-3 flex-col w-full">
+
+                                            {
+                                                selectedSource == "Upload" && (
+                                                    <>
+                                                        <label htmlFor="">Upload Video</label>
+                                                        <input type="file" name="chapterlink" id="chapterlink" className="p-3 w-full border-2 border-gray-600 rounded-lg" />
+                                                        {uploadProgress > 0 && <p>Uploading: {uploadProgress}%</p>}
+                                                    </>
+                                                )
+                                            }
+
+                                        </div>
+
                                         <div className="flex flex-col p-2 gap-3">
                                             <label htmlFor="">Description</label>
                                             <textarea name="description" id="description" value={isFlag ? CourseInputs.description : singleCourse.description} cols="10" rows="5" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" ></textarea>
                                         </div>
+
+                                    </div> */}
+
+                                    {/* ----------------------------------Chapter Sections Ends--------------------------- */}
+
+                                    {/* 
+                                        // <div className="flex flex-col p-2 gap-3">
+                                        //     <label htmlFor="">Description</label>
+                                        //     <textarea name="description" id="description" value={isFlag ? CourseInputs.description : singleCourse.description} cols="10" rows="5" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" ></textarea>
+                                        // </div>
                                     </div>
-                                </div> */}
+                                </div> 
 
 
 
@@ -916,8 +1096,9 @@ const CourseList = () => {
 
                                     <div className="flex justify-start items-center py-4 px-2">
                                         <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-36" type="button" onClick={() => {
-                                            setChapterFlag(true)
-                                            handleOpenSubModal(true)
+                                            // setChapterFlag(true)
+                                            // handleOpenSubModal(true)
+                                            setCreateChapter([...createChapter, { title: "", source: "", description: "", chapterLink: "" }])
                                         }}><FaPlus /> Add Chapters</button>
                                     </div>
 
@@ -1009,7 +1190,7 @@ const CourseList = () => {
                                         </div>
                                         <div className="flex flex-col p-2 gap-3">
                                             <label htmlFor="">Video/Chapters</label>
-                                            <input type="file" name="video_link" id="video_link" className="hidden p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapterFile} ref={fileInputRef} />
+                                            <input type="file" name="video_link" id="video_link" className="hidden p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapterFile} />
                                         </div>
 
                                         {uploadProgress > 0 && <p>Uploading: {uploadProgress}%</p>}
