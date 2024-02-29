@@ -50,28 +50,46 @@ const AssignmentRecord = () => {
                                 <th className="border-r">
                                     <input type="checkbox" />
                                 </th>
+
                                 <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                                    <h1 className="flex items-center justify-center">Total Questions</h1>
+                                    <h1 className="flex items-center justify-center">User Name</h1>
                                 </th>
+
                                 <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                                    <h1 className="flex items-center justify-center">Correct Answers</h1>
-                                </th>
-                                <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                                    <h1 className="flex items-center justify-center">Wrong Answers</h1>
-                                </th>
-                                <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                                    <h1 className="flex items-center justify-center">Percentage</h1>
+                                    <h1 className="flex items-center justify-center">Mobile Number</h1>
                                 </th>
 
                                 <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
                                     <h1 className="flex items-center justify-center">User Role</h1>
                                 </th>
+
                                 <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
                                     <h1 className="flex items-center justify-center">Language</h1>
                                 </th>
+
                                 <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                                    <h1 className="flex items-center justify-center">Mobile Number</h1>
+                                    <h1 className="flex items-center justify-center">Total Questions</h1>
                                 </th>
+
+                                <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                                    <h1 className="flex items-center justify-center">Correct Answers</h1>
+                                </th>
+
+                                <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                                    <h1 className="flex items-center justify-center">Wrong Answers</h1>
+                                </th>
+
+
+                                <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                                    <h1 className="flex items-center justify-center">Percentage</h1>
+                                </th>
+
+                               
+
+                               
+
+
+                               
 
                             </tr>
                         </thead>
@@ -82,17 +100,22 @@ const AssignmentRecord = () => {
 
                                         <tr className="bg-gray-100 text-center border-b text-sm text-gray-600" key={index}>
                                             <td className="border-r">  <input type="checkbox" /></td>
+                                            <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.user?.firstname} {item?.user?.lastname}</td>
+                                            <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                                                {item?.user?.mob_number}
+                                            </td>
+                                            <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 capitalize">{item?.user?.role}</td>
+
+                                            <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 capitalize">{item?.user?.language}</td>
+
                                             <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.assignment?.totalquestions}</td>
                                             <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.assignment?.correctanswer}</td>
                                             <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.assignment?.wronganswer}</td>
                                             <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.assignment?.percentage}</td>
 
-                                            <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 capitalize">{item?.user?.role}</td>
-                                            <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 capitalize">{item?.user?.language}</td>
-                                            <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                                                {item?.user?.mob_number
-                                                }
-                                            </td>
+                                         
+                                            
+                                            
                                         </tr>
 
                                     )
