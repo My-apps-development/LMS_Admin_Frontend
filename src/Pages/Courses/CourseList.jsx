@@ -8,7 +8,7 @@ import { axiosInstance } from "../../Utils/AxiosSetUp";
 import { errorMessage, successMessage } from "../../Utils/notificationManager";
 
 import Loader from "../../Utils/Loader";
-import { MdDelete, MdKeyboardArrowDown } from "react-icons/md";
+import { MdDelete, MdKeyboardArrowDown, MdSettings } from "react-icons/md";
 import { IoIosArrowUp } from "react-icons/io";
 
 
@@ -41,6 +41,8 @@ const CourseList = () => {
     //     source: "",
     //     chapterLink: ""
     // }])
+
+    const [videoIntervalDisplay, setVideoIntervalDisplay] = useState(false)
 
     const [singleCourse, setSingleCourse] = useState({
         title: "",
@@ -175,7 +177,7 @@ const CourseList = () => {
         flag ? setCourseInputs({ ...CourseInputs, [e.target.name]: e.target.value }) : setSingleCourse({ ...singleCourse, [e.target.name]: e.target.value })
     }
 
-    
+
 
     const handleChangeVedioFile = (e) => {
         const file = e.target.files[0]
@@ -298,35 +300,35 @@ const CourseList = () => {
     const PostCourse = async (e) => {
         e.preventDefault()
 
-        if(!CourseInputs.title){
+        if (!CourseInputs.title) {
             errorMessage("Course Name Required")
             return
         }
-        if(!CourseInputs.categoryId){
+        if (!CourseInputs.categoryId) {
             errorMessage("category Required")
             return
         }
-        if(!CourseInputs.role){
+        if (!CourseInputs.role) {
             errorMessage("role Required")
             return
         }
-        if(!CourseInputs.language){
+        if (!CourseInputs.language) {
             errorMessage("Language Required")
             return
         }
-        if(!CourseInputs.source){
+        if (!CourseInputs.source) {
             errorMessage("source Required")
             return
         }
-        if(!CourseInputs.video_link){
+        if (!CourseInputs.video_link) {
             errorMessage("Video Required")
             return
         }
-        if(!CourseInputs.description){
+        if (!CourseInputs.description) {
             errorMessage("Description Required")
             return
         }
-        if(!CourseInputs.status){
+        if (!CourseInputs.status) {
             errorMessage("status Required")
             return
         }
@@ -346,7 +348,7 @@ const CourseList = () => {
         } else {
             formData.append("video_link", CourseInputs.video_link)
         }
-        
+
 
         try {
             setLoader(true)
@@ -681,7 +683,17 @@ const CourseList = () => {
                                 <div >
                                     <div className="flex justify-between items-center">
                                         <p>Total {courseList?.length} video courses are available</p>
-                                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] flex justify-center items-center gap-3  text-white hover:bg-pink-800" onClick={handleOpenModal}><FaPlus />Add Course</button>
+                                        <div className="flex gap-2 relative">
+                                            <p className="p-2 flex justify-center items-center gap-2 border-2 border-[#B32073] text-[#B32073] hover:bg-[#B32073] hover:text-white" onClick={()=>setVideoIntervalDisplay(!videoIntervalDisplay)}><MdSettings />Settings</p>
+                                            <button className="p-2 border-2 border-[#B32073] bg-[#B32073] flex justify-center items-center gap-3  text-white hover:bg-[#B32073] hover:bg-inherit hover:text-[#B32073]" onClick={handleOpenModal}><FaPlus />Add Course</button>
+
+                                            <div className={`absolute mt-14 px-5  flex-col justify-center items-center gap-1 border-2 border-gray-600 py-1 rounded z-40 ${videoIntervalDisplay ? "flex" : "hidden"}`} >
+                                                <p>30 days</p>
+                                                <p>60 days</p>
+                                                <p>90 days</p>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
 
@@ -889,7 +901,7 @@ const CourseList = () => {
                                         selectedSource == "upload" && (
                                             <>
                                                 <label htmlFor="">Upload Video</label>
-                                                <input type="file" name="video_link" id="video_link" className="p-3 w-full border-2 border-gray-600 rounded-lg" onChange={handleChangeVedioFile} value={isFlag ? CourseInputs.video_link : singleCourse?.video_link}/>
+                                                <input type="file" name="video_link" id="video_link" className="p-3 w-full border-2 border-gray-600 rounded-lg" onChange={handleChangeVedioFile} value={isFlag ? CourseInputs.video_link : singleCourse?.video_link} />
                                                 {uploadProgress > 0 && <p>Uploading: {uploadProgress}%</p>}
                                             </>
                                         )
@@ -1289,7 +1301,7 @@ const CourseList = () => {
                                                 selectedSource == "upload" && (
                                                     <>
                                                         <label htmlFor="">Upload Video</label>
-                                                        <input type="file" name="video_link" id="video_link" className="p-3 w-full border-2 border-gray-600 rounded-lg" onChange={handleChangeChapterFile}/>
+                                                        <input type="file" name="video_link" id="video_link" className="p-3 w-full border-2 border-gray-600 rounded-lg" onChange={handleChangeChapterFile} />
                                                         {uploadProgress > 0 && <p>Uploading: {uploadProgress}%</p>}
                                                     </>
                                                 )
