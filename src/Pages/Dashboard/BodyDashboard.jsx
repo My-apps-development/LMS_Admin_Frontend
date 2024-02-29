@@ -11,6 +11,7 @@ import { HiMiniNewspaper } from "react-icons/hi2";
 import { PiVideoFill } from "react-icons/pi";
 import { MdOutlineOndemandVideo } from "react-icons/md";
 import Loader from "../../Utils/Loader";
+import { errorMessage } from "../../Utils/notificationManager";
 
 
 
@@ -37,6 +38,7 @@ const BodyDashboard = () => {
     const [QuestionList, setQuestionList] = useState([])
     const [UserList, setUserList] = useState([])
     const [chapterList, setChapterList] = useState([])
+    const [certificateList, setCertificateList] = useState([])
 
 
 
@@ -49,6 +51,8 @@ const BodyDashboard = () => {
             setCourseList(data?.coursewithcategory);
             setLoader(false)
         } catch (error) {
+            setLoader(false)
+            errorMessage(error?.response?.data?.message)
             console.log("Error Fetching Courses", error.message);
         }
     }
@@ -61,6 +65,8 @@ const BodyDashboard = () => {
             setQuestionList(data.data);
             setLoader(false)
         } catch (error) {
+            setLoader(false)
+            errorMessage(error?.response?.data?.message)
             console.log("Error Fetching Questions", error.message);
         }
     }
@@ -74,6 +80,8 @@ const BodyDashboard = () => {
             setUserList(data.users);
             setLoader(false)
         } catch (error) {
+            setLoader(false)
+            errorMessage(error?.response?.data?.message)
             console.log("Error Fetching Users", error.message);
         }
     }
@@ -87,16 +95,22 @@ const BodyDashboard = () => {
             setChapterList(data.chapter);
             setLoader(false)
         } catch (error) {
+            setLoader(false)
+            errorMessage(error?.response?.data?.message)
             console.log("Error Fetching Chapters", error.message);
         }
     }
 
     const fetchCertificates = async() => {
         try{
-            const response = await axiosInstance.get("/certificate/insert")
+            setLoader(true)
+            const response = await axiosInstance.get("/certificate/")
             const data = await response?.data
-            console.log(data);
+            setCertificateList(data?.data);
+            setLoader(false)
         } catch(error){
+            setLoader(false)
+            errorMessage(error?.response?.data?.message)
             console.log("Error Fetching Certificates", error.message);
         }
     }
@@ -109,7 +123,7 @@ const BodyDashboard = () => {
         fetchQuestions()
         fetchUsers()
         fetchChapters()
-        // fetchCertificates()
+        fetchCertificates()
     }, [])
     return (
         <>
@@ -161,7 +175,7 @@ const BodyDashboard = () => {
                         <div className="flex flex-col gap-5 justify-center items-start border-2 p-2 rounded-lg shadow-lg bg-white">
                             <p className="text-[#B32073] ml-5 mt-3"><MdOutlineAssignment /></p>
                             <p className="ml-5 text-gray-500">Total Certificates</p>
-                            <p className="ml-5">12</p>
+                            <p className="ml-5">{certificateList?.length}</p>
                         </div>
                     </div>
 
