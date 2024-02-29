@@ -32,7 +32,8 @@ const AssessmentList = () => {
     correct_option: "",
     marks: "",
     courseId: "",
-    chapterId: ""
+    chapterId: "",
+    language:""
   })
 
   const [singleInputs, setSingleInputs] = useState({
@@ -45,8 +46,11 @@ const AssessmentList = () => {
     marks: "",
     courseId: "",
     chapterId: "",
-    _id: ""
+    _id: "",
+    language:""
   })
+
+  const [Language, setLanguage] = useState([])
 
 
   const handleOpen = () => {
@@ -294,7 +298,7 @@ const AssessmentList = () => {
 
     }
 
-    console.log(`/homepage/fetchChapters${additionalURL}`)  
+    console.log(`/homepage/fetchChapters${additionalURL}`)
 
 
     try {
@@ -303,6 +307,17 @@ const AssessmentList = () => {
       console.log(data)
     } catch (error) {
       console.log("error fetching chapters with course id", error.message);
+    }
+  }
+
+  const FetchLanguages = async () => {
+    try {
+      const response = await axiosInstance.get("/enrollment/masterlanguage")
+      const data = await response.data
+      setLanguage(data?.Language);
+
+    } catch (error) {
+      console.log("Error Fetching Languages", error.message);
     }
   }
 
@@ -316,6 +331,7 @@ const AssessmentList = () => {
     fetchQuestion()
     FetchCourses()
     FetchChapters()
+    FetchLanguages()
 
   }, [])
 
@@ -448,7 +464,7 @@ const AssessmentList = () => {
 
                     <div className="flex flex-col p-2 gap-3">
                       <label htmlFor="">Video/Chapters</label>
-                      <select name="chapterId" id="" className="p-3 border-2 border-gray-600 rounded-lg" value={Flag ? inputs?.chapterId : singleInputs?.chapterId} onChange={handleChange}>
+                      <select name="chapterId" id="chapterId" className="p-3 border-2 border-gray-600 rounded-lg" value={Flag ? inputs?.chapterId : singleInputs?.chapterId} onChange={handleChange}>
                         <option value="Choose Option">Choose Option</option>
 
                         {
@@ -460,6 +476,20 @@ const AssessmentList = () => {
                         }
                       </select>
                     </div>
+                  </div>
+
+                  <div className="flex flex-col gap-3 p-2">
+                    <label htmlFor="">Language</label>
+                    <select name="language" id="language" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={Flag ? inputs?.language : singleInputs?.language}>
+                      <option value="">Choose Language</option>
+                      {
+                        Language?.map((item, index) => {
+                          return (
+                            <option key={index} value={item}>{item}</option>
+                          )
+                        })
+                      }
+                    </select>
                   </div>
 
 
