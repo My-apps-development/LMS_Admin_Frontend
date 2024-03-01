@@ -3,6 +3,7 @@ import AdminDashboard from "../Dashboard/AdminDashboard"
 import { useEffect, useState } from "react"
 import { errorMessage, successMessage } from "../../Utils/notificationManager"
 import { axiosInstance } from "../../Utils/AxiosSetUp"
+import Loader from "../../Utils/Loader"
 
 
 const Certificate = () => {
@@ -17,6 +18,10 @@ const Certificate = () => {
     const [postLogo, setPostLogo] = useState(null)
     const [postSignature, setPostSignature] = useState(null)
     const [postCertificate, setPostCertificate] = useState(null)
+
+    const [certificateList, setCertificateList] = useState([])
+
+    const [loader, setLoader] = useState(false)
 
     const [inputs, setInputs] = useState({
         firstName: "",
@@ -110,31 +115,31 @@ const Certificate = () => {
     const PostCertificate = async (e) => {
         e.preventDefault()
 
-        if(!inputs?.firstName){
+        if (!inputs?.firstName) {
             errorMessage("first name is required")
             return
         }
-        if(!inputs?.lastName){
+        if (!inputs?.lastName) {
             errorMessage("last name is required")
             return
         }
-        if(!inputs?.validDate){
+        if (!inputs?.validDate) {
             errorMessage("date is required")
             return
         }
-        if(!inputs?.courseId){
+        if (!inputs?.courseId) {
             errorMessage("course is required")
             return
         }
-        if(!postLogo){
+        if (!postLogo) {
             errorMessage("Logo is required")
             return
         }
-        if(!postSignature){
+        if (!postSignature) {
             errorMessage("signature is required")
             return
         }
-        if(!postCertificate){
+        if (!postCertificate) {
             errorMessage("certificate is required")
             return
         }
@@ -177,14 +182,29 @@ const Certificate = () => {
 
     console.log(courseList);
 
+
+    const fetchCertificates = async () => {
+        try {
+            setLoader(true)
+            const response = await axiosInstance.get("/certificate/")
+            const data = await response?.data
+            setCertificateList(data?.data);
+            setLoader(false)
+        } catch (error) {
+            setLoader(false)
+            errorMessage(error?.response?.data?.message)
+            console.log("Error Fetching Certificates", error.message);
+        }
+    }
+
     const clearInputs = () => {
-        setInputs((prevInputs)=>({
+        setInputs((prevInputs) => ({
             ...prevInputs,
-            firstName:"",
-            lastName:"",
-            courseId:"",
-            validDate:"",
-            userId:""
+            firstName: "",
+            lastName: "",
+            courseId: "",
+            validDate: "",
+            userId: ""
         }))
 
         setLogo(null)
@@ -197,115 +217,142 @@ const Certificate = () => {
     }
 
 
-   
+
 
 
     useEffect(() => {
         FetchCourses()
+        fetchCertificates()
     }, [])
 
-
+ 
     return (
         <div>
             <AdminDashboard />
-            <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300 h-screen">
-                <div className="w-full justify-between items-center flex p-2">
-                    <h1 className="text-2xl">Certificate</h1>
-                    <button type="button" className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-40" onClick={() => setIsOpen(true)}>Add Certificate</button>
-                </div>
-                <Modal
-                    open={isOpen}
-                >
-                    <Box sx={style}>
-                        <div className="text-xs overflow-y-visible font-semibold text-gray-600">
-                            <div className="flex justify-between items-center w-full text-black">
-                                <h1 className="text-2xl">Add Certificate</h1>
-                                <button className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-20" onClick={() => setIsOpen(false)}>Close</button>
-                            </div>
-                            <form className="flex flex-col mt-10" onSubmit={PostCertificate}>
+            {
+                loader ? <Loader /> :
 
-                                <div className="grid grid-cols-2">
-                                    <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">First Name</label>
-                                        <input type="text" name="firstName" id="firstName" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeInputs} />
-                                    </div>
-
-                                    <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">Last Name</label>
-                                        <input type="text" name="lastName" id="lastName" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeInputs} />
-                                    </div>
-
-                                    <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">Completed Course</label>
-                                        <select name="courseId" id="courseId" onChange={handleChangeInputs} className="p-3 border-2 border-gray-600 rounded-lg">
-                                            <option value="">Choose Course</option>
-                                            {
-                                                courseList?.map((item) => {
-                                                    return (
-                                                        <option key={item?.course?._id} value={item?.course?._id}>{item?.course?.title}</option>
-                                                    )
-                                                })
-                                            }
-                                        </select>
-                                        {/* <input type="text" name="courseId" id="courseId" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeInputs} /> */}
-                                    </div>
-
-                                    <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">Issue Date</label>
-                                        <input type="date" name="validDate" id="validDate" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeInputs} />
-                                    </div>
-                                </div>
-
-                                <div className="flex flex-col gap-2 mt-10">
-
-                                    <div className="flex w-[100%]">
-                                        <div className="flex flex-col p-2 gap-3 w-[50%]">
-                                            <label htmlFor="">Certificate Logo</label>
-                                            <input type="file" name="uploadLogo" id="uploadLogo" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeLogo} />
-                                        </div>
-                                        <div className="w-[50%] flex justify-center items-center">
-                                            <img src={Logo} alt="" className="w-56 h-56" />
-                                        </div>
-                                    </div>
-
-                                    <div className="flex w-[100%] ">
-                                        <div className="flex flex-col p-2 gap-3 w-[50%]">
-                                            <label htmlFor="">Certificate Signature</label>
-                                            <input type="file" name="uploadSignature" id="uploadSignature" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeSignature} />
-                                        </div>
-                                        <div className="w-[50%] flex justify-center items-center">
-                                            <img src={signature} alt="" className="w-56 h-56" />
-                                        </div>
-                                    </div>
-
-
-                                    <div className="flex w-[100%]">
-                                        <div className="flex flex-col p-2 gap-3 w-[50%]">
-                                            <label htmlFor="">Certificate Template</label>
-                                            <input type="file" name="uploadTemplate" id="uploadTemplate" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeCertificate} />
-                                        </div>
-                                        <div className="w-[50%] flex justify-center items-center">
-                                            <img src={certificate} alt="" className="w-56 h-56" />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="flex flex-col p-2 gap-3">
-                                    <label htmlFor="">Description</label>
-                                    <textarea name="description" id="description" cols="10" rows="5" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeInputs}></textarea>
-                                </div>
-
-                                <div className="w-full flex justify-center items-center gap-5 p-2">
-                                    {/* <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Save</button> */}
-                                    <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-42 rounded-lg" type="submit">Issue Certificate</button>
-                                </div>
-
-                            </form>
+                    <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300">
+                        <div className="w-full justify-between items-center flex p-2">
+                            <h1 className="text-2xl">Certificate</h1>
+                            <button type="button" className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-40" onClick={() => setIsOpen(true)}>Add Certificate</button>
                         </div>
-                    </Box>
-                </Modal>
+                        <div className="mt-10 ml-3 grid grid-cols-4 gap-5">
+                            {
+                                certificateList?.map((item, index) => {
+                                    return (
+                                        <div className="border-2 w-72 shadow-lg flex flex-col gap-3 p-3 rounded-lg hover:scale-95 duration-300 bg-white" key={index}>
+                                            <div >
+                                                <img src={item?.uploadTemplate} alt="" className="rounded-lg object-cover w-72 h-72" />
+                                            </div>
+                                            <div>
+                                                <div>
+                                                    <h1>{item?.firstName} {item?.lastName}</h1>
+                                                </div>
+                                                <div className="flex justify-between items-center w-full">
+                                                    <h1>Course Name</h1>
+                                                    <p>{item?.validDate}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                        <Modal
+                            open={isOpen}
+                        >
+                            <Box sx={style}>
+                                <div className="text-xs overflow-y-visible font-semibold text-gray-600">
+                                    <div className="flex justify-between items-center w-full text-black">
+                                        <h1 className="text-2xl">Add Certificate</h1>
+                                        <button className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-20" onClick={() => setIsOpen(false)}>Close</button>
+                                    </div>
+                                    <form className="flex flex-col mt-10" onSubmit={PostCertificate}>
 
-            </div>
+                                        <div className="grid grid-cols-2">
+                                            <div className="flex flex-col p-2 gap-3">
+                                                <label htmlFor="">First Name</label>
+                                                <input type="text" name="firstName" id="firstName" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeInputs} />
+                                            </div>
+
+                                            <div className="flex flex-col p-2 gap-3">
+                                                <label htmlFor="">Last Name</label>
+                                                <input type="text" name="lastName" id="lastName" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeInputs} />
+                                            </div>
+
+                                            <div className="flex flex-col p-2 gap-3">
+                                                <label htmlFor="">Completed Course</label>
+                                                <select name="courseId" id="courseId" onChange={handleChangeInputs} className="p-3 border-2 border-gray-600 rounded-lg">
+                                                    <option value="">Choose Course</option>
+                                                    {
+                                                        courseList?.map((item) => {
+                                                            return (
+                                                                <option key={item?.course?._id} value={item?.course?._id}>{item?.course?.title}</option>
+                                                            )
+                                                        })
+                                                    }
+                                                </select>
+                                                {/* <input type="text" name="courseId" id="courseId" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeInputs} /> */}
+                                            </div>
+
+                                            <div className="flex flex-col p-2 gap-3">
+                                                <label htmlFor="">Issue Date</label>
+                                                <input type="date" name="validDate" id="validDate" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeInputs} />
+                                            </div>
+                                        </div>
+
+                                        <div className="flex flex-col gap-2 mt-10">
+
+                                            <div className="flex w-[100%]">
+                                                <div className="flex flex-col p-2 gap-3 w-[50%]">
+                                                    <label htmlFor="">Certificate Logo</label>
+                                                    <input type="file" name="uploadLogo" id="uploadLogo" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeLogo} />
+                                                </div>
+                                                <div className="w-[50%] flex justify-center items-center">
+                                                    <img src={Logo} alt="" className="w-56 h-56" />
+                                                </div>
+                                            </div>
+
+                                            <div className="flex w-[100%] ">
+                                                <div className="flex flex-col p-2 gap-3 w-[50%]">
+                                                    <label htmlFor="">Certificate Signature</label>
+                                                    <input type="file" name="uploadSignature" id="uploadSignature" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeSignature} />
+                                                </div>
+                                                <div className="w-[50%] flex justify-center items-center">
+                                                    <img src={signature} alt="" className="w-56 h-56" />
+                                                </div>
+                                            </div>
+
+
+                                            <div className="flex w-[100%]">
+                                                <div className="flex flex-col p-2 gap-3 w-[50%]">
+                                                    <label htmlFor="">Certificate Template</label>
+                                                    <input type="file" name="uploadTemplate" id="uploadTemplate" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeCertificate} />
+                                                </div>
+                                                <div className="w-[50%] flex justify-center items-center">
+                                                    <img src={certificate} alt="" className="w-56 h-56" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex flex-col p-2 gap-3">
+                                            <label htmlFor="">Description</label>
+                                            <textarea name="description" id="description" cols="10" rows="5" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeInputs}></textarea>
+                                        </div>
+
+                                        <div className="w-full flex justify-center items-center gap-5 p-2">
+                                            {/* <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Save</button> */}
+                                            <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-42 rounded-lg" type="submit">Issue Certificate</button>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </Box>
+                        </Modal>
+
+                    </div>
+            }
         </div>
     )
 }

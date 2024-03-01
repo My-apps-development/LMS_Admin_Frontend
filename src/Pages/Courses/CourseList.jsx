@@ -248,6 +248,7 @@ const CourseList = () => {
             console.log(data);
             successMessage(data.message)
             FetchChapters()
+            fetchCourses()
             setIsSubModalOpen(false)
         } catch (error) {
             setLoader(false)
@@ -320,10 +321,10 @@ const CourseList = () => {
             errorMessage("source Required")
             return
         }
-        if (!CourseInputs.video_link) {
-            errorMessage("Video Required")
-            return
-        }
+        // if (!CourseInputs.video_link) {
+        //     errorMessage("Video Required")
+        //     return
+        // }
         if (!CourseInputs.description) {
             errorMessage("Description Required")
             return
@@ -376,6 +377,8 @@ const CourseList = () => {
         }
 
     }
+
+    console.log(CourseInputs);
 
 
 
