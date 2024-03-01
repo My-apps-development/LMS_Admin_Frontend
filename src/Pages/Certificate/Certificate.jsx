@@ -21,6 +21,8 @@ const Certificate = () => {
 
     const [certificateList, setCertificateList] = useState([])
 
+    const [singleCertificate, setSingleCertificate] = useState({})
+
     const [loader, setLoader] = useState(false)
 
     const [inputs, setInputs] = useState({
@@ -180,7 +182,7 @@ const Certificate = () => {
         }
     }
 
-    console.log(courseList);
+    
 
 
     const fetchCertificates = async () => {
@@ -216,6 +218,48 @@ const Certificate = () => {
         setPostCertificate(null)
     }
 
+    const getSingleCertificate = async () => {
+
+        try{
+            const response = await axiosInstance.get(`/certificate/single?id=65d8913485cdc11f5e525b44`)
+            const data = await response.data
+            setSingleCertificate(data);
+        } catch(error){
+            errorMessage(error?.response?.data?.message)
+            console.log("Error Fetching Single Id", error.message);
+        }
+    }
+
+    const UpdateCertificate = async(_id) => {
+        
+        try{
+            const response = await axiosInstance.patch(`/certificate/update?id=${_id}`)
+            const data = await response?.data
+            console.log(data?.message);
+        } catch(error){
+            errorMessage(error?.response?.data?.message)
+            console.log("Error Updating Certificate",error.message);
+        }
+    }
+
+    const DeleteCertificate = async(_id) => {
+
+        console.log(_id);
+
+        try {
+            const response = await axiosInstance.delete(`/certificate/delete?id=${_id}`)
+            const data = await response.data
+            successMessage(data?.message);
+            fetchCertificates()
+        } catch(error) {
+            errorMessage(error?.response?.data?.message)
+            console.log("Error Deleting Certificate", error.message);
+        }
+    }
+
+
+    console.log(certificateList);
+
 
 
 
@@ -243,15 +287,22 @@ const Certificate = () => {
                                     return (
                                         <div className="border-2 w-72 shadow-lg flex flex-col gap-3 p-3 rounded-lg hover:scale-95 duration-300 bg-white" key={index}>
                                             <div >
-                                                <img src={item?.uploadTemplate} alt="" className="rounded-lg object-cover w-72 h-72" />
+                                                <img src={item?.certificate?.uploadTemplate} alt="" className="rounded-lg object-cover w-72 h-72" />
                                             </div>
                                             <div>
                                                 <div>
-                                                    <h1>{item?.firstName} {item?.lastName}</h1>
+                                                    <h1>{item?.certificate?.firstName} {item?.certificate?.lastName}</h1>
                                                 </div>
                                                 <div className="flex justify-between items-center w-full">
                                                     <h1>Course Name</h1>
-                                                    <p>{item?.validDate}</p>
+                                                    <p>{item?.certificate?.validDate}</p>
+                                                </div>
+                                                <div className="flex justify-between items-center mt-6">
+                                                    <button className="text-blue-600" onClick={()=>{
+                                                        UpdateCertificate(item?.certificate?._id)
+                                                        getSingleCertificate(item?.certificate?._id)
+                                                        }}>Edit</button>
+                                                    <button className="text-red-600" onClick={()=>DeleteCertificate(item?.certificate?._id)}>Delete</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -294,6 +345,7 @@ const Certificate = () => {
                                                     }
                                                 </select>
                                                 {/* <input type="text" name="courseId" id="courseId" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeInputs} /> */}
+                                               
                                             </div>
 
                                             <div className="flex flex-col p-2 gap-3">

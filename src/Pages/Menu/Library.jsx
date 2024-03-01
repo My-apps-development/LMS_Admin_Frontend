@@ -34,6 +34,7 @@ const Library = () => {
       const data = await response?.data
       successMessage(data?.message);
       setPdf("")
+      setIsOpen(false)
     } catch (error) {
       console.log("Error Uploading Pdf", error.message);
     }
