@@ -18,7 +18,7 @@ const User = () => {
   const [roles, setRoles] = useState([])
   const [language, setLanguage] = useState([])
 
-  
+
 
   const [approvalStatus, setApprovalStatus] = useState("Pending")
 
@@ -131,7 +131,7 @@ const User = () => {
 
   }
 
-  // console.log(courseList);
+  console.log(userList);
 
 
   const FetchUsers = async () => {
@@ -185,7 +185,7 @@ const User = () => {
       return
     }
 
-    if(!image){
+    if (!image) {
       errorMessage("Upload License is Required")
       return
     }
@@ -326,6 +326,7 @@ const User = () => {
       setLoader(false)
 
     } catch (error) {
+      errorMessage(error?.response?.data?.message)
       console.log("Error deleting", error.message);
     }
     console.log(_id);
@@ -352,21 +353,36 @@ const User = () => {
       setSingleInputs(data.user);
       setLoader(false)
     } catch (error) {
+      errorMessage(error?.response?.data?.message)
       console.log("error fetching Single user detials", error.message);
     }
   }
 
   const FetchCompanies = async () => {
-    try{
+    try {
       const response = await axiosInstance.get("/company/fetch")
       const data = await response?.data
       setCompaniesList(data?.companies);
-    } catch(error){
+    } catch (error) {
+      errorMessage(error?.response?.data?.message)
       console.log("Error Fetching Companies", error.message)
     }
   }
 
-  console.log(companiesList);
+  const userApproval = async (_id) => {
+   
+    try {
+      const response = await axiosInstance.post("/userapprove",  { userid: _id } )
+      const data = await response?.data
+      successMessage(data?.message);
+      FetchUsers()
+    } catch (error) {
+      errorMessage(error?.response?.data?.message)
+      console.log("Error Approving User Status", error.message);
+    }
+  }
+
+
 
   const ClearInputs = () => {
     try {
@@ -381,7 +397,7 @@ const User = () => {
         role: "",
         language: "",
         course: "",
-        status:""
+        status: ""
 
       }))
       setImage(null)
@@ -479,7 +495,8 @@ const User = () => {
                     <h1 className="flex items-center justify-center">Status</h1>
                   </th>
                   <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                    <h1 className="flex items-center justify-center">Approve</h1>
+                    <h1 className="flex items-center justify-center">User Approval</h1>
+                    <p>(click here to approve)</p>
                   </th>
 
                   <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
@@ -502,11 +519,17 @@ const User = () => {
                         <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.language}</td>
                         <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 capitalize">{item?.status}</td>
                         <td className={`p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 `}>
-                          <select name="approval" id="approval" className={`w-full p-2 outline-gray-500 ${statusColors[approvalStatus]}`} onChange={handleChangeApproval}>
+
+
+                          <div className={`flex justify-center items-center gap-2 mt-2 ${item?.approve ? "text-green-700" : "text-red-700"} `}>
+                            <button className="p-1  rounded" onClick={() => userApproval(item?._id)}>{item?.approve ? "Approved" : "Approve"}</button>
+
+                          </div>
+                          {/* <select name="approval" id="approval" className={`w-full p-2 outline-gray-500 ${statusColors[approvalStatus]}`} onChange={handleChangeApproval}>
                             <option value="Pending">Pending</option>
                             <option value="Approved">Approved</option>
                             <option value="Rejected">Rejected</option>
-                          </select>
+                          </select> */}
                         </td>
                         <td className="p-2 border-r cursor-pointer font-semibold text-gray-500 flex gap-2 text-2xl justify-around ">
                           <p onClick={() => {
@@ -596,8 +619,8 @@ const User = () => {
                       <select name="role" id="role" className="p-3 border-2 border-gray-600 rounded-lg" value={flag ? userInputs?.role : singleInputs?.role} onChange={handleChange}>
                         <option value="">Choose Role</option>
                         {
-                          roles?.map((item, index)=>{
-                            return(
+                          roles?.map((item, index) => {
+                            return (
                               <option value={item} key={index}>{item}</option>
                             )
                           })
@@ -612,8 +635,8 @@ const User = () => {
                       <select name="language" id="language" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.language : singleInputs?.language}>
                         <option value="">Choose Language</option>
                         {
-                          language?.map((item, index)=>{
-                            return(
+                          language?.map((item, index) => {
+                            return (
                               <option value={item} key={index}>{item}</option>
                             )
                           })
