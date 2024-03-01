@@ -225,7 +225,7 @@ const Certificate = () => {
         fetchCertificates()
     }, [])
 
-
+ 
     return (
         <div>
             <AdminDashboard />
