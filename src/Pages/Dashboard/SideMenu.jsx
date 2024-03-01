@@ -4,9 +4,9 @@ import { MdSpaceDashboard } from "react-icons/md";
 import { FaBook } from "react-icons/fa6";
 import { AiOutlineSafetyCertificate } from "react-icons/ai";
 import { FaUserLarge } from "react-icons/fa6";
-import { MdSettings } from "react-icons/md";
+// import { MdSettings } from "react-icons/md";
 import { IoPower } from "react-icons/io5";
-// import { RiMenu2Line } from "react-icons/ri";
+import { RiMenu2Line } from "react-icons/ri";
 import { NavLink, useNavigate } from "react-router-dom";
 
 import { successMessage } from "../../Utils/notificationManager";
@@ -106,10 +106,14 @@ const SideMenu = () => {
                         </div>
                     </NavLink>
 
-                    {/* <div className="p-2 hover:bg-gray-300 rounded-lg flex gap-2 w-full cursor-pointer hover:text-[#B32073]">
-                        <p className="flex justify-center items-center text-gray-500"><RiMenu2Line /></p>
-                        <h1 className="text-xl hover:text-[#B32073] text-gray-500 w-full">Menu</h1>
-                    </div> */}
+                    <NavLink to="/menu/Library" className={({ isActive, isPending }) => isPending ? "flex gap-2 text-[#B32073] hover:text-[#B32073]  items-center duration-300 hover:shadow-xl hover:scale-105   pr-6" : isActive ? "flex  gap-2 flex-row items-center duration-300 scale-105 pr-6 bg-gray-300 text-[#B32073] rounded hover:text-[#B32073] hover:shadow-xl" : "text-gray-500"}>
+                        <div className="p-2 hover:bg-gray-300 rounded-lg flex gap-2 w-full cursor-pointer hover:text-[#B32073]">
+                            <p className="flex justify-center items-center "><RiMenu2Line /></p>
+                            <h1 className="text-xl hover:text-[#B32073]  w-full">Menu</h1>
+                        </div>
+                    </NavLink>
+
+
 
                     {/* <NavLink className={({ isActive, isPending }) => isPending ? "flex hover:text-[#B32073] flex-row items-center duration-300 hover:shadow-xl hover:scale-105   pr-6" : isActive ? "flex text-[#B32073] flex-row items-center duration-300 scale-105 pr-6 bg-gray-300  rounded hover:text-[#B32073] hover:shadow-xl" : "text-gray-500"}>
                         <div className="p-2 hover:bg-gray-300 rounded-lg flex gap-2 w-full cursor-pointer hover:text-[#B32073]">

@@ -17,6 +17,7 @@ import { ToastContainer } from 'react-toastify'
 import ProtectedWrapper from './Utils/ProtectedRoute'
 import Company from './Pages/Company/Company'
 import AssignmentRecord from './Pages/Assessment/Assignment'
+import Library from './Pages/Menu/Library'
 
 
 function App() {
@@ -38,7 +39,7 @@ function App() {
           <Route path='/Assessment/Record' element={<ProtectedWrapper><AssignmentRecord /></ProtectedWrapper>} />
           <Route path='/Certificate' element={<ProtectedWrapper><Certificate /></ProtectedWrapper>} />
           <Route path='/Company' element={<ProtectedWrapper><Company /></ProtectedWrapper>} />
-
+          <Route path='/menu/Library' element={<ProtectedWrapper><Library /></ProtectedWrapper>} />
           <Route path='/Users' element={<ProtectedWrapper><User /></ProtectedWrapper>} />
           <Route path='*' element={<NotFound />} />
 
