@@ -33,7 +33,7 @@ const AssessmentList = () => {
     marks: "",
     courseId: "",
     chapterId: "",
-    language:""
+    language: ""
   })
 
   const [singleInputs, setSingleInputs] = useState({
@@ -47,7 +47,7 @@ const AssessmentList = () => {
     courseId: "",
     chapterId: "",
     _id: "",
-    language:""
+    language: ""
   })
 
   const [Language, setLanguage] = useState([])
@@ -340,6 +340,7 @@ const AssessmentList = () => {
   return (
     <div>
       <AdminDashboard />
+
       <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300">
         <div className="p-2 ">
           <h1 className="text-2xl">Assessment</h1>
@@ -381,14 +382,16 @@ const AssessmentList = () => {
                   return (
                     <tr className="bg-gray-100 text-center border-b text-sm text-gray-600" key={index}>
                       <td className="border-r">  <input type="checkbox" /></td>
-                      <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{index + 1 + page * rowsPerPage}</td>
+                      <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 ">{index + 1 + page * rowsPerPage}</td>
                       <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500  text-start ml-5">{item.question}</td>
-                      <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500  text-start">
-                        <option value="1" className=" text-start ml-5">1. {item.option_A}</option>
-                        <option value="2" className=" text-start ml-5">2. {item.option_B}</option>
-                        <option value="3" className=" text-start ml-5">3. {item.option_C}</option>
-                        <option value="4" className=" text-start ml-5">4. {item.option_D}</option>
-                      </td>
+                      <div className="flex flex-wrap">
+                        <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500  text-start">
+                          <option value="1" className=" text-start ml-5 w-[40%] ">1. {item.option_A}</option>
+                          <option value="2" className=" text-start ml-5 w-[40%] ">2. {item.option_B}</option>
+                          <option value="3" className=" text-start ml-5 w-[40%] ">3. {item.option_C}</option>
+                          <option value="4" className=" text-start ml-5 w-[40%] ">4. {item.option_D}</option>
+                        </td>
+                      </div>
                       <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item.correct_option}</td>
                       <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
                         <p onClick={() => {
