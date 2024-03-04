@@ -23,6 +23,16 @@ const AssessmentList = () => {
   const [courseList, setCoursesList] = useState([])
   const [chapterList, setChapterList] = useState([])
 
+  const [csvModalOpen, setCsvModalOpen] = useState(false)
+
+  const [csvFile, setCsvFile] = useState(null)
+
+  const [csvInputs, setCsvInputs] = useState({
+    courseId: "",
+    language: "",
+    file: ""
+  })
+
   const [inputs, setInputs] = useState({
     question: "",
     option_A: "",
@@ -35,6 +45,8 @@ const AssessmentList = () => {
     chapterId: "",
     language: ""
   })
+
+  console.log(inputs);
 
   const [singleInputs, setSingleInputs] = useState({
     question: "",
@@ -49,6 +61,8 @@ const AssessmentList = () => {
     _id: "",
     language: ""
   })
+
+
 
   const [Language, setLanguage] = useState([])
 
@@ -88,8 +102,13 @@ const AssessmentList = () => {
       return
     }
 
+    if (!inputs.option_C) {
+      errorMessage("Option C is Required")
+      return
+    }
+
     if (!inputs.option_D) {
-      errorMessage("Option c is Required")
+      errorMessage("Option D is Required")
       return
     }
 
@@ -148,22 +167,25 @@ const AssessmentList = () => {
     p: 4,
   };
 
-  // const styleEditQuestion = {
-  //   position: 'absolute',
-  //   top: '50%',
-  //   left: '50%',
-  //   transform: 'translate(-50%, -50%)',
-  //   width: 800,
-  //   bgcolor: 'background.paper',
-  //   border: '2px solid transparent',
-  //   boxShadow: 24,
-  //   p: 4,
-  // };
+  const csvModalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 800,
+    height: 500,
+    bgcolor: 'background.paper',
+    border: '2px solid transparent',
+    boxShadow: 24,
+    overflowY: 'scroll',
+    p: 4,
+  };
+
 
   const totalQuizLength = Quiz.length
 
 
-  console.log(Quiz);
+
 
 
   const handleChangePage = (event, newPage) => {
@@ -321,6 +343,40 @@ const AssessmentList = () => {
     }
   }
 
+  const handleChangeCsvInput = (e) => {
+    e.preventDefault()
+    setCsvInputs({ ...csvInputs, [e.target.name]: e.target.value })
+  }
+
+  const handleChangeCSVFile = (e) => {
+    e.preventDefault()
+
+    const file = e.target.files[0]
+    setCsvFile(file)
+  }
+
+  const handleSubmitSCsvFile = async (e) => {
+    e.preventDefault()
+
+    const UploadCsvFile = new FormData()
+    UploadCsvFile.append("courseId", csvInputs.courseId)
+    UploadCsvFile.append("language", csvInputs.language)
+    UploadCsvFile.append("file", csvFile)
+
+    try {
+      const response = await axiosInstance.post("/Quiz/insertcsvque", UploadCsvFile, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      })
+      const data = await response?.data
+      console.log(data);
+    } catch (error) {
+      console.log("Error Uploading Csv File", error.message);
+    }
+  }
+
+  console.log(csvInputs);
 
 
 
@@ -347,13 +403,16 @@ const AssessmentList = () => {
         </div>
         <div className="flex justify-between items-center p-2">
           <h1>Question List</h1>
-          <button className="p-2 border-2 border-[#B32073] bg-[#B32073] text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-38" onClick={handleOpen}><FaPlus />Add Question</button>
+          <div className="flex gap-5">
+            <button className="p-2 border-2 border-[#B32073] bg-[#B32073] text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-38" onClick={() => setCsvModalOpen(true)}> <FaPlus /> Add CSV File</button>
+            <button className="p-2 border-2 border-[#B32073] bg-[#B32073] text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-38" onClick={handleOpen}><FaPlus />Add Question</button>
+          </div>
         </div>
         <div className="w-full mt-5 bg-white rounded-lg">
           <table className="w-[100%]">
             <thead>
               <tr className=" border-b">
-                <th className="border-r">
+                <th className="border-r ">
                   <input type="checkbox" />
                 </th>
                 <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
@@ -386,10 +445,10 @@ const AssessmentList = () => {
                       <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500  text-start ml-5">{item.question}</td>
                       <div className="flex flex-wrap">
                         <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500  text-start">
-                          <option value="1" className=" text-start ml-5 w-[40%] ">1. {item.option_A}</option>
-                          <option value="2" className=" text-start ml-5 w-[40%] ">2. {item.option_B}</option>
-                          <option value="3" className=" text-start ml-5 w-[40%] ">3. {item.option_C}</option>
-                          <option value="4" className=" text-start ml-5 w-[40%] ">4. {item.option_D}</option>
+                          <option value="1" className=" text-start ml-5 ">1. {item.option_A}</option>
+                          <option value="2" className=" text-start ml-5 ">2. {item.option_B}</option>
+                          <option value="3" className=" text-start ml-5 ">3. {item.option_C}</option>
+                          <option value="4" className=" text-start ml-5  ">4. {item.option_D}</option>
                         </td>
                       </div>
                       <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item.correct_option}</td>
@@ -449,8 +508,8 @@ const AssessmentList = () => {
                   <div className="grid grid-cols-2">
                     <div className="flex flex-col p-2 gap-3">
                       <label htmlFor="">Select Course</label>
-                      <select name="courseId" id="" className="p-3 border-2 border-gray-600 rounded-lg" value={Flag ? inputs.courseId : singleInputs.courseId} onChange={(e) => {
-                        handleChange, fetchChapterWithCourseId(e.target.value)
+                      <select name="courseId" id="courseId" className="p-3 border-2 border-gray-600 rounded-lg" value={Flag ? inputs.courseId : singleInputs.courseId} onChange={(e) => {
+                        handleChange(e), fetchChapterWithCourseId(e.target.value)
                       }}>
                         <option value="Choose Option">Choose Option</option>
 
@@ -465,7 +524,7 @@ const AssessmentList = () => {
                       </select>
                     </div>
 
-                    <div className="flex flex-col p-2 gap-3">
+                    {/* <div className="flex flex-col p-2 gap-3">
                       <label htmlFor="">Video/Chapters</label>
                       <select name="chapterId" id="chapterId" className="p-3 border-2 border-gray-600 rounded-lg" value={Flag ? inputs?.chapterId : singleInputs?.chapterId} onChange={handleChange}>
                         <option value="Choose Option">Choose Option</option>
@@ -478,22 +537,24 @@ const AssessmentList = () => {
                           })
                         }
                       </select>
+                    </div> */}
+
+
+                    <div className="flex flex-col gap-3 p-2">
+                      <label htmlFor="">Language</label>
+                      <select name="language" id="language" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={Flag ? inputs?.language : singleInputs?.language}>
+                        <option value="">Choose Language</option>
+                        {
+                          Language?.map((item, index) => {
+                            return (
+                              <option key={index} value={item}>{item}</option>
+                            )
+                          })
+                        }
+                      </select>
                     </div>
                   </div>
 
-                  <div className="flex flex-col gap-3 p-2">
-                    <label htmlFor="">Language</label>
-                    <select name="language" id="language" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={Flag ? inputs?.language : singleInputs?.language}>
-                      <option value="">Choose Language</option>
-                      {
-                        Language?.map((item, index) => {
-                          return (
-                            <option key={index} value={item}>{item}</option>
-                          )
-                        })
-                      }
-                    </select>
-                  </div>
 
 
                   <div className="flex flex-col p-2 gap-3">
@@ -558,6 +619,61 @@ const AssessmentList = () => {
 
 
 
+            </Box>
+          </Modal>
+        </div>
+        <div>
+          <Modal
+            open={csvModalOpen}
+          >
+            <Box sx={csvModalStyle}>
+              <div className="font-semibold">
+                <div className="flex justify-between items-center mx-2">
+                  <h1 className="text-xl font-bold">Add CSV File</h1>
+                  <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-24 rounded-lg" onClick={() => setCsvModalOpen(false)}>Cancel</button>
+                </div>
+                <form onSubmit={handleSubmitSCsvFile}>
+                  <div className="flex flex-col p-2 gap-3">
+                    <label htmlFor="">Select Course</label>
+                    <select name="courseId" id="courseId" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeCsvInput}>
+                      <option value="Choose Option">Choose Option</option>
+
+                      {
+                        courseList?.map((item, index) => {
+                          return (
+                            <option key={index} value={item?.course?._id}>{item?.course?.title}</option>
+                          )
+                        })
+                      }
+
+                    </select>
+                  </div>
+
+
+                  <div className="flex flex-col gap-3 p-2">
+                    <label htmlFor="">Language</label>
+                    <select name="language" id="language" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeCsvInput} >
+                      <option value="">Choose Language</option>
+                      {
+                        Language?.map((item, index) => {
+                          return (
+                            <option key={index} value={item}>{item}</option>
+                          )
+                        })
+                      }
+                    </select>
+                  </div>
+
+                  <div className="flex flex-col gap-3 p-2">
+                    <label htmlFor="">Upload CSV File</label>
+                    <input type="file" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeCSVFile} />
+                  </div>
+
+                  <div className="flex justify-center items-center mt-5">
+                    <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-24 rounded-lg" type="submit">Submit</button>
+                  </div>
+                </form>
+              </div>
             </Box>
           </Modal>
         </div>
