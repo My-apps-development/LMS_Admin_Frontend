@@ -589,8 +589,8 @@ const CourseList = () => {
     }
 
     
-    console.log(singleCourse);
-    console.log(singleChapter);
+    // console.log(singleCourse);
+    // console.log(singleChapter);
 
     // const UpdateChapterById = async (e,_id) => {
     //     e.preventDefault()
@@ -630,6 +630,10 @@ const CourseList = () => {
             console.log("Error Fetching Languages", error.message)
         }
     }
+
+    
+
+    
 
 
     const MasterRoles = async () => {
