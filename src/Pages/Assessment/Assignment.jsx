@@ -3,6 +3,7 @@ import AdminDashboard from "../Dashboard/AdminDashboard"
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../../Utils/AxiosSetUp";
 import { CiExport } from "react-icons/ci";
+import ExportAssignmentRecord from "./ExportExcelData";
 
 
 const AssignmentRecord = () => {
@@ -33,6 +34,15 @@ const AssignmentRecord = () => {
 
     console.log(assignmentRecord)
 
+    const handleExportToExcel = (e) => {
+        e.preventDefault()
+
+        console.log(assignmentRecord);
+
+        ExportAssignmentRecord(assignmentRecord, "sheet-1")
+
+      }
+
     useEffect(() => {
         getAssignmentRecord()
     }, [])
@@ -46,7 +56,7 @@ const AssignmentRecord = () => {
                         <p>Total 7 Records in Table </p>
                     </div>
                     <div>
-                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-44"><CiExport className="font-extrabold text-xl"/>Export</button>
+                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-44" onClick={handleExportToExcel}><CiExport className="font-extrabold text-xl" />Export</button>
                     </div>
                 </div>
                 <div className="w-full mt-5 bg-white rounded-lg">
