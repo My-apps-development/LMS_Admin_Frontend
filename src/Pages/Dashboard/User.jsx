@@ -136,7 +136,7 @@ const User = () => {
 
   }
 
-  console.log(userList);
+  // console.log(userList);
 
 
   const FetchUsers = async () => {
@@ -207,9 +207,9 @@ const User = () => {
       errorMessage("language Required")
     }
 
-    console.log(userInputs);
+    // console.log(userInputs);
 
-    console.log(image);
+    // console.log(image);
 
 
 
@@ -358,6 +358,7 @@ const User = () => {
       const data = await response.data
       console.log(data);
       setSingleInputs(data.user);
+      setDisplayImage(data?.user?.upload_license)
       setLoader(false)
     } catch (error) {
       errorMessage(error?.response?.data?.message)
@@ -449,6 +450,9 @@ const User = () => {
 
 
   }
+
+
+  
 
 
 

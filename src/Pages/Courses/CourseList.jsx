@@ -725,11 +725,11 @@ const CourseList = () => {
 
                                                 <div className="flex justify-between items-center gap-2 text-xs">
                                                     <p className="text-gray-400">Category: <span className="text-blue-500">{item?.category?.categories}</span></p>
-                                                    <p className="text-gray-400">Videos: <span className="text-blue-500">{item?.course?.videoCount}</span></p>
+                                                    {/* <p className="text-gray-400">Videos: <span className="text-blue-500">{item?.course?.videoCount}</span></p> */}
                                                 </div>
                                                 <div className="flex justify-between items-center py-2 text-xs">
                                                     <p className="text-gray-400">status: <span className="text-green-600">{item?.course?.status}</span></p>
-                                                    <p className="text-gray-400">Enrolled User: <span className="text-blue-500">{item?.course?.inrolled_users}</span></p>
+                                                    {/* <p className="text-gray-400">Enrolled User: <span className="text-blue-500">{item?.course?.inrolled_users}</span></p> */}
                                                 </div>
                                             </div>
                                             <Divider />
@@ -861,11 +861,11 @@ const CourseList = () => {
                                     </div>
 
                                     <div className="flex p-2 gap-3">
-                                        <div className="flex justify-center items-center p-2 gap-3">
+                                        {/* <div className="flex justify-center items-center p-2 gap-3">
                                             <input type="radio" name="source" id="source" value="Youtube" onChange={handleChange} checked={isFlag ? CourseInputs.source == "Youtube" : singleCourse.source && singleCourse.source.toLowerCase() === "Youtube"} className="p-3 border-2 border-gray-600 rounded-lg" />
                                             <label htmlFor="">Youtube</label>
 
-                                        </div>
+                                        </div> */}
 
                                         <div className="flex justify-center items-center p-2 gap-3">
                                             <input type="radio" name="source" id="source" value="vimeo" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={isFlag ? CourseInputs.source == "vimeo" : singleCourse.source == "vimeo"} />
@@ -1260,11 +1260,11 @@ const CourseList = () => {
                                                 <h1>Source</h1>
                                             </div>
                                             <div className="flex p-2 gap-3">
-                                                <div className="flex justify-center items-center p-2 gap-3">
+                                                {/* <div className="flex justify-center items-center p-2 gap-3">
                                                     <input type="radio" name="source" id="source" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value="youtube" checked={chapterFlag ? chapters?.source == "youtube" : singleChapter?.source == "youtube"} />
                                                     <label htmlFor="">Youtube</label>
 
-                                                </div>
+                                                </div> */}
 
                                                 <div className="flex justify-center items-center p-2 gap-3">
                                                     <input type="radio" name="source" id="source" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value="Vimeo" checked={chapterFlag ? chapters?.source == "Vimeo" : singleChapter?.source == "vimeo"} />
