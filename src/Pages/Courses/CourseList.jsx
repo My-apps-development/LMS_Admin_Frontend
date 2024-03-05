@@ -42,6 +42,8 @@ const CourseList = () => {
     //     chapterLink: ""
     // }])
 
+    const [isSettingModalOpen, setIsSettingModalOpen] = useState(false)
+
     const [videoIntervalDisplay, setVideoIntervalDisplay] = useState(false)
 
     const [singleCourse, setSingleCourse] = useState({
@@ -74,6 +76,8 @@ const CourseList = () => {
 
     const [chapterFlag, setChapterFlag] = useState(false)
 
+    const [settingFlag, setSettingFlag] = useState(true)
+
     const [chapters, setChapters] = useState({
         title: "",
         description: "",
@@ -96,6 +100,12 @@ const CourseList = () => {
         role: ""
     })
 
+    const [settingInputs, setSettingInputs] = useState({
+        firstmonth: "",
+        secondmonth: "",
+        thirdmonth: ""
+    })
+
     // const fileInputRef = useRef()
 
     const [chapterList, setChapterList] = useState([])
@@ -103,6 +113,10 @@ const CourseList = () => {
     const [language, setLanguage] = useState([])
 
     const [roles, setRoles] = useState([])
+
+    const [settingData, setSettingData] = useState([])
+
+
 
     // const [AddChapter, setAddChapter] = useState(false)
 
@@ -143,6 +157,21 @@ const CourseList = () => {
         overflowY: 'auto',
         p: 4,
     };
+
+    const styleSettingModal = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 800,
+        height: 600,
+        bgcolor: 'background.paper',
+        border: '2px solid transparent',
+        borderRadius: 1,
+        boxShadow: 24,
+        overflowY: 'auto',
+        p: 4,
+    }
 
 
     const handleOpenModal = () => {
@@ -212,6 +241,30 @@ const CourseList = () => {
 
         chapterFlag ? setChapters({ ...chapters, [e.target.name]: e.target.value }) : setSingleChapter({ ...singleChapter, [e.target.name]: e.target.value })
 
+    }
+
+    const handleChangeSettingForm = (e) => {
+        e.preventDefault()
+
+        setSettingInputs({ ...settingInputs, [e.target.name]: e.target.value })
+
+    }
+
+  
+
+    const PostSettingForm = async (e) => {
+        e.preventDefault()
+
+        try {
+            const response = await axiosInstance.patch(`/setting/update?id=${settingData[0]?._id}`, settingInputs)
+            const data = await response?.data
+            successMessage(data?.message);
+            GetSettings()
+            setIsSettingModalOpen(false)
+        } catch (error) {
+            errorMessage(error?.response?.data?.message)
+            console.log("Error Inserting Setting Inputs", error.message);
+        }
     }
 
     const PostChapter = async (e) => {
@@ -395,7 +448,7 @@ const CourseList = () => {
 
     }
 
-    console.log(CourseInputs);
+
 
 
 
@@ -549,7 +602,7 @@ const CourseList = () => {
         }
     }
 
-    
+
 
     const fetchCourseById = async (_id) => {
         setFlag(false)
@@ -561,7 +614,7 @@ const CourseList = () => {
             setLoader(true)
             const response = await axiosInstance.get(`https://myappsdevelopment.co.in/homepage/singlecourse?courseid=${_id} `)
             const data = await response.data
-          
+
             setSingleCourse(data.Courses);
             setLoader(false)
         } catch (error) {
@@ -588,7 +641,10 @@ const CourseList = () => {
         }
     }
 
-    
+
+
+
+
     // console.log(singleCourse);
     // console.log(singleChapter);
 
@@ -631,9 +687,21 @@ const CourseList = () => {
         }
     }
 
-    
+    const GetSettings = async () => {
+        try {
+            const response = await axiosInstance.get("/setting/get")
+            const data = await response.data
+            setSettingData(data?.settingdata);
+        } catch (error) {
+            console.log("Error Fetching Course Setting", error.message);
+        }
+    }
 
-    
+    console.log(settingData);
+
+
+
+
 
 
     const MasterRoles = async () => {
@@ -671,6 +739,7 @@ const CourseList = () => {
         fetchCategories()
         Languages()
         MasterRoles()
+        GetSettings()
         // FetchChapterById()
     }, [])
 
@@ -702,10 +771,19 @@ const CourseList = () => {
                                             <p className="p-2 flex justify-center items-center gap-2 border-2 border-[#B32073] text-[#B32073] hover:bg-[#B32073] hover:text-white" onClick={() => setVideoIntervalDisplay(!videoIntervalDisplay)}><MdSettings />Settings</p>
                                             <button className="p-2 border-2 border-[#B32073] bg-[#B32073] flex justify-center items-center gap-3  text-white hover:bg-[#B32073] hover:bg-inherit hover:text-[#B32073]" onClick={handleOpenModal}><FaPlus />Add Course</button>
 
-                                            <div className={`absolute mt-14 px-5  flex-col justify-center items-center gap-1 border-2 border-gray-600 py-1 rounded z-40 ${videoIntervalDisplay ? "flex" : "hidden"}`} >
-                                                <p>30 days</p>
-                                                <p>60 days</p>
-                                                <p>90 days</p>
+                                            <div className={`absolute mt-14  flex-col justify-center items-center gap-1 border-2 border-gray-600 rounded z-40 ${videoIntervalDisplay ? "flex" : "hidden"}`} >
+                                                {
+                                                    settingData.map((item, index) => {
+                                                        return (
+                                                            <div key={index} className="bg-gray-600 text-white p-2">
+                                                                <p className="cursor-pointer">first month: {item?.firstmonth}</p>
+                                                                <p className="cursor-pointer"> second month: {item?.secondmonth}</p>
+                                                                <p className="cursor-pointer">third month: {item?.thirdmonth}</p>
+                                                                <button className="px-2 py-1 bg-[#B32073] mt-3" onClick={() => setIsSettingModalOpen(true)}><CiEdit /></button>
+                                                            </div>
+                                                        )
+                                                    })
+                                                }
                                             </div>
                                         </div>
 
@@ -918,7 +996,7 @@ const CourseList = () => {
                                         selectedSource == "Upload" && (
                                             <>
                                                 <label htmlFor="">Upload Video</label>
-                                                <input type="file" name="video_link" id="video_link" className="p-3 w-full border-2 border-gray-600 rounded-lg" onChange={handleChangeVedioFile}  />
+                                                <input type="file" name="video_link" id="video_link" className="p-3 w-full border-2 border-gray-600 rounded-lg" onChange={handleChangeVedioFile} />
                                                 {uploadProgress > 0 && <p>Uploading: {uploadProgress}%</p>}
                                             </>
                                         )
@@ -1366,6 +1444,43 @@ const CourseList = () => {
                                     </div>
                                 </div>
                             </form>
+                        </div>
+                    </Box>
+                </Modal>
+            </div>
+
+            <div>
+                <Modal
+                    open={isSettingModalOpen}
+                >
+                    <Box sx={styleSettingModal}>
+                        <div>
+                            <div className="flex justify-between items-center font-semibold">
+                                <h1 className="text-2xl">Edit Settings</h1>
+                                <button className="p-1 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg" onClick={() => setIsSettingModalOpen(false)}>Close</button>
+                            </div>
+                            <form className="flex flex-col font-semibold mt-5" onSubmit={PostSettingForm}>
+                                <div className="flex flex-col p-2 gap-3">
+                                    <label htmlFor="">First month</label>
+                                    <input type="text" name="firstmonth" id="firstmonth" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeSettingForm} value={settingFlag ? settingInputs.firstmonth : ""}/>
+                                </div>
+
+                                <div className="flex flex-col p-2 gap-3">
+                                    <label htmlFor="">Second month</label>
+                                    <input type="text" name="secondmonth" id="secondmonth" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeSettingForm} value={settingFlag ? settingInputs.secondmonth : ""}/>
+                                </div>
+
+                                <div className="flex flex-col p-2 gap-3">
+                                    <label htmlFor="">Third month</label>
+                                    <input type="text" name="thirdmonth" id="thirdmonth" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeSettingForm} value={settingFlag ? settingInputs.thirdmonth : ""}/>
+                                </div>
+
+                                <div className="flex justify-center items-center mt-5">
+                                    <button className="p-1 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg" type="submit">Submit</button>
+                                </div>
+
+                            </form>
+
                         </div>
                     </Box>
                 </Modal>
