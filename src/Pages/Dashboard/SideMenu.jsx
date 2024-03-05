@@ -109,7 +109,7 @@ const SideMenu = () => {
                     <NavLink to="/menu/Library" className={({ isActive, isPending }) => isPending ? "flex gap-2 text-[#B32073] hover:text-[#B32073]  items-center duration-300 hover:shadow-xl hover:scale-105   pr-6" : isActive ? "flex  gap-2 flex-row items-center duration-300 scale-105 pr-6 bg-gray-300 text-[#B32073] rounded hover:text-[#B32073] hover:shadow-xl" : "text-gray-500"}>
                         <div className="p-2 hover:bg-gray-300 rounded-lg flex gap-2 w-full cursor-pointer hover:text-[#B32073]">
                             <p className="flex justify-center items-center "><RiMenu2Line /></p>
-                            <h1 className="text-xl hover:text-[#B32073]  w-full">Menu</h1>
+                            <h1 className="text-xl hover:text-[#B32073]  w-full">Library</h1>
                         </div>
                     </NavLink>
 

@@ -18,6 +18,9 @@ import ProtectedWrapper from './Utils/ProtectedRoute'
 import Company from './Pages/Company/Company'
 import AssignmentRecord from './Pages/Assessment/Assignment'
 import Library from './Pages/Menu/Library'
+import CompanyLogin from './Pages/CompanyForm/CompanyLogin'
+import CompanyDashboard from './Pages/Dashboard/CompanyDashboard'
+import CompanyAssignment from './Components/CompanyAssignment/CompanyAssignment'
 
 
 function App() {
@@ -26,11 +29,15 @@ function App() {
   return (
     <div className=''>
       <BrowserRouter>
-      <ToastContainer />
+        <ToastContainer />
         <Routes>
+
+
+             {/* ------------------------------------ Admin Routes ------------------------------------------ */}
 
           <Route path='/' element={<ProtectedWrapper><Dashboard /></ProtectedWrapper>} />
           <Route path='/login' element={<Login />} />
+
           <Route path='/Courses/CourseList' element={<ProtectedWrapper><CourseList /></ProtectedWrapper>} />
           <Route path='/Courses/Categories' element={<ProtectedWrapper><CourseCategory /></ProtectedWrapper>} />
           <Route path='/Enrollment/List' element={<ProtectedWrapper><EnrollmentList /></ProtectedWrapper>} />
@@ -41,6 +48,16 @@ function App() {
           <Route path='/Company' element={<ProtectedWrapper><Company /></ProtectedWrapper>} />
           <Route path='/menu/Library' element={<ProtectedWrapper><Library /></ProtectedWrapper>} />
           <Route path='/Users' element={<ProtectedWrapper><User /></ProtectedWrapper>} />
+          
+
+
+          {/* ------------------------------------ Company Routes ------------------------------------------ */}
+
+          <Route path='/companylogin' element={<CompanyLogin />} />
+          <Route path='/companydashboard' element={<CompanyDashboard />} />
+          <Route path='/company/assignment/record' element={<CompanyAssignment />} />
+
+
           <Route path='*' element={<NotFound />} />
 
         </Routes>

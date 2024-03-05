@@ -2,6 +2,7 @@ import { TablePagination } from "@mui/material"
 import AdminDashboard from "../Dashboard/AdminDashboard"
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../../Utils/AxiosSetUp";
+import { CiExport } from "react-icons/ci";
 
 
 const AssignmentRecord = () => {
@@ -39,9 +40,14 @@ const AssignmentRecord = () => {
         <div>
             <AdminDashboard />
             <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300">
-                <div className="p-2 flex justify-start items-start gap-2 flex-col">
-                    <h1 className="text-2xl">Assignment Record</h1>
-                    <p>Total 7 Records in Table </p>
+                <div className="p-2 flex justify-between items-start gap-2">
+                    <div>
+                        <h1 className="text-2xl">Assignment Record</h1>
+                        <p>Total 7 Records in Table </p>
+                    </div>
+                    <div>
+                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-44"><CiExport className="font-extrabold text-xl"/>Export</button>
+                    </div>
                 </div>
                 <div className="w-full mt-5 bg-white rounded-lg">
                     <table className="w-[100%]">
@@ -84,12 +90,12 @@ const AssignmentRecord = () => {
                                     <h1 className="flex items-center justify-center">Percentage</h1>
                                 </th>
 
-                               
-
-                               
 
 
-                               
+
+
+
+
 
                             </tr>
                         </thead>
@@ -113,9 +119,9 @@ const AssignmentRecord = () => {
                                             <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.assignment?.wronganswer}</td>
                                             <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.assignment?.percentage}</td>
 
-                                         
-                                            
-                                            
+
+
+
                                         </tr>
 
                                     )
