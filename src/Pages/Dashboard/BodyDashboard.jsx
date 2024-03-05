@@ -20,7 +20,7 @@ const BodyDashboard = () => {
         labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', "Week 5", "Week 6", "Week 7"],
         datasets: [
             {
-                label: "Students",
+                label: "User",
                 data: [25, 50, 75, 100, 25, 43, 12],
                 backgroundColor: [
                     "#d24787"
@@ -39,6 +39,9 @@ const BodyDashboard = () => {
     const [UserList, setUserList] = useState([])
     const [chapterList, setChapterList] = useState([])
     const [certificateList, setCertificateList] = useState([])
+
+
+    console.log(UserList);
 
 
 
@@ -182,7 +185,7 @@ const BodyDashboard = () => {
                     <div className="w-[100%] flex gap-5 mt-2">
                         <div className="w-[72%] shadow-xl p-3 ml-5 bg-white rounded-lg mb-10">
                             <div className="flex justify-between items-center">
-                                <h1 className="text-gray-700">Active User (Students) </h1>
+                                <h1 className="text-gray-700">Active User </h1>
                                 <p className="border-2 px-4 py-2 rounded-lg bg-[#B32073] w-40 text-center text-white">Jan 2024 &gt;</p>
                             </div>
                             <div className="w-[100%] ">

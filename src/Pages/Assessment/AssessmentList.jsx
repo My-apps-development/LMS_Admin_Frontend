@@ -358,6 +358,8 @@ const AssessmentList = () => {
   const handleSubmitSCsvFile = async (e) => {
     e.preventDefault()
 
+ 
+
     const UploadCsvFile = new FormData()
     UploadCsvFile.append("courseId", csvInputs.courseId)
     UploadCsvFile.append("language", csvInputs.language)
@@ -370,13 +372,28 @@ const AssessmentList = () => {
         }
       })
       const data = await response?.data
-      console.log(data);
+   
+      successMessage(data?.message);  
+      clearCsvInputs()
     } catch (error) {
       console.log("Error Uploading Csv File", error.message);
     }
   }
 
   console.log(csvInputs);
+
+  const clearCsvInputs = () => {
+    try{
+      setCsvInputs((prevInputs)=>({
+        ...prevInputs,
+        courseId:"",
+        language:""
+      }))
+      setCsvFile(null)
+    } catch(error){
+      console.log("Error Clearing Inputs",error.message);
+    }
+  }
 
 
 
@@ -635,7 +652,7 @@ const AssessmentList = () => {
                 <form onSubmit={handleSubmitSCsvFile}>
                   <div className="flex flex-col p-2 gap-3">
                     <label htmlFor="">Select Course</label>
-                    <select name="courseId" id="courseId" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeCsvInput}>
+                    <select name="courseId" id="courseId" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeCsvInput} value={csvInputs.courseId}>
                       <option value="Choose Option">Choose Option</option>
 
                       {
@@ -652,7 +669,7 @@ const AssessmentList = () => {
 
                   <div className="flex flex-col gap-3 p-2">
                     <label htmlFor="">Language</label>
-                    <select name="language" id="language" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeCsvInput} >
+                    <select name="language" id="language" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeCsvInput} value={csvInputs.language}>
                       <option value="">Choose Language</option>
                       {
                         Language?.map((item, index) => {
@@ -666,7 +683,7 @@ const AssessmentList = () => {
 
                   <div className="flex flex-col gap-3 p-2">
                     <label htmlFor="">Upload CSV File</label>
-                    <input type="file" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeCSVFile} />
+                    <input type="file" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeCSVFile} value={csvInputs.file}/>
                   </div>
 
                   <div className="flex justify-center items-center mt-5">

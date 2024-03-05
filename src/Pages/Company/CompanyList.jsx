@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react"
 import { axiosInstance } from "../../Utils/AxiosSetUp"
 import Loader from "../../Utils/Loader"
+import { TablePagination } from "@mui/material"
 
 
 const CompanyList = () => {
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [companyList, setCompanyList] = useState([])
     const [loader, setLoader] = useState(false)
 
@@ -18,6 +21,17 @@ const CompanyList = () => {
             console.log("Error Fetching company details", error.message);
         }
     }
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+      };
+    
+    
+    
+      const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+      };
 
     useEffect(() => {
         fetchCompanyList()
@@ -82,6 +96,23 @@ const CompanyList = () => {
 
                         </tbody>
                     </table>
+                    <table>
+              <thead></thead>
+              <tbody>
+                <tr>
+                  <td><TablePagination
+                    rowsPerPageOptions={[5, 10, 100]}
+                    component="div"
+                    count={companyList.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                  /></td>
+
+                </tr>
+              </tbody>
+            </table>
                 </div>
             }
         </div>

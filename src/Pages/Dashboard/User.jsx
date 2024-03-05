@@ -57,13 +57,15 @@ const User = () => {
 
   const [userList, setUserList] = useState([])
 
-  // const [courseList, setCourseList] = useState([])
+
 
   const [image, setImage] = useState(null)
 
   const [loader, setLoader] = useState(false)
 
   const [companiesList, setCompaniesList] = useState([])
+
+  const [displayImage, setDisplayImage] = useState(null)
 
 
   const lengthOfTable = userList.length
@@ -74,7 +76,7 @@ const User = () => {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 850,
+    width: 1150,
     height: 600,
     bgcolor: 'background.paper',
     border: '2px solid transparent',
@@ -115,19 +117,22 @@ const User = () => {
 
     const imageFile = e.target.files[0];
 
+    
+
+    if(imageFile){
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setDisplayImage(reader.result)
+      }
+      reader.readAsDataURL(imageFile)
+    }
+
     setImage(imageFile);
 
-    // console.log(imageFile);
-    // setImage(imageFile)
+    
 
-    // if (imageFile) {
-    //   const imageUrl = URL.createObjectURL(imageFile);
-    //   console.log(imageUrl);
-
-    //   setImage(imageFile);
-    //   setOpen(false)
-    // }
-
+   
+    
 
   }
 
@@ -152,7 +157,7 @@ const User = () => {
       setUserInputs((prevInputs) => ({
         ...prevInputs,
         [e.target.name]: e.target.value,
-        fullname: e.target.name === 'firstName' ? e.target.value + (prevInputs.lastName || '') : (prevInputs.firstName || '') + e.target.value
+        fullname: e.target.name === 'firstName' ? e.target.value + (prevInputs.lastName) : (prevInputs.firstName) + e.target.value
       }))
       :
       setSingleInputs((prevInputs) => ({
@@ -205,6 +210,8 @@ const User = () => {
     console.log(userInputs);
 
     console.log(image);
+
+
 
     const fD = new FormData()
     fD.append("firstName", userInputs.firstName)
@@ -370,9 +377,9 @@ const User = () => {
   }
 
   const userApproval = async (_id) => {
-   
+
     try {
-      const response = await axiosInstance.post("/userapprove",  { userid: _id } )
+      const response = await axiosInstance.post("/userapprove", { userid: _id })
       const data = await response?.data
       successMessage(data?.message);
       FetchUsers()
@@ -401,6 +408,7 @@ const User = () => {
 
       }))
       setImage(null)
+      setDisplayImage(null)
     } catch (error) {
       console.log("error clearing input fields", error.message);
     }
@@ -582,108 +590,117 @@ const User = () => {
                   <h1 className="text-2xl">{flag ? "Add User" : "Update User"}</h1>
                   <button className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-20" onClick={handleClose}>Close</button>
                 </div>
-                <form onSubmit={flag ? handleSubmit : handleUpdateUSer}>
-                  <div className="grid grid-cols-2">
-                    <div className="flex flex-col p-2 gap-3">
-                      <label htmlFor="">First Name</label>
-                      <input type="text" name="firstName" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.firstName : singleInputs?.firstName} />
-                    </div>
+                <div className="flex gap-2">
+                  <form onSubmit={flag ? handleSubmit : handleUpdateUSer}>
+                    <div className="grid grid-cols-2">
+                      <div className="flex flex-col p-2 gap-3">
+                        <label htmlFor="">First Name</label>
+                        <input type="text" name="firstName" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.firstName : singleInputs?.firstName} />
+                      </div>
 
-                    <div className="flex flex-col p-2 gap-3">
-                      <label htmlFor="">Last Name</label>
-                      <input type="text" name="lastName" id="lastName" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.lastName : singleInputs?.lastName} />
-                    </div>
+                      <div className="flex flex-col p-2 gap-3">
+                        <label htmlFor="">Last Name</label>
+                        <input type="text" name="lastName" id="lastName" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.lastName : singleInputs?.lastName} />
+                      </div>
 
-                    <div className="flex flex-col p-2 gap-3">
-                      <label htmlFor="">Mobile</label>
-                      <input type="number" name="mobile" id="mobile" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.mobile : singleInputs?.mobile} />
-                    </div>
+                      <div className="flex flex-col p-2 gap-3">
+                        <label htmlFor="">Mobile</label>
+                        <input type="number" name="mobile" id="mobile" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.mobile : singleInputs?.mobile} />
+                      </div>
 
-                    <div className="flex flex-col p-2 gap-3">
-                      <label htmlFor="">Email</label>
-                      <input type="text" name="email" id="email" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.email : singleInputs?.email} />
-                    </div>
+                      <div className="flex flex-col p-2 gap-3">
+                        <label htmlFor="">Email</label>
+                        <input type="text" name="email" id="email" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.email : singleInputs?.email} />
+                      </div>
 
-                    <div className="flex flex-col p-2 gap-3">
-                      <label htmlFor="">Upload License</label>
-                      <input type="file" name="upload_license" id="upload_license" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeImage} />
-                    </div>
+                      <div className="flex flex-col p-2 gap-3">
+                        <label htmlFor="">Upload License</label>
+                        <input type="file" name="upload_license" id="upload_license" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeImage} />
+                      </div>
 
-                    <div className="flex flex-col p-2 gap-3">
-                      <label htmlFor="">License Number</label>
-                      <input type="text" name="license_num" id="license_num" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.license_num : singleInputs?.license_num} />
-                    </div>
+                      <div className="flex flex-col p-2 gap-3">
+                        <label htmlFor="">License Number</label>
+                        <input type="text" name="license_num" id="license_num" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.license_num : singleInputs?.license_num} />
+                      </div>
 
-                    <div className="flex flex-col p-2 gap-3">
-                      <label htmlFor="">Role</label>
-                      <select name="role" id="role" className="p-3 border-2 border-gray-600 rounded-lg" value={flag ? userInputs?.role : singleInputs?.role} onChange={handleChange}>
-                        <option value="">Choose Role</option>
-                        {
-                          roles?.map((item, index) => {
-                            return (
-                              <option value={item} key={index}>{item}</option>
-                            )
-                          })
-                        }
-                      </select>
-                      {/* <input type="text" name="role" id="role" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange}
+                      <div className="flex flex-col p-2 gap-3">
+                        <label htmlFor="">Role</label>
+                        <select name="role" id="role" className="p-3 border-2 border-gray-600 rounded-lg" value={flag ? userInputs?.role : singleInputs?.role} onChange={handleChange}>
+                          <option value="">Choose Role</option>
+                          {
+                            roles?.map((item, index) => {
+                              return (
+                                <option value={item} key={index}>{item}</option>
+                              )
+                            })
+                          }
+                        </select>
+                        {/* <input type="text" name="role" id="role" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange}
                         value={flag ? userInputs?.role : singleInputs?.role} /> */}
+                      </div>
+
+                      <div className="flex flex-col p-2 gap-3">
+                        <label htmlFor="">Language</label>
+                        <select name="language" id="language" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.language : singleInputs?.language}>
+                          <option value="">Choose Language</option>
+                          {
+                            language?.map((item, index) => {
+                              return (
+                                <option value={item} key={index}>{item}</option>
+                              )
+                            })
+                          }
+                        </select>
+                        {/* <input type="text" name="aadhar_num" id="aadhar_num" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.aadhar_num : singleInputs?.aadhar_num} /> */}
+                      </div>
+
+
+
                     </div>
 
                     <div className="flex flex-col p-2 gap-3">
-                      <label htmlFor="">Language</label>
-                      <select name="language" id="language" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.language : singleInputs?.language}>
-                        <option value="">Choose Language</option>
+                      <label htmlFor="">Company</label>
+                      <select name="company" id="company" className="p-3 border-2 border-gray-600 rounded-lg" value={flag ? userInputs?.course : singleInputs?.course} onChange={handleChange}>
+                        <option value="Driver">Choose Options</option>
                         {
-                          language?.map((item, index) => {
+                          companiesList?.map((item, index) => {
                             return (
-                              <option value={item} key={index}>{item}</option>
+                              <option key={index} value={item?._id}>{item?.name}</option>
                             )
                           })
                         }
                       </select>
-                      {/* <input type="text" name="aadhar_num" id="aadhar_num" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.aadhar_num : singleInputs?.aadhar_num} /> */}
+                    </div>
+
+                    <div className="flex flex-col gap-3 p-2">
+                      <label htmlFor="">Status</label>
+                      <div className=" flex gap-5">
+                        <input type="radio" name="status" id="status" onChange={handleChange} value="active" checked={flag ? userInputs?.status == "active" : singleInputs?.status == "active"} />
+                        <p>Active</p>
+
+                        <input type="radio" name="status" id="status" onChange={handleChange} value="pending" checked={flag ? userInputs?.status == "pending" : singleInputs?.status == "pending"} />
+                        <p>Pending</p>
+
+                        <input type="radio" name="status" id="status" onChange={handleChange} value="Inactive" checked={flag ? userInputs?.status == "Inactive" : singleInputs?.status == "Inactive"} />
+                        <p>InActive</p>
+
+                      </div>
                     </div>
 
 
-
-                  </div>
-
-                  <div className="flex flex-col p-2 gap-3">
-                    <label htmlFor="">Company</label>
-                    <select name="company" id="company" className="p-3 border-2 border-gray-600 rounded-lg" value={flag ? userInputs?.course : singleInputs?.course} onChange={handleChange}>
-                      <option value="Driver">Choose Options</option>
-                      {
-                        companiesList?.map((item, index) => {
-                          return (
-                            <option key={index} value={item?._id}>{item?.name}</option>
-                          )
-                        })
-                      }
-                    </select>
-                  </div>
-
-                  <div className="flex flex-col gap-3 p-2">
-                    <label htmlFor="">Status</label>
-                    <div className=" flex gap-5">
-                      <input type="radio" name="status" id="status" onChange={handleChange} value="active" checked={flag ? userInputs?.status == "active" : singleInputs?.status == "active"} />
-                      <p>Active</p>
-
-                      <input type="radio" name="status" id="status" onChange={handleChange} value="pending" checked={flag ? userInputs?.status == "pending" : singleInputs?.status == "pending"} />
-                      <p>Pending</p>
-
-                      <input type="radio" name="status" id="status" onChange={handleChange} value="Inactive" checked={flag ? userInputs?.status == "Inactive" : singleInputs?.status == "Inactive"} />
-                      <p>InActive</p>
-
+                    <div className="w-full flex justify-center items-center gap-5">
+                      {/* <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button> */}
+                      <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg">{flag ? "Add User" : "Update User"}</button>
+                    </div>
+                  </form>
+                  <div className="mt-5 rounded shadow-xl p-2 h-80 flex flex-col gap-3">
+                    <img src={displayImage} alt="" className="w-96 h-52 rounded-lg object-cover" />
+                    <div className="flex flex-col justify-center items-center gap-2">
+                      <h1 className="text-2xl text-[#B32073]">Uploaded License</h1>
+                      <p className="text-xs">Upload only PNG,JPEG</p>
                     </div>
                   </div>
-
-
-                  <div className="w-full flex justify-center items-center gap-5">
-                    {/* <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button> */}
-                    <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg">{flag ? "Add User" : "Update User"}</button>
-                  </div>
-                </form>
+                </div>
               </div>
             </Box>
           </Modal>

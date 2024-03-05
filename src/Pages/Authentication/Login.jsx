@@ -108,7 +108,8 @@ const Login = () => {
               </div>
 
               <div className="p-2 flex flex-col gap-2">
-                <button className="bg-[#B32073] p-2 rounded-lg text-white hover:bg-[#B32073]">Log in</button>
+                <button className="bg-[#B32073] p-2 rounded-lg text-white hover:border-2 hover:border-[#B32073]  hover:text-[#B32073] hover:bg-white">Log in</button>
+                <button className="bg-white text-[#B32073] p-2 border-2 border-[#B32073] hover:text-white rounded-lg  hover:bg-[#B32073]" onClick={()=>navigate("/companylogin")}>Company Login</button>
               </div>
             </form>
           </div>
