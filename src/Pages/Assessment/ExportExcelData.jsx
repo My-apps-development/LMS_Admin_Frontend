@@ -12,7 +12,7 @@ const splitData = (data) => {
             totalQuestions: item?.assignment?.totalquestions,
             correctAnswers: item?.assignment?.correctanswer,
             wrongAnswers: item?.assignment?.wronganswer,
-            percentage: item?.assignment?.percentage,
+            percentage: item?.assignment?.percentage !== undefined ? parseFloat(item?.assignment?.percentage).toFixed(2) : undefined,
         };
     });
 };
