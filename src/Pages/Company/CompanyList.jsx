@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { axiosInstance } from "../../Utils/AxiosSetUp"
 import Loader from "../../Utils/Loader"
 import { TablePagination } from "@mui/material"
+import { successMessage } from "../../Utils/notificationManager"
 
 
 const CompanyList = () => {
@@ -24,14 +25,26 @@ const CompanyList = () => {
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
-      };
-    
-    
-    
-      const handleChangeRowsPerPage = (event) => {
+    };
+
+
+
+    const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
-      };
+    };
+
+    const DeleteCompanyById = async (_id) => {
+
+        try {
+            const response = await axiosInstance.delete("/company/delete", { data: { id: _id } })
+            const data = await response?.data
+            successMessage(data?.message);
+            fetchCompanyList()
+        } catch (error) {
+            console.log("Error Deleting Company", error.message);
+        }
+    }
 
     useEffect(() => {
         fetchCompanyList()
@@ -59,7 +72,7 @@ const CompanyList = () => {
                                     <h1 className="flex items-center justify-center">Phone</h1>
                                 </th>
                                 <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                                    <h1 className="flex items-center justify-center">User</h1>
+                                    <h1 className="flex items-center justify-center">Action</h1>
                                 </th>
 
 
@@ -85,7 +98,7 @@ const CompanyList = () => {
                                                 <h1 className="flex items-center justify-center">{item.phone}</h1>
                                             </td>
                                             <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                                                <h1 className="flex items-center justify-center">User</h1>
+                                                <h1 className="flex items-center justify-center text-red-400" onClick={() => DeleteCompanyById(item?._id)}>Delete</h1>
                                             </td>
 
 
@@ -97,22 +110,22 @@ const CompanyList = () => {
                         </tbody>
                     </table>
                     <table>
-              <thead></thead>
-              <tbody>
-                <tr>
-                  <td><TablePagination
-                    rowsPerPageOptions={[5, 10, 100]}
-                    component="div"
-                    count={companyList.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                  /></td>
+                        <thead></thead>
+                        <tbody>
+                            <tr>
+                                <td><TablePagination
+                                    rowsPerPageOptions={[5, 10, 100]}
+                                    component="div"
+                                    count={companyList.length}
+                                    rowsPerPage={rowsPerPage}
+                                    page={page}
+                                    onPageChange={handleChangePage}
+                                    onRowsPerPageChange={handleChangeRowsPerPage}
+                                /></td>
 
-                </tr>
-              </tbody>
-            </table>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             }
         </div>
