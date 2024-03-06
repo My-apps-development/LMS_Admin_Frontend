@@ -27,7 +27,8 @@ const User = () => {
 
 
   const [userInputs, setUserInputs] = useState({
-   
+    firstName: "",
+    lastName: "",
     fullname: "",
     mobile: "",
     email: "",
@@ -40,7 +41,8 @@ const User = () => {
   })
 
   const [singleInputs, setSingleInputs] = useState({
-    
+    firstName: "",
+    lastName: "",
     fullname: "",
     mobile: "",
     email: "",
@@ -64,6 +66,10 @@ const User = () => {
   const [companiesList, setCompaniesList] = useState([])
 
   const [displayImage, setDisplayImage] = useState(null)
+
+  const [profilePicture, setProfilePicture] = useState(null)
+
+  const [displayProfilePicture, setDisplayProfilePicture] = useState(null)
 
 
   const lengthOfTable = userList.length
@@ -100,6 +106,8 @@ const User = () => {
     setPage(newPage);
   };
 
+  console.log(singleInputs);
+
 
 
   const handleChangeRowsPerPage = (event) => {
@@ -111,11 +119,7 @@ const User = () => {
   const handleChangeImage = (e) => {
     e.preventDefault()
 
-
-
     const imageFile = e.target.files[0];
-
-
 
     if (imageFile) {
       const reader = new FileReader()
@@ -129,9 +133,22 @@ const User = () => {
 
 
 
+  }
 
+  const handleChangeProfilePhoto = (e) => {
+    e.preventDefault()
 
+    const profilePicturee = e.target.files[0]
 
+    if (profilePicturee) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setDisplayProfilePicture(reader.result)
+      }
+      reader.readAsDataURL(profilePicturee)
+    }
+
+    setProfilePicture(profilePicturee)
   }
 
   // console.log(userList);
@@ -157,14 +174,14 @@ const User = () => {
       //   [e.target.name]: e.target.value,
       //   fullname: e.target.name === 'firstName' ? e.target.value + (prevInputs.lastName) : (prevInputs.firstName) + e.target.value
       // }))
-      setUserInputs({ ...userInputs, [e.target.name]: e.target.value })
+      setUserInputs({...userInputs, [e.target.name]:e.target.value})
       :
-      setSingleInputs({ ...singleInputs, [e.target.name]: e.target.value })
-    // setSingleInputs((prevInputs) => ({
-    //   ...prevInputs,
-    //   [e.target.name]: e.target.value,
-    //   fullname: e.target.name === 'firstName' ? e.target.value + (prevInputs.lastName || '') : (prevInputs.firstName || '') + e.target.value
-    // }))
+      // setSingleInputs((prevInputs) => ({
+      //   ...prevInputs,
+      //   [e.target.name]: e.target.value,
+      //   fullname: e.target.name === 'firstName' ? e.target.value + (prevInputs.lastName || '') : (prevInputs.firstName || '') + e.target.value
+      // }))
+      setSingleInputs({...singleInputs, [e.target.name]: e.target.value})
   }
 
   const handleSubmit = async (e) => {
@@ -207,7 +224,7 @@ const User = () => {
       errorMessage("language Required")
     }
 
-    // console.log(userInputs);
+    console.log(userInputs);
 
     // console.log(image);
 
@@ -225,6 +242,9 @@ const User = () => {
     fD.append("email", userInputs.email)
     fD.append("company", userInputs.company)
     fD.append("status", userInputs.status)
+    fD.append("upload_profile", profilePicture)
+    
+    
 
 
     try {
@@ -247,15 +267,15 @@ const User = () => {
   const handleUpdateUSer = async (e) => {
     e.preventDefault()
 
-    // if (!singleInputs.firstName) {
-    //   errorMessage("Firstname Required")
-    //   return
-    // }
+    if (!singleInputs.firstName) {
+      errorMessage("Firstname Required")
+      return
+    }
 
-    // if (!singleInputs.lastName) {
-    //   errorMessage("Lastname Required")
-    //   return
-    // }
+    if (!singleInputs.lastName) {
+      errorMessage("Lastname Required")
+      return
+    }
 
     if (!singleInputs.mobile) {
       errorMessage("Mobile Number Required")
@@ -523,7 +543,7 @@ const User = () => {
                     return (
                       <tr className="bg-gray-100 text-center border-b text-sm text-gray-600" key={index}>
                         <td className="border-r">  <input type="checkbox" /></td>
-                        <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.firstName} {item?.lastName}</td>
+                        <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.fullname} </td>
                         <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.role}</td>
                         <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.email}</td>
                         <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.mobile}</td>
@@ -597,29 +617,31 @@ const User = () => {
                 <div className="flex gap-2">
                   <form onSubmit={flag ? handleSubmit : handleUpdateUSer}>
                     <div className="grid grid-cols-2">
-                      {/* <div className="flex flex-col p-2 gap-3">
-                        <label htmlFor="">First Name</label>
-                        <input type="text" name="firstName" id="firstname" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.firstName : singleInputs?.firstName} />
-                      </div>
-
-                      <div className="flex flex-col p-2 gap-3">
-                        <label htmlFor="">Last Name</label>
-                        <input type="text" name="lastName" id="lastName" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.lastName : singleInputs?.lastName} />
-                      </div> */}
-
                       <div className="flex flex-col p-2 gap-3">
                         <label htmlFor="">Full Name</label>
                         <input type="text" name="fullname" id="fullname" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.fullname : singleInputs?.fullname} />
                       </div>
+
+                      {/* <div className="flex flex-col p-2 gap-3">
+                        <label htmlFor="">Last Name</label>
+                        <input type="text" name="lastName" id="lastName" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.lastName : singleInputs?.lastName} />
+                      </div> */}
 
                       <div className="flex flex-col p-2 gap-3">
                         <label htmlFor="">Mobile</label>
                         <input type="number" name="mobile" id="mobile" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.mobile : singleInputs?.mobile} />
                       </div>
 
+
+
                       <div className="flex flex-col p-2 gap-3">
                         <label htmlFor="">Email</label>
                         <input type="text" name="email" id="email" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.email : singleInputs?.email} />
+                      </div>
+
+                      <div className="flex flex-col p-2 gap-3">
+                        <label htmlFor="">Upload Profile Photo</label>
+                        <input type="file" name="fullname" id="fullname" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeProfilePhoto}  />
                       </div>
 
                       <div className="flex flex-col p-2 gap-3">
@@ -663,9 +685,13 @@ const User = () => {
                         {/* <input type="text" name="aadhar_num" id="aadhar_num" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={flag ? userInputs?.aadhar_num : singleInputs?.aadhar_num} /> */}
                       </div>
 
-                      <div className="flex flex-col p-2 gap-3">
+
+
+                    </div>
+
+                    <div className="flex flex-col p-2 gap-3">
                       <label htmlFor="">Company</label>
-                      <select name="company" id="company" className="p-3 border-2 border-gray-600 rounded-lg" value={flag ? userInputs?.course : singleInputs?.course} onChange={handleChange}>
+                      <select name="company" id="company" className="p-3 border-2 border-gray-600 rounded-lg" value={flag ? userInputs?.company : singleInputs?.company} onChange={handleChange}>
                         <option value="Driver">Choose Options</option>
                         {
                           companiesList?.map((item, index) => {
@@ -676,12 +702,6 @@ const User = () => {
                         }
                       </select>
                     </div>
-
-
-
-                    </div>
-
-                    
 
                     <div className="flex flex-col gap-3 p-2">
                       <label htmlFor="">Status</label>
@@ -705,11 +725,23 @@ const User = () => {
                     </div>
                   </form>
                   <div className="mt-5 rounded shadow-xl p-2 h-80 flex flex-col gap-3">
-                    <img src={displayImage} alt="" className="w-96 h-52 rounded-lg object-cover" />
-                    <div className="flex flex-col justify-center items-center gap-2">
-                      <h1 className="text-2xl text-[#B32073]">Uploaded License</h1>
-                      <p className="text-xs">Upload only PNG,JPEG</p>
+
+
+                    <div className="flex justify-center items-center flex-col ">
+                      <img src={displayProfilePicture} alt="" className="w-36 h-36 rounded-full object-cover" />
+                      <div className="flex flex-col justify-center items-center gap-2 mt-10">
+                        <h1 className="text-2xl text-[#B32073]">Profile Picture</h1>
+
+                      </div>
                     </div>
+                    <div className="mt-20">
+                      <img src={displayImage} alt="" className="w-96 h-52 rounded-lg object-cover" />
+                      <div className="flex flex-col justify-center items-center gap-2">
+                        <h1 className="text-2xl text-[#B32073]">Uploaded License</h1>
+                        <p className="text-xs">Upload only PNG,JPEG</p>
+                      </div>
+                    </div>
+
                   </div>
                 </div>
               </div>
