@@ -66,7 +66,7 @@ const SideMenu = () => {
                         <div onClick={() => setIsAssignmentOpen(!isAssignmentOpen)} className="flex p-2 justify-between items-center hover:text-[#B32073]">
                             <div className="flex justify-center items-center gap-2">
                                 <p><FaBook /></p>
-                                <h1 className="text-xl cursor-pointer hover:text-[#B32073] text-gray-500">Assignment</h1>
+                                <h1 className="text-xl cursor-pointer hover:text-[#B32073] text-gray-500">Assessment</h1>
                             </div>
                             <p><FaChevronDown /></p>
                         </div>

@@ -27,6 +27,8 @@ const AssessmentList = () => {
 
   const [csvFile, setCsvFile] = useState(null)
 
+  const [QuestionFile, setQuestionFile] = useState(null)
+
   const [csvInputs, setCsvInputs] = useState({
     courseId: "",
     language: "",
@@ -120,9 +122,26 @@ const AssessmentList = () => {
     console.log("submit initial");
     console.log(inputs);
 
+
+    const QuestionsFormData = new FormData()
+    QuestionsFormData.append("question", inputs.question)
+    QuestionsFormData.append("option_A", inputs.option_A)
+    QuestionsFormData.append("option_B", inputs.option_B)
+    QuestionsFormData.append("option_C", inputs.option_C)
+    QuestionsFormData.append("option_D", inputs.option_D)
+    QuestionsFormData.append("correct_option", inputs.correct_option)
+    QuestionsFormData.append("marks", inputs.marks)
+    QuestionsFormData.append("language", inputs.language)
+    QuestionsFormData.append("courseId", inputs.chapterId)
+    QuestionsFormData.append("question_image", QuestionFile)
+
     try {
       setLoader(true)
-      const response = await axiosInstance.post("/Quiz/insert", inputs)
+      const response = await axiosInstance.post("/Quiz/insert", QuestionsFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      })
       const data = await response.data
       successMessage(data.message);
       fetchQuestion()
@@ -148,6 +167,14 @@ const AssessmentList = () => {
     } catch (error) {
       console.log("Error Fetching Course", error.message);
     }
+  }
+
+  const handleChangeImage = (e) => {
+    e.preventDefault()
+
+    const file = e.target.files[0]
+
+    setQuestionFile(file)
   }
 
   // console.log(courseList);
@@ -257,11 +284,16 @@ const AssessmentList = () => {
     formData.append("marks", singleInputs.marks)
     formData.append("chapterId", singleInputs.chapterId)
     formData.append("courseId", singleInputs.courseId)
+    formData.append("question_image", QuestionFile)
 
     try {
       setLoader(true)
       console.log(`/Quiz/update?quetionId=${singleInputs?._id}`);
-      const response = await axiosInstance.patch(`/Quiz/update?quetionId=${singleInputs?._id}`, formData, { headers: { 'Content-Type': 'application/json' } })
+      const response = await axiosInstance.patch(`/Quiz/update?quetionId=${singleInputs?._id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      })
       const data = await response.data
       successMessage(data.message);
       fetchQuestion()
@@ -358,7 +390,7 @@ const AssessmentList = () => {
   const handleSubmitSCsvFile = async (e) => {
     e.preventDefault()
 
- 
+
 
     const UploadCsvFile = new FormData()
     UploadCsvFile.append("courseId", csvInputs.courseId)
@@ -372,8 +404,8 @@ const AssessmentList = () => {
         }
       })
       const data = await response?.data
-   
-      successMessage(data?.message);  
+
+      successMessage(data?.message);
       clearCsvInputs()
     } catch (error) {
       console.log("Error Uploading Csv File", error.message);
@@ -383,15 +415,15 @@ const AssessmentList = () => {
   console.log(csvInputs);
 
   const clearCsvInputs = () => {
-    try{
-      setCsvInputs((prevInputs)=>({
+    try {
+      setCsvInputs((prevInputs) => ({
         ...prevInputs,
-        courseId:"",
-        language:""
+        courseId: "",
+        language: ""
       }))
       setCsvFile(null)
-    } catch(error){
-      console.log("Error Clearing Inputs",error.message);
+    } catch (error) {
+      console.log("Error Clearing Inputs", error.message);
     }
   }
 
@@ -578,6 +610,9 @@ const AssessmentList = () => {
                     <label htmlFor="">Question</label>
 
                     <input type="text" name="question" id="question" value={Flag ? inputs?.question : singleInputs?.question} className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
+
+                    <label htmlFor="">Upload Image</label>
+                    <input type="file" name="question_image" id="question_image" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeImage}/>
                   </div>
 
                   <div className="flex flex-col p-2 gap-3">
@@ -683,7 +718,7 @@ const AssessmentList = () => {
 
                   <div className="flex flex-col gap-3 p-2">
                     <label htmlFor="">Upload CSV File</label>
-                    <input type="file" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeCSVFile} value={csvInputs.file}/>
+                    <input type="file" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeCSVFile} value={csvInputs.file} />
                   </div>
 
                   <div className="flex justify-center items-center mt-5">
