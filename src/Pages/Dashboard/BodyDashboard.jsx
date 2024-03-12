@@ -138,44 +138,44 @@ const BodyDashboard = () => {
                         <h1 className="text-2xl text-gray-700 ml-3">Dashboard</h1>
                     </div>
                     <div className="grid grid-cols-4 py-2 px-5 gap-5 w-[100%] text-xl ">
-                        <div className="flex flex-col gap-5 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos = "flip-left">
+                        <div className="flex flex-col gap-5 py-3 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos = "flip-left">
                             <p className="text-[#B32073] ml-5 mt-3"><IoBookSharp /></p>
                             <p className="ml-5 text-gray-500">Total Courses</p>
                             <p className="ml-5">{courseList?.length}</p>
                         </div>
-                        <div className="flex flex-col gap-5 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos = "flip-left">
+                        <div className="flex flex-col gap-5 py-3 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos = "flip-left">
                             <p className="text-[#B32073] ml-5 mt-3"><PiVideoFill /></p>
                             <p className="ml-5 text-gray-500">Total Chapters</p>
                             <p className="ml-5">{chapterList?.length}</p>
                         </div>
-                        <div className="flex flex-col gap-5 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos = "flip-left">
+                        <div className="flex flex-col gap-5 py-3 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos = "flip-left">
                             <p className="text-[#B32073] ml-5 mt-3"><HiMiniNewspaper /></p>
                             <p className="ml-5 text-gray-500">Completed Courses</p>
                             <p className="ml-5">12</p>
                         </div>
-                        <div className="flex flex-col gap-5 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos = "flip-left">
+                        <div className="flex flex-col gap-5 py-3 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos = "flip-left">
                             <p className="text-[#B32073] ml-5 mt-3"><FaUsers /></p>
                             <p className="ml-5 text-gray-500">Total Users</p>
                             <p className="ml-5">{UserList.length}</p>
                         </div>
                     </div>
                     <div className="grid grid-cols-4 py-3 px-5 gap-5 w-[100%] text-xl ">
-                    <div className="flex flex-col gap-5 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos = "flip-left">
+                    <div className="flex flex-col gap-5 py-3 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos = "flip-left">
                             <p className="text-[#B32073] ml-5 mt-3"><IoNewspaperSharp /></p>
                             <p className="ml-5 text-gray-500">Total Questions</p>
                             <p className="ml-5">{QuestionList.length}</p>
                         </div>
-                        <div className="flex flex-col gap-5 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos = "flip-left">
+                        <div className="flex flex-col gap-5 py-3 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos = "flip-left">
                             <p className="text-[#B32073] ml-5 mt-3"><MdOutlineOndemandVideo /></p>
                             <p className="ml-5 text-gray-500">Answered Questions</p>
                             <p className="ml-5">12</p>
                         </div>
-                        <div className="flex flex-col gap-5 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos = "flip-left">
+                        <div className="flex flex-col gap-5 py-3 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos = "flip-left">
                             <p className="text-[#B32073] ml-5 mt-3"><MdOutlineAssignment /></p>
                             <p className="ml-5 text-gray-500">Completed Assignments</p>
                             <p className="ml-5">12</p>
                         </div>
-                        <div className="flex flex-col gap-5 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos = "flip-left">
+                        <div className="flex flex-col gap-5 py-3 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos = "flip-left">
                             <p className="text-[#B32073] ml-5 mt-3"><MdOutlineAssignment /></p>
                             <p className="ml-5 text-gray-500">Total Certificates</p>
                             <p className="ml-5">{certificateList?.length}</p>
