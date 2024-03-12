@@ -27,7 +27,7 @@ const Library = () => {
   const handleChange = (e) => {
     e.preventDefault()
 
-    flag ? setInput(e.target.value) : setSingleInputs({ ...input, [e.target.name]: e.target.value })
+    flag ? setInput(e.target.value) : setSingleInputs({ ...singleInputs, [e.target.name]: e.target.value })
   }
 
   const handleChangeFile = (e) => {

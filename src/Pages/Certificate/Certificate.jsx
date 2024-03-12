@@ -151,7 +151,7 @@ const Certificate = () => {
         formData.append("lastName", inputs?.lastName)
         formData.append("validDate", inputs?.validDate)
         formData.append("courseId", inputs?.courseId)
-        formData.append("userId", "65c60cf888aec6310c29b42e")
+        formData.append("userId", "65ddd1278afbec893e0b0096")
         formData.append("uploadLogo", postLogo)
         formData.append("uploadSignature", postSignature)
         formData.append("uploadTemplate", postCertificate)
@@ -218,10 +218,10 @@ const Certificate = () => {
         setPostCertificate(null)
     }
 
-    const getSingleCertificate = async () => {
+    const getSingleCertificate = async (_id) => {
 
         try{
-            const response = await axiosInstance.get(`/certificate/single?id=65d8913485cdc11f5e525b44`)
+            const response = await axiosInstance.get(`/certificate/single?id=${_id}`)
             const data = await response.data
             setSingleCertificate(data);
         } catch(error){
