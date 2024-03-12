@@ -345,7 +345,7 @@ const User = () => {
   // const FetchCourse = async () => {
   //   try {
   //     setLoader(true)
-  //     const response = await axiosInstance.get("/homepage/courses")
+  //     const response = await axiosInstance.get("/category/fetch")
   //     const data = await response.data
   //     setCourseList(data?.coursewithcategory);
   //     setLoader(false)
