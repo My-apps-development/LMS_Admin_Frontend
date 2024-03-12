@@ -5,8 +5,8 @@ const splitData = (data) => {
   
     return data.map(item => {
         return {
-            userName: `${item?.user?.firstname} ${item?.user?.lastname}`,
-            mobileNumber: item?.user?.mob_number,
+            userName: `${item?.user?.fullname}`,
+            mobileNumber: item?.user?.mobile,
             userRole: item?.user?.role,
             language: item?.user?.language,
             totalQuestions: item?.assignment?.totalquestions,

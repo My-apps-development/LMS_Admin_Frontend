@@ -73,7 +73,7 @@ const SideMenu = () => {
                         <div className={`sm ${isAssignmentOpen ? "flex" : "hidden"} flex-col gap-5 mt-5`}>
 
                             {/* <p >Assignment</p> */}
-                            <NavLink to="/Assessment/Record" className={({ isActive, isPending }) => isPending ? "flex p-2 flex-row items-center duration-300 hover:shadow-xl hover:scale-105   pr-6" : isActive ? "flex p-2 flex-row items-center duration-300 scale-105 pr-6 bg-gray-300 text-[#B32073] rounded hover:text-[#B32073] hover:shadow-xl" : "text-gray-500"}><p className="hover:text-[#B32073] text-gray-500">Assessment Record</p></NavLink>
+                            <NavLink to="/Assessment/Record" className={({ isActive, isPending }) => isPending ? "flex p-2 flex-row items-center duration-300 hover:shadow-xl hover:scale-105   pr-6" : isActive ? "flex p-2 flex-row items-center duration-300 scale-105 pr-6 bg-gray-300 text-[#B32073] rounded hover:text-[#B32073] hover:shadow-xl" : "text-gray-500"}><p className="hover:text-[#B32073] text-gray-500">Record</p></NavLink>
                             <NavLink to="/Assessment/List" className={({ isActive, isPending }) => isPending ? "flex hover:text-[#B32073] flex-row items-center duration-300 hover:shadow-xl hover:scale-105   pr-6" : isActive ? "flex flex-row items-center duration-300 scale-105 pr-6 bg-gray-300 text-[#B32073] rounded hover:text-[#B32073] hover:shadow-xl" : "text-gray-500"}><p className="hover:text-[#B32073] p-3 rounded hover:bg-gray-300 text-gray-500">Question List</p></NavLink>
 
                         </div>
