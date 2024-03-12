@@ -104,7 +104,7 @@ const Login = () => {
 
               <div className="p-2 flex flex-col gap-2">
                 <label htmlFor="">Password <span className="text-red-700">*</span></label>
-                <input type="text" name="password" id="password" className="border-2 p-2 rounded-lg" placeholder="Enter Password" onChange={handleChange} />
+                <input type="password" name="password" id="password" className="border-2 p-2 rounded-lg" placeholder="Enter Password" onChange={handleChange} />
               </div>
 
               <div className="p-2 flex flex-col gap-2">
