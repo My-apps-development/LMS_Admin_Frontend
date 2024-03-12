@@ -811,7 +811,7 @@ const CourseList = () => {
                             {
                                 courseList?.map((item, index) => {
                                     return (
-                                        <div className="w-[100%] h-50 border-2 shadow-xl p-2 rounded-lg hover:scale-95 duration-300 bg-white" key={index} >
+                                        <div className="w-[100%] h-50 border-2 shadow-xl p-2 rounded-lg hover:scale-95 duration-300 bg-white" key={index} data-aos="flip-left">
                                             <div className="flex flex-col gap-2 ">
                                                 <h1 className="text-xl text-gray-600 capitalize">{item?.course?.title}</h1>
 

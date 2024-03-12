@@ -54,7 +54,7 @@ const AssignmentRecord = () => {
         <div>
             <AdminDashboard />
             {loader ? <Loader /> : 
-            <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300 h-screen">
+            <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300 h-screen" data-aos="fade-down">
                 <div className="p-2 flex justify-between items-start gap-2">
                     <div>
                         <h1 className="text-2xl">Assignment Record</h1>

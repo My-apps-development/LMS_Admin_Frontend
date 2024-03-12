@@ -478,7 +478,7 @@ const User = () => {
   return (
     <div>
       <AdminDashboard />
-      <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300">
+      <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300" data-aos="fade-down">
         <div className="p-2 flex justify-start items-start gap-2 flex-col">
           <h1 className="text-2xl">Users</h1>
           <p>Total {userList?.length} Users in Table </p>

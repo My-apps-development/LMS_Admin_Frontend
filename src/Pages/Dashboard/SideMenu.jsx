@@ -33,7 +33,7 @@ const SideMenu = () => {
     return (
 
         <div className="fixed">
-            <aside className="w-56 h-screen flex justify-start items-center gap-2 text-sm flex-col  font-semibold shadow-xl">
+            <aside className="w-56 h-screen flex justify-start items-center gap-2 text-sm flex-col  font-semibold shadow-xl"data-aos="fade-right">
                 <div className="mt-10  border-b-2 w-full flex justify-center items-center py-4 border-gray-400">
 
 

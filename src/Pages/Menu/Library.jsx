@@ -175,7 +175,7 @@ const Library = () => {
         <div className="grid grid-cols-3 gap-10 my-10">
           {libraryList?.map((item, index) => {
             return (
-              <div key={index} className=" flex  mx-5 bg-white p-5 rounded-lg justify-between items-center shadow-xl">
+              <div key={index} className=" flex  mx-5 bg-white p-5 rounded-lg justify-between items-center shadow-xl" data-aos="flip-left">
                 <div>
                   <a href={item?.pdfupload} download={item?.pdfupload} target="_blank" rel="noopener noreferrer" className="flex justify-start items-center gap-2  capitalize "> <BsFiletypePdf />{item.title}</a>
                 </div>

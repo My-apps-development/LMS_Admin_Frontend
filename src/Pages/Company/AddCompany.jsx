@@ -71,8 +71,8 @@ const AddCompany = () => {
     return (
         <div>
             {loader ? <Loader /> : null}
-            <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300 h-screen">
-                <div className="w-full p-5 rounded border-2 flex flex-col gap-5 bg-white shadow-lg">
+            <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300 h-screen" >
+                <div className="w-full p-5 rounded border-2 flex flex-col gap-5 bg-white shadow-lg" data-aos="fade-down">
                     <div className="flex justify-between items-center cursor-pointer" onClick={() => setAddCompanyOpen(!addCompanyOpen)}>
                         <h1 className="text-2xl">Add Company</h1>
                         <button className="p-2 text-2xl font-bold  flex justify-center items-center gap-3">{addCompanyOpen ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}</button>
