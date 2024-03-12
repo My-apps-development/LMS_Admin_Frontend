@@ -87,7 +87,7 @@ const Library = () => {
     }
   }
 
-  console.log(singleInputs?._id);
+ 
 
 
   const updateLibrary = async (e) => {

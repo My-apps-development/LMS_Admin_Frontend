@@ -573,11 +573,11 @@ const CourseCategory = () => {
 
 
 
-                                    <div className="flex justify-start items-center py-4 px-2">
+                                    {/* <div className="flex justify-start items-center py-4 px-2">
                                         <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-36 hover:scale-95 hover:duration-300" onClick={() => {
                                             setSubCategoryFlag(true), setSubModalOpen(true)
                                         }}><FaPlus /> Add Subcategory</button>
-                                    </div>
+                                    </div> */}
 
 
                                     <div className="w-full flex justify-center items-center gap-5">
