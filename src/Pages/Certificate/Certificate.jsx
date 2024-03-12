@@ -285,7 +285,7 @@ const Certificate = () => {
                             {
                                 certificateList?.map((item, index) => {
                                     return (
-                                        <div className="border-2 w-72 shadow-lg flex flex-col gap-3 p-3 rounded-lg hover:scale-95 duration-300 bg-white" key={index}>
+                                        <div className="border-2 w-72 shadow-lg flex flex-col gap-3 p-3 rounded-lg hover:scale-95 duration-300 bg-white" key={index} data-aos="flip-left">
                                             <div >
                                                 <img src={item?.certificate?.uploadTemplate} alt="" className="rounded-lg object-cover w-72 h-72" />
                                             </div>

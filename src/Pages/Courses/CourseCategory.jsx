@@ -439,7 +439,7 @@ const CourseCategory = () => {
 
                         return (
                             <div key={index}>
-                                <div className="border-2 shadow-lg flex flex-col gap-3 p-3 rounded-lg hover:scale-95 duration-300 bg-white">
+                                <div className="border-2 shadow-lg flex flex-col gap-3 p-3 rounded-lg hover:scale-95 duration-300 bg-white" data-aos="flip-left">
                                     <div>
                                         <img src={item.upload_thumbnail} alt="" className="rounded-lg object-cover w-full h-72" />
                                     </div>

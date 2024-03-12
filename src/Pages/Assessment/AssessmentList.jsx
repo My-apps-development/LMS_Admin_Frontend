@@ -457,7 +457,7 @@ const AssessmentList = () => {
             <button className="p-2 border-2 border-[#B32073] bg-[#B32073] text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-38" onClick={handleOpen}><FaPlus />Add Question</button>
           </div>
         </div>
-        <div className="w-full mt-5 bg-white rounded-lg">
+        <div className="w-full mt-5 bg-white rounded-lg" data-aos="fade-down">
           <table className="w-[100%]">
             <thead>
               <tr className=" border-b">

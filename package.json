@@ -14,6 +14,7 @@
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.15.7",
     "@texttree/notepad-rcl": "^2.3.0",
+    "aos": "^2.3.4",
     "axios": "^1.6.7",
     "file-saver": "^2.0.5",
     "jodit-react": "^4.0.9",

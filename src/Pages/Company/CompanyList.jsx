@@ -50,7 +50,7 @@ const CompanyList = () => {
         fetchCompanyList()
     }, [])
     return (
-        <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300 h-dvh">
+        <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300 h-dvh" data-aos="fade-down">
             {
                 loader ? <Loader /> : <div className="w-full bg-white rounded-lg">
                     <table className="w-full">

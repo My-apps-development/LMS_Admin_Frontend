@@ -21,10 +21,21 @@ import Library from './Pages/Menu/Library'
 import CompanyLogin from './Pages/CompanyForm/CompanyLogin'
 import CompanyDashboard from './Pages/Dashboard/CompanyDashboard'
 import CompanyAssignment from './Components/CompanyAssignment/CompanyAssignment'
+import Aos from 'aos'
+import { useEffect } from 'react'
+import 'aos/dist/aos.css';
 
 
 function App() {
 
+  Aos.init({
+    easing: 'ease-in-out', 
+  });
+
+  useEffect(() => {
+    Aos.refresh(); 
+  }, []);
+ 
 
   return (
     <div className=''>

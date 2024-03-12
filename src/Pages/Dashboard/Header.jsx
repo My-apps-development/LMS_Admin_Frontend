@@ -5,7 +5,7 @@ const Header = () => {
     const adminData = JSON.parse(localStorage.getItem("admin"))
     // console.log(adminData);
     return (
-        <div className="flex justify-between items-center p-2 w-[100%] font-semibold mt-2 static">
+        <div className="flex justify-between items-center p-2 w-[100%] font-semibold mt-2 static" data-aos="fade-down">
             <div className="flex justify-center items-center p-2 border-2 w-[50%] ml-20 rounded-lg">
                 <p className="text-4xl w-14 text-center"><FiSearch /></p>
                 <input type="text" name="" id="" className="p-2 w-full" />

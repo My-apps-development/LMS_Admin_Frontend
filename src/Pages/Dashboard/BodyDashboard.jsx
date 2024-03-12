@@ -104,21 +104,21 @@ const BodyDashboard = () => {
         }
     }
 
-    const fetchCertificates = async() => {
-        try{
+    const fetchCertificates = async () => {
+        try {
             setLoader(true)
             const response = await axiosInstance.get("/certificate/")
             const data = await response?.data
             setCertificateList(data?.data);
             setLoader(false)
-        } catch(error){
+        } catch (error) {
             setLoader(false)
             errorMessage(error?.response?.data?.message)
             console.log("Error Fetching Certificates", error.message);
         }
     }
 
-   
+
 
 
     useEffect(() => {
@@ -138,44 +138,44 @@ const BodyDashboard = () => {
                         <h1 className="text-2xl text-gray-700 ml-3">Dashboard</h1>
                     </div>
                     <div className="grid grid-cols-4 py-2 px-5 gap-5 w-[100%] text-xl ">
-                        <div className="flex flex-col gap-5 justify-center items-start border-2 rounded-lg shadow-lg bg-white">
+                        <div className="flex flex-col gap-5 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos = "flip-left">
                             <p className="text-[#B32073] ml-5 mt-3"><IoBookSharp /></p>
                             <p className="ml-5 text-gray-500">Total Courses</p>
                             <p className="ml-5">{courseList?.length}</p>
                         </div>
-                        <div className="flex flex-col gap-5 justify-center items-start border-2 p-2 rounded-lg shadow-lg bg-white">
+                        <div className="flex flex-col gap-5 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos = "flip-left">
                             <p className="text-[#B32073] ml-5 mt-3"><PiVideoFill /></p>
                             <p className="ml-5 text-gray-500">Total Chapters</p>
                             <p className="ml-5">{chapterList?.length}</p>
                         </div>
-                        <div className="flex flex-col gap-5 justify-center items-start border-2 p-2 rounded-lg shadow-lg bg-white">
+                        <div className="flex flex-col gap-5 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos = "flip-left">
                             <p className="text-[#B32073] ml-5 mt-3"><HiMiniNewspaper /></p>
                             <p className="ml-5 text-gray-500">Completed Courses</p>
                             <p className="ml-5">12</p>
                         </div>
-                        <div className="flex flex-col gap-5 justify-center items-start border-2 p-2 rounded-lg shadow-lg bg-white">
+                        <div className="flex flex-col gap-5 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos = "flip-left">
                             <p className="text-[#B32073] ml-5 mt-3"><FaUsers /></p>
                             <p className="ml-5 text-gray-500">Total Users</p>
                             <p className="ml-5">{UserList.length}</p>
                         </div>
                     </div>
                     <div className="grid grid-cols-4 py-3 px-5 gap-5 w-[100%] text-xl ">
-                        <div className="flex flex-col gap-5 justify-center items-start border-2 p-2 rounded-lg shadow-lg bg-white">
+                    <div className="flex flex-col gap-5 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos = "flip-left">
                             <p className="text-[#B32073] ml-5 mt-3"><IoNewspaperSharp /></p>
                             <p className="ml-5 text-gray-500">Total Questions</p>
                             <p className="ml-5">{QuestionList.length}</p>
                         </div>
-                        <div className="flex flex-col gap-5 justify-center items-start border-2 p-2 rounded-lg shadow-lg bg-white">
+                        <div className="flex flex-col gap-5 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos = "flip-left">
                             <p className="text-[#B32073] ml-5 mt-3"><MdOutlineOndemandVideo /></p>
                             <p className="ml-5 text-gray-500">Answered Questions</p>
                             <p className="ml-5">12</p>
                         </div>
-                        <div className="flex flex-col gap-5 justify-center items-start border-2 p-2 rounded-lg shadow-lg bg-white">
+                        <div className="flex flex-col gap-5 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos = "flip-left">
                             <p className="text-[#B32073] ml-5 mt-3"><MdOutlineAssignment /></p>
                             <p className="ml-5 text-gray-500">Completed Assignments</p>
                             <p className="ml-5">12</p>
                         </div>
-                        <div className="flex flex-col gap-5 justify-center items-start border-2 p-2 rounded-lg shadow-lg bg-white">
+                        <div className="flex flex-col gap-5 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos = "flip-left">
                             <p className="text-[#B32073] ml-5 mt-3"><MdOutlineAssignment /></p>
                             <p className="ml-5 text-gray-500">Total Certificates</p>
                             <p className="ml-5">{certificateList?.length}</p>
@@ -183,7 +183,7 @@ const BodyDashboard = () => {
                     </div>
 
                     <div className="w-[100%] flex gap-5 mt-2">
-                        <div className="w-[72%] shadow-xl p-3 ml-5 bg-white rounded-lg mb-10">
+                        <div className="w-[72%] shadow-xl p-3 ml-5 bg-white rounded-lg mb-10" data-aos="fade-right">
                             <div className="flex justify-between items-center">
                                 <h1 className="text-gray-700">Active User </h1>
                                 <p className="border-2 px-4 py-2 rounded-lg bg-[#B32073] w-40 text-center text-white">Jan 2024 &gt;</p>
@@ -192,7 +192,7 @@ const BodyDashboard = () => {
                                 <Bar data={userData} />
                             </div>
                         </div>
-                        <div className="w-[23%] ml-1 shadow-xl p-3 bg-white rounded-lg h-[10%]">
+                        <div className="w-[23%] ml-1 shadow-xl p-3 bg-white rounded-lg h-[10%]" data-aos = "flip-left">
                             <div className="flex justify-start items-center w-[100%] p-2 mb-5">
                                 <h1 className="text-gray-700">Users List</h1>
                             </div>
