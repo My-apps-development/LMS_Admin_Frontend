@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import { axiosInstance } from "../../Utils/AxiosSetUp";
 import { CiExport } from "react-icons/ci";
 import ExportAssignmentRecord from "./ExportExcelData";
+import Loader from "../../Utils/Loader";
 
 
 const AssignmentRecord = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [assignmentRecord, setAssignmentRecord] = useState([])
+    const [loader, setLoader] = useState(false)
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -24,9 +26,11 @@ const AssignmentRecord = () => {
 
     const getAssignmentRecord = async () => {
         try {
+            setLoader(true)
             const response = await axiosInstance.get("/assignment/get")
             const data = await response.data
             setAssignmentRecord(data?.assignmentsWithUserDetails);
+            setLoader(false)
         } catch (error) {
             console.log("Error Fetching Assignment Record", error.message)
         }
@@ -49,7 +53,8 @@ const AssignmentRecord = () => {
     return (
         <div>
             <AdminDashboard />
-            <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300">
+            {loader ? <Loader /> : 
+            <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300 h-screen">
                 <div className="p-2 flex justify-between items-start gap-2">
                     <div>
                         <h1 className="text-2xl">Assignment Record</h1>
@@ -99,14 +104,6 @@ const AssignmentRecord = () => {
                                 <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
                                     <h1 className="flex items-center justify-center">Percentage</h1>
                                 </th>
-
-
-
-
-
-
-
-
                             </tr>
                         </thead>
                         <tbody>
@@ -116,9 +113,9 @@ const AssignmentRecord = () => {
 
                                         <tr className="bg-gray-100 text-center border-b text-sm text-gray-600" key={index}>
                                             <td className="border-r">  <input type="checkbox" /></td>
-                                            <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.user?.firstname} {item?.user?.lastname}</td>
+                                            <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.user?.fullname} </td>
                                             <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                                                {item?.user?.mob_number}
+                                                {item?.user?.mobile}
                                             </td>
                                             <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 capitalize">{item?.user?.role}</td>
 
@@ -159,6 +156,7 @@ const AssignmentRecord = () => {
                     </table>
                 </div>
             </div>
+            }
         </div>
     )
 }

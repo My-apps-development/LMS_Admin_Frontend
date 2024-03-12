@@ -382,7 +382,7 @@ const CourseCategory = () => {
             setInputs((prevState) => ({
                 prevState,
                 categories: "",
-                totalsubCategory: "",
+                role: "",
                 Upload_Category: null
             }))
             setImage(null)

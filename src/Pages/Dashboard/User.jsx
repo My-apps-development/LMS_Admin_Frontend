@@ -143,6 +143,7 @@ const User = () => {
       const data = await response.data
       setUserList(data.users);
     } catch (error) {
+      setLoader(false)
       console.log("error fetching users", error.message);
     }
   }
@@ -237,6 +238,7 @@ const User = () => {
 
 
     } catch (error) {
+      setLoader(false)
       errorMessage(error.response.data.message)
       console.log("Error Posting data", error.message);
     }
@@ -333,6 +335,7 @@ const User = () => {
       setLoader(false)
 
     } catch (error) {
+      setLoader(false)
       errorMessage(error?.response?.data?.message)
       console.log("Error deleting", error.message);
     }
@@ -361,10 +364,13 @@ const User = () => {
       setDisplayImage(data?.user?.upload_license)
       setLoader(false)
     } catch (error) {
+      setLoader(false)
       errorMessage(error?.response?.data?.message)
       console.log("error fetching Single user detials", error.message);
     }
   }
+
+  console.log(singleInputs);
 
   const FetchCompanies = async () => {
     try {
@@ -372,6 +378,7 @@ const User = () => {
       const data = await response?.data
       setCompaniesList(data?.companies);
     } catch (error) {
+      setLoader(false)
       errorMessage(error?.response?.data?.message)
       console.log("Error Fetching Companies", error.message)
     }
@@ -385,6 +392,7 @@ const User = () => {
       successMessage(data?.message);
       FetchUsers()
     } catch (error) {
+      setLoader(false)
       errorMessage(error?.response?.data?.message)
       console.log("Error Approving User Status", error.message);
     }

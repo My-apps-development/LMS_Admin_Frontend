@@ -201,6 +201,8 @@ const CourseList = () => {
         flag ? setCourseInputs({ ...CourseInputs, [e.target.name]: e.target.value }) : setSingleCourse({ ...singleCourse, [e.target.name]: e.target.value })
     }
 
+    console.log();
+
 
 
     const handleChangeVedioFile = (e) => {
@@ -366,6 +368,8 @@ const CourseList = () => {
 
     const PostCourse = async (e) => {
         e.preventDefault()
+
+        console.log(postVideo);
 
         if (!CourseInputs.title) {
             errorMessage("Course Name Required")
@@ -685,6 +689,7 @@ const CourseList = () => {
             const data = await response?.data
             setLanguage(data?.Language);
         } catch (error) {
+            setLoader(false)
             console.log("Error Fetching Languages", error.message)
         }
     }
@@ -695,11 +700,12 @@ const CourseList = () => {
             const data = await response.data
             setSettingData(data?.settingdata);
         } catch (error) {
+            setLoader(false)
             console.log("Error Fetching Course Setting", error.message);
         }
     }
 
-    console.log(settingData);
+ 
 
 
 
@@ -712,6 +718,7 @@ const CourseList = () => {
             const data = await response?.data
             setRoles(data?.roles);
         } catch (error) {
+            setLoader(false)
             console.log("Error Fetching Master Roles", error.message)
         }
     }
@@ -746,6 +753,9 @@ const CourseList = () => {
         GetSettings()
         // FetchChapterById()
     }, [])
+
+
+   
 
 
 
