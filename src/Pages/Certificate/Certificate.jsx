@@ -299,6 +299,7 @@ const Certificate = () => {
                                                 </div>
                                                 <div className="flex justify-between items-center mt-6">
                                                     <button className="text-blue-600" onClick={()=>{
+                                                        setIsOpen(true)
                                                         UpdateCertificate(item?.certificate?._id)
                                                         getSingleCertificate(item?.certificate?._id)
                                                         }}>Edit</button>
