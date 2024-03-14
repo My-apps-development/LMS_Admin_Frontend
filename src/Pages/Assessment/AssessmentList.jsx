@@ -722,7 +722,7 @@ const AssessmentList = () => {
 
                   <div className="flex flex-col gap-3 p-2">
                     <label htmlFor="">Upload CSV File</label>
-                    <input type="file" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeCSVFile} value={csvInputs.file} />
+                    <input type="file" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeCSVFile} />
                   </div>
 
                   <div className="flex justify-center items-center mt-5">
