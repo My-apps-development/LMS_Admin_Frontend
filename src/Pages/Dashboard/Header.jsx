@@ -21,8 +21,8 @@ const Header = () => {
                 </div>
 
                 <div className="w-full">
-                    <h1 className="text-gray-700">{adminData.fullname}</h1>
-                    <p className="text-gray-500">{adminData.email}</p>
+                    <h1 className="text-gray-700">{adminData?.fullname}</h1>
+                    <p className="text-gray-500">{adminData?.email}</p>
                 </div>
             </div>
         </div>

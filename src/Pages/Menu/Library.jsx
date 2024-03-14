@@ -197,7 +197,7 @@ const Library = () => {
         </div>
 
         <div className="grid grid-cols-3 gap-10 my-10">
-          {libraryList?.map((item, index) => {
+          {[...libraryList]?.reverse()?.map((item, index) => {
             return (
               <div key={index} className=" flex  mx-5 bg-white p-5 rounded-lg justify-between items-center shadow-xl" data-aos="flip-left">
                 <div>
