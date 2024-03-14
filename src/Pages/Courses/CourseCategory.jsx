@@ -69,7 +69,7 @@ const CourseCategory = () => {
         const file = e.target.files[0]
         if (file) {
             const reader = new FileReader()
-            console.log(reader);
+            // console.log(reader);
             reader.onloadend = () => {
                 setImage(reader.result)
             }
@@ -105,7 +105,7 @@ const CourseCategory = () => {
 
     }
 
-    console.log(singleCategory);
+    // console.log(singleCategory);
 
     const style = {
         position: 'absolute',
@@ -140,7 +140,8 @@ const CourseCategory = () => {
             setRoles(data?.roles)
 
         } catch (error) {
-            console.log("Error Fetching master role", error.message)
+            // console.log("Error Fetching master role", error.message)
+            errorMessage(error?.response?.data?.message)
         }
     }
 
@@ -149,7 +150,7 @@ const CourseCategory = () => {
     const PostCategory = async (e) => {
         e.preventDefault()
 
-        console.log(inputs);
+        // console.log(inputs);
         const formData = new FormData();
         formData.append('categories', inputs.categories);
         formData.append('role', inputs.role)
@@ -185,7 +186,8 @@ const CourseCategory = () => {
             setAddModalOpen(false)
             setLoader(false)
         } catch (error) {
-            console.log("error posting data", error.message);
+            // console.log("error posting data", error.message);
+            errorMessage(error?.response?.data?.message)
         }
 
     }
@@ -202,7 +204,8 @@ const CourseCategory = () => {
             setLoader(false)
 
         } catch (error) {
-            console.log("Error Fetching Categories");
+            // console.log("Error Fetching Categories");
+            errorMessage(error?.response?.data?.message)
         }
     }
 
@@ -226,7 +229,8 @@ const CourseCategory = () => {
             // setSingleCategory({...singleCategory, id:data.category._id})
         }
         catch (error) {
-            console.log("Error fetching category by Id", error.message);
+            errorMessage(error?.response?.data?.message)
+            // console.log("Error fetching category by Id", error.message);
         }
     }
 
@@ -270,12 +274,13 @@ const CourseCategory = () => {
             setAddModalOpen(false)
             setLoader(false)
         } catch (error) {
-            console.log("Error Updating data", error.message)
+            // console.log("Error Updating data", error.message)
+            errorMessage(error?.response?.data?.message)
         }
     }
 
     const DeleteCategory = async (_id) => {
-        console.log(_id)
+        // console.log(_id)
         try {
             setLoader(true)
             const response = await axiosInstance.delete(`/category/delete`, { data: { id: _id } })
@@ -301,7 +306,8 @@ const CourseCategory = () => {
             setLoader(false)
 
         } catch (error) {
-            console.log("Error fetching Sub Category List");
+            // console.log("Error fetching Sub Category List");
+            errorMessage(error?.response?.data?.message)
         }
     }
 
@@ -316,7 +322,7 @@ const CourseCategory = () => {
         }
     }
 
-    console.log(singleSubCategory);
+    // console.log(singleSubCategory);
 
     const PostSubcategory = async (e) => {
         e.preventDefault()
@@ -330,14 +336,15 @@ const CourseCategory = () => {
             const data = await response?.data
             console.log(data);
         } catch (error) {
-            console.log("Error Posting Sub Category", error.message)
+            errorMessage(error?.response?.data?.message)
+            // console.log("Error Posting Sub Category", error.message)
         }
     }
 
     const UpdateSubcategory = async (e) => {
         e.preventDefault()
 
-        console.log(singleSubCategory);
+        // console.log(singleSubCategory);
 
         const UpdateSubcategoryForm = new FormData()
         UpdateSubcategoryForm.append("title", singleSubCategory?.title)
@@ -349,7 +356,8 @@ const CourseCategory = () => {
             const data = await response.data
             successMessage(data?.message);
         } catch (error) {
-            console.log("Error Updating Data", error.message);
+            errorMessage(error?.response?.data?.message)
+            // console.log("Error Updating Data", error.message);
         }
     }
 
@@ -360,7 +368,7 @@ const CourseCategory = () => {
 
     const DeleteSingleSubCategory = async (_id) => {
 
-        console.log(_id);
+        // console.log(_id);
         if (window.confirm("Are you sure want to delete video")) {
             try {
                 setLoader(true)
@@ -371,7 +379,7 @@ const CourseCategory = () => {
                 setLoader(false)
             } catch (error) {
                 errorMessage(error.response.data.message)
-                console.log("Error Fetching Single Sub Category", error.message);
+                // console.log("Error Fetching Single Sub Category", error.message);
             }
         }
 
@@ -405,7 +413,8 @@ const CourseCategory = () => {
 
                 setLoader(false);
             } catch (error) {
-                console.log("Error fetching data", error.message);
+                errorMessage(error?.response?.data?.message)
+                // console.log("Error fetching data", error.message);
             }
         };
 
@@ -417,7 +426,7 @@ const CourseCategory = () => {
     return (
         <div className="w-full">
             <AdminDashboard />
-            {loader ? <Loader /> : <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300 h-screen">
+            {loader ? <Loader /> : <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300 ">
 
                 <div className="">
                     <div className="p-2 ">
@@ -536,7 +545,7 @@ const CourseCategory = () => {
                     open={addModalOpen}
                 >
                     <Box sx={style}>
-                        <div className="text-xs text-gray-600 font-semibold">
+                        <div className="text-xs text-gray-600 font-semibold ">
                             <div className="flex justify-between items-center w-full text-black">
                                 <h1 className="text-2xl">{flag ? "Add Category " : "Edit Category"}</h1>
                                 <button className="border-[#B32073] bg-[#B32073] p-2 rounded-lg w-20 text-lg text-white" onClick={handleCloseAddModal}>Close</button>
@@ -588,10 +597,8 @@ const CourseCategory = () => {
                                 </form>
                                 <div className="w-[50%]">
                                     <div className="border-2 shadow-lg flex flex-col gap-3 p-3 rounded-lg">
-                                        <div>
-                                            <img src={image} alt="" className="rounded-lg object-cover" />
-
-
+                                        <div className="">
+                                            <img src={image} alt="" className="rounded-lg object-cover aspect-w-16 aspect-h-9" />
                                         </div>
                                         <div>
                                             <h1 className="text-2xl text-[#B32073]">Upload Thumbnail Image</h1>

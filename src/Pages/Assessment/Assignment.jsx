@@ -5,11 +5,12 @@ import { axiosInstance } from "../../Utils/AxiosSetUp";
 import { CiExport } from "react-icons/ci";
 import ExportAssignmentRecord from "./ExportExcelData";
 import Loader from "../../Utils/Loader";
+import { errorMessage } from "../../Utils/notificationManager";
 
 
 const AssignmentRecord = () => {
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
     const [assignmentRecord, setAssignmentRecord] = useState([])
     const [loader, setLoader] = useState(false)
 
@@ -32,16 +33,17 @@ const AssignmentRecord = () => {
             setAssignmentRecord(data?.assignmentsWithUserDetails);
             setLoader(false)
         } catch (error) {
-            console.log("Error Fetching Assignment Record", error.message)
+            errorMessage(error.response.data.message)
+            // console.log("Error Fetching Assignment Record", error.message)
         }
     }
 
-    console.log(assignmentRecord)
+    // console.log(assignmentRecord)
 
     const handleExportToExcel = (e) => {
         e.preventDefault()
 
-        console.log(assignmentRecord);
+        // console.log(assignmentRecord);
 
         ExportAssignmentRecord(assignmentRecord, "sheet-1")
 
@@ -68,9 +70,9 @@ const AssignmentRecord = () => {
                     <table className="w-[100%]">
                         <thead>
                             <tr className=" border-b">
-                                <th className="border-r">
+                                {/* <th className="border-r">
                                     <input type="checkbox" />
-                                </th>
+                                </th> */}
 
                                 <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
                                     <h1 className="flex items-center justify-center">User Name</h1>
@@ -112,7 +114,7 @@ const AssignmentRecord = () => {
                                     return (
 
                                         <tr className="bg-gray-100 text-center border-b text-sm text-gray-600" key={index}>
-                                            <td className="border-r">  <input type="checkbox" /></td>
+                                            {/* <td className="border-r">  <input type="checkbox" /></td> */}
                                             <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.user?.fullname} </td>
                                             <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
                                                 {item?.user?.mobile}
@@ -144,7 +146,7 @@ const AssignmentRecord = () => {
                                 <td><TablePagination
                                     rowsPerPageOptions={[5, 10, 100]}
                                     component="div"
-                                    count={1}
+                                    count={assignmentRecord?.length}
                                     rowsPerPage={rowsPerPage}
                                     page={page}
                                     onPageChange={handleChangePage}

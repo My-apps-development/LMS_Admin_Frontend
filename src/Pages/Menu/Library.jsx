@@ -64,7 +64,7 @@ const Library = () => {
     } catch (error) {
       setLoader(false)
       errorMessage(error?.response?.data?.message)
-      console.log("Error Uploading Pdf", error.message);
+      // console.log("Error Uploading Pdf", error.message);
     }
   }
 
@@ -81,7 +81,7 @@ const Library = () => {
     } catch (error) {
       setLoader(false)
       errorMessage(error?.response?.data?.message)
-      console.log("Error Fetching Library", error.message);
+      // console.log("Error Fetching Library", error.message);
     }
 
   }
@@ -98,7 +98,7 @@ const Library = () => {
     } catch (error) {
       setLoader(false)
       errorMessage(error?.response?.data?.message)
-      console.log("Error Fetching Single Library", error.message);
+      // console.log("Error Fetching Single Library", error.message);
     }
   }
 
@@ -112,12 +112,12 @@ const Library = () => {
     formData.append("title", singleInputs?.title)
     formData.append("pdfupload", pdf)
 
-    console.log(`/library/update?id=${singleInputs?._id}`);
+    // console.log(`/library/update?id=${singleInputs?._id}`);
 
 
     try {
       setLoader(true)
-      console.log(`/library/update?id=${singleInputs?._id}`);
+      // console.log(`/library/update?id=${singleInputs?._id}`);
       const response = await axiosInstance.patch(`/library/update?id=${singleInputs?._id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -131,12 +131,12 @@ const Library = () => {
     } catch (error) {
       setLoader(false)
       errorMessage(error?.response?.data?.message)
-      console.log("Error Updating Library", error.message);
+      // console.log("Error Updating Library", error.message);
     }
   }
 
   const DeletePdfById = async (_id) => {
-    console.log(_id);
+    // console.log(_id);
 
     try {
       setLoader(true)
@@ -148,7 +148,7 @@ const Library = () => {
     } catch (error) {
       setLoader(false)
       errorMessage(error?.response?.data?.message)
-      console.log("error deleting data", error.message);
+      // console.log("error deleting data", error.message);
 
     }
   }
@@ -185,7 +185,7 @@ const Library = () => {
       {
         loader ? <Loader /> : 
       
-      <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300 h-screen">
+      <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300">
         <div className="flex justify-between items-center mx-5 mt-10">
           <h1 className="text-gray-700 text-2xl">Library</h1>
 

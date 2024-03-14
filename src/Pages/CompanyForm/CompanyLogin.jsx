@@ -35,13 +35,14 @@ const CompanyLogin = () => {
         try{
             const response =await axiosInstance.post("/company/login", inputs)
             const data = response?.data
-            console.log(data);
+            // console.log(data);
             localStorage.setItem("company", JSON.stringify(data?.company))
             localStorage.setItem("token", JSON.stringify(data?.token))
             successMessage(data?.message);
             navigate("/companydashboard")
         } catch(error){
-            console.log("error sending login credentials", error.message);
+            // console.log("error sending login credentials", error.message);
+            errorMessage(error?.response?.data?.message)
         }
     }
     return (

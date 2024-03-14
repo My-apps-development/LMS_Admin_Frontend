@@ -5,7 +5,7 @@ export const BASE_URL = "https://myappsdevelopment.co.in"
 
 
 const userToken = JSON.parse(localStorage.getItem("token"));
-console.log('AXIOS TOKEN', userToken)
+// console.log('AXIOS TOKEN', userToken)
 
 
 export const axiosInstance = axios.create({

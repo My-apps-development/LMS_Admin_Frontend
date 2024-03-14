@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Navbars from "../../Components/CompanyNavbars/Navbars"
 import { axiosInstance } from "../../Utils/AxiosSetUp";
 import { TablePagination } from "@mui/material";
+import { errorMessage } from "../../Utils/notificationManager";
 
 
 
@@ -35,11 +36,12 @@ const CompanyDashboard = () => {
 
             setUserList(data?.usersdata);
         } catch (error) {
-            console.log("error fetching company users", error.message);
+            errorMessage(error?.response?.data?.message)
+            // console.log("error fetching company users", error.message);
         }
     }
 
-    console.log(userList);
+    // console.log(userList);
 
     useEffect(() => {
         FetchUsersInCompany()
