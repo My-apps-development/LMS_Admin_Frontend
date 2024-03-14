@@ -3,7 +3,7 @@ import { saveAs } from 'file-saver';
 
 const splitData = (data) => {
   
-    return data.map(item => {
+    return [...data]?.reverse()?.map(item => {
         return {
             userName: `${item?.user?.fullname}`,
             mobileNumber: item?.user?.mobile,

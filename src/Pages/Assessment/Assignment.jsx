@@ -108,7 +108,7 @@ const AssignmentRecord = () => {
                         </thead>
                         <tbody>
                             {
-                                assignmentRecord?.map((item, index) => {
+                                [...assignmentRecord]?.reverse()?.map((item, index) => {
                                     return (
 
                                         <tr className="bg-gray-100 text-center border-b text-sm text-gray-600" key={index}>

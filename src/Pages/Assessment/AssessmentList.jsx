@@ -445,6 +445,9 @@ const AssessmentList = () => {
   return (
     <div>
       <AdminDashboard />
+      {
+        loader ? <Loader /> : 
+     
 
       <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300">
         <div className="p-2 ">
@@ -483,10 +486,11 @@ const AssessmentList = () => {
 
               </tr>
             </thead>
+             {/* {loader ? <Loader /> : null} */}
             <tbody>
-              {loader ? <Loader /> : null}
+             
               {
-                Quiz?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => {
+                Quiz?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.reverse()?.map((item, index) => {
                   return (
                     <tr className="bg-gray-100 text-center border-b text-sm text-gray-600" key={index}>
                       <td className="border-r">  <input type="checkbox" /></td>
@@ -612,7 +616,7 @@ const AssessmentList = () => {
                     <input type="text" name="question" id="question" value={Flag ? inputs?.question : singleInputs?.question} className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
 
                     <label htmlFor="">Upload Image</label>
-                    <input type="file" name="question_image" id="question_image" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeImage}/>
+                    <input type="file" name="question_image" id="question_image" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeImage} />
                   </div>
 
                   <div className="flex flex-col p-2 gap-3">
@@ -730,6 +734,7 @@ const AssessmentList = () => {
           </Modal>
         </div>
       </div>
+       }
     </div>
   )
 }

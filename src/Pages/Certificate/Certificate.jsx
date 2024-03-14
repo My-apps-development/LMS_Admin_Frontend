@@ -155,6 +155,7 @@ const Certificate = () => {
         formData.append("uploadLogo", postLogo)
         formData.append("uploadSignature", postSignature)
         formData.append("uploadTemplate", postCertificate)
+        formData.append("userId", "65f019ee9fa2f461cf1a28e9")
 
         try {
             const response = await axiosInstance.post("/certificate/insert", formData)
@@ -283,7 +284,7 @@ const Certificate = () => {
                         </div>
                         <div className="mt-10 ml-3 grid grid-cols-4 gap-5">
                             {
-                                certificateList?.map((item, index) => {
+                                [...certificateList]?.reverse()?.map((item, index) => {
                                     return (
                                         <div className="border-2 w-72 shadow-lg flex flex-col gap-3 p-3 rounded-lg hover:scale-95 duration-300 bg-white" key={index} data-aos="flip-left">
                                             <div >

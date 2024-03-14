@@ -54,6 +54,7 @@ const Login = () => {
         console.log(data);
         successMessage(data.message)
         navigate("/")
+        clearInputs()
       }
 
 
@@ -64,6 +65,14 @@ const Login = () => {
 
 
 
+  }
+
+  const clearInputs = () => {
+    setInputs((prevInputs)=>({
+      ...prevInputs,
+      email:"",
+      password:""
+    }))
   }
 
 

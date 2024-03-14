@@ -544,7 +544,7 @@ const User = () => {
                         return (
                           <tr className="bg-gray-100 text-center border-b text-sm text-gray-600" key={index}>
                             <td className="border-r">  <input type="checkbox" /></td>
-                            <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.firstName} {item?.lastName}</td>
+                            <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.fullname} </td>
                             <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.role}</td>
                             <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.email}</td>
                             <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.mobile}</td>

@@ -29,7 +29,7 @@ const CourseCategory = () => {
     const [singleCategory, setSingleCategory] = useState({
         categories: "",
         role: "",
-        _id:""
+        _id: ""
     })
 
     const [singleSubCategory, setSingleSubCategory] = useState({
@@ -49,9 +49,9 @@ const CourseCategory = () => {
     })
 
     const [subCategoryInputs, setSubCategoryInputs] = useState({
-     
+
         title: "",
-      
+
     })
 
 
@@ -99,8 +99,8 @@ const CourseCategory = () => {
     const handleChangeSubcategory = (e) => {
         e.preventDefault()
 
-       subCategoryFlag ?  setSubCategoryInputs({...subCategoryInputs, [e.target.name]: e.target.value}) : setSingleSubCategory({...singleSubCategory, [e.target.name]: e.target.value})
-        
+        subCategoryFlag ? setSubCategoryInputs({ ...subCategoryInputs, [e.target.name]: e.target.value }) : setSingleSubCategory({ ...singleSubCategory, [e.target.name]: e.target.value })
+
 
 
     }
@@ -329,7 +329,7 @@ const CourseCategory = () => {
             const response = await axiosInstance.post("/category/add/subcategory", formData)
             const data = await response?.data
             console.log(data);
-        } catch(error){
+        } catch (error) {
             console.log("Error Posting Sub Category", error.message)
         }
     }
@@ -344,11 +344,11 @@ const CourseCategory = () => {
         // UpdateSubcategoryForm.append("subcategoryName")
         UpdateSubcategoryForm.append("categoryId", singleCategory?._id)
 
-        try{
+        try {
             const response = await axiosInstance.patch(`category/update/subcategory?subcategoryId=${singleSubCategory?._id}`, UpdateSubcategoryForm)
             const data = await response.data
             successMessage(data?.message);
-        } catch(error) {
+        } catch (error) {
             console.log("Error Updating Data", error.message);
         }
     }
@@ -435,7 +435,7 @@ const CourseCategory = () => {
 
                     {!categoryList.length ? <div>Oops...! There is No Categories</div> : null}
 
-                    {categoryList.map((item, index) => {
+                    {[...categoryList]?.reverse()?.map((item, index) => {
 
                         return (
                             <div key={index}>
@@ -491,7 +491,7 @@ const CourseCategory = () => {
                                 <h1 className="text-2xl">{subCategoryFlag ? "Add Subcategory" : "Edit Subcategory"}</h1>
                                 <button className="border-[#B32073] bg-[#B32073] p-2 rounded-lg w-20 text-lg text-white" onClick={handleCloseSubmodal}>Close</button>
                             </div>
-                            <form action="" onClick={subCategoryFlag ? PostSubcategory : UpdateSubcategory }>
+                            <form action="" onClick={subCategoryFlag ? PostSubcategory : UpdateSubcategory}>
 
                                 <div className="flex flex-col p-2 gap-3">
                                     <label htmlFor="">Parent</label>

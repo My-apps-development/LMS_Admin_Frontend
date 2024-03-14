@@ -809,7 +809,7 @@ const CourseList = () => {
 
                         <div className="grid grid-cols-3 gap-5 mt-5 p-2 w-[100%] max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1">
                             {
-                                courseList?.map((item, index) => {
+                                [...courseList]?.reverse()?.map((item, index) => {
                                     return (
                                         <div className="w-[100%] h-50 border-2 shadow-xl p-2 rounded-lg hover:scale-95 duration-300 bg-white" key={index} data-aos="flip-left">
                                             <div className="flex flex-col gap-2 ">
@@ -827,7 +827,7 @@ const CourseList = () => {
                                             <Divider />
                                             <div className="flex justify-between flex-col items-center py-2 w-full">
                                                 {
-                                                    chapterList?.filter(it => it.courseId === item.course?._id)?.map((i, index) => {
+                                                    [...chapterList]?.reverse()?.filter(it => it.courseId === item.course?._id)?.map((i, index) => {
 
                                                         return (
                                                             <div className="flex justify-between items-center gap-2 border-b-2 w-full cursor-pointer" key={index}>

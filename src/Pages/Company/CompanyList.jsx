@@ -80,7 +80,7 @@ const CompanyList = () => {
                         </thead>
                         <tbody>
                             {
-                                companyList.map((item, index) => {
+                                [...companyList]?.reverse()?.map((item, index) => {
                                     return (
                                         <tr className="bg-gray-100 text-center border-b text-sm text-gray-600" key={index}>
 
