@@ -254,12 +254,12 @@ const Certificate = () => {
             fetchCertificates()
         } catch(error) {
             errorMessage(error?.response?.data?.message)
-            console.log("Error Deleting Certificate", error.message);
+            // console.log("Error Deleting Certificate", error.message);
         }
     }
 
 
-    console.log(certificateList);
+    // console.log(certificateList);
 
 
 

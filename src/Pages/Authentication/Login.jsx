@@ -46,12 +46,12 @@ const Login = () => {
       // }
 
       const data = await response.data
-      console.log(data);
+      // console.log(data);
       if (response.statusText === "OK") {
         localStorage.setItem("token", JSON.stringify(data.token))
         localStorage.setItem("role", JSON.stringify(data.admin.role))
         localStorage.setItem("admin", JSON.stringify(data.admin))
-        console.log(data);
+        // console.log(data);
         successMessage(data.message)
         navigate("/")
         clearInputs()
@@ -60,7 +60,7 @@ const Login = () => {
 
     } catch (error) {
       errorMessage(error.response.data.message)
-      console.log("Cannot post login details");
+      // console.log("Cannot post login details");
     }
 
 

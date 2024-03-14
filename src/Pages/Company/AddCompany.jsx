@@ -26,7 +26,7 @@ const AddCompany = () => {
     const PostCompanyForm = async (e) => {
         e.preventDefault()
 
-        console.log(inputs)
+        // console.log(inputs)
         if (!inputs.name) {
             errorMessage("Company Name is required")
             return
@@ -65,7 +65,7 @@ const AddCompany = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
-            console.log("Error posting company", error.message);
+            // console.log("Error posting company", error.message);
         }
     }
     return (

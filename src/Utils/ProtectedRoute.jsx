@@ -6,7 +6,7 @@ import { Navigate, useLocation } from "react-router-dom";
 function ProtectedWrapper({ children }) {
   const token = localStorage.getItem("token");
   const location = useLocation();
-console.log(token)
+// console.log(token)
   return token ? (
     <div>
         {children}

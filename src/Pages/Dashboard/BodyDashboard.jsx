@@ -41,7 +41,7 @@ const BodyDashboard = () => {
     const [certificateList, setCertificateList] = useState([])
 
 
-    console.log(UserList);
+    // console.log(UserList);
 
 
 
@@ -56,7 +56,7 @@ const BodyDashboard = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error?.response?.data?.message)
-            console.log("Error Fetching Courses", error.message);
+            // console.log("Error Fetching Courses", error.message);
         }
     }
 
@@ -70,7 +70,7 @@ const BodyDashboard = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error?.response?.data?.message)
-            console.log("Error Fetching Questions", error.message);
+            // console.log("Error Fetching Questions", error.message);
         }
     }
 
@@ -85,7 +85,7 @@ const BodyDashboard = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error?.response?.data?.message)
-            console.log("Error Fetching Users", error.message);
+            // console.log("Error Fetching Users", error.message);
         }
     }
 
@@ -100,7 +100,7 @@ const BodyDashboard = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error?.response?.data?.message)
-            console.log("Error Fetching Chapters", error.message);
+            // console.log("Error Fetching Chapters", error.message);
         }
     }
 
@@ -114,7 +114,7 @@ const BodyDashboard = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error?.response?.data?.message)
-            console.log("Error Fetching Certificates", error.message);
+            // console.log("Error Fetching Certificates", error.message);
         }
     }
 

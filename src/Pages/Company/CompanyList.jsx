@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { axiosInstance } from "../../Utils/AxiosSetUp"
 import Loader from "../../Utils/Loader"
 import { TablePagination } from "@mui/material"
-import { successMessage } from "../../Utils/notificationManager"
+import { errorMessage, successMessage } from "../../Utils/notificationManager"
 
 
 const CompanyList = () => {
@@ -19,7 +19,8 @@ const CompanyList = () => {
             setCompanyList(data.companies);
             setLoader(false)
         } catch (error) {
-            console.log("Error Fetching company details", error.message);
+            errorMessage(error?.response?.data?.message)
+            // console.log("Error Fetching company details", error.message);
         }
     }
 
@@ -42,7 +43,8 @@ const CompanyList = () => {
             successMessage(data?.message);
             fetchCompanyList()
         } catch (error) {
-            console.log("Error Deleting Company", error.message);
+            errorMessage(error?.response?.data?.message)
+            // console.log("Error Deleting Company", error.message);
         }
     }
 

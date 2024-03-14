@@ -87,11 +87,11 @@ const User = () => {
     // console.log(open);
     setFlag(true)
 
-    console.log(flag);
+    // console.log(flag);
     setOpen(true)
   };
   const handleClose = () => {
-    console.log(open);
+    // console.log(open);
 
     setOpen(false)
   };
@@ -144,7 +144,8 @@ const User = () => {
       setUserList(data.users);
     } catch (error) {
       setLoader(false)
-      console.log("error fetching users", error.message);
+      errorMessage(error?.response?.data?.message)
+      // console.log("error fetching users", error.message);
     }
   }
 
@@ -240,7 +241,7 @@ const User = () => {
     } catch (error) {
       setLoader(false)
       errorMessage(error.response.data.message)
-      console.log("Error Posting data", error.message);
+      // console.log("Error Posting data", error.message);
     }
 
     ClearInputs()
@@ -303,7 +304,7 @@ const User = () => {
       setOpen(false)
     } catch (error) {
       setLoader(false)
-      console.log("error updating data", error.message);
+      // console.log("error updating data", error.message);
       errorMessage(error.response.data.message)
     }
     ClearInputs()
@@ -320,7 +321,7 @@ const User = () => {
 
   const handleDelete = async (_id) => {
 
-    console.log(_id);
+    // console.log(_id);
 
     try {
       setLoader(true)
@@ -337,9 +338,9 @@ const User = () => {
     } catch (error) {
       setLoader(false)
       errorMessage(error?.response?.data?.message)
-      console.log("Error deleting", error.message);
+      // console.log("Error deleting", error.message);
     }
-    console.log(_id);
+    // console.log(_id);
   }
 
   // const FetchCourse = async () => {
@@ -359,18 +360,18 @@ const User = () => {
       setLoader(true)
       const response = await axiosInstance.get(`/singleuser?userid=${_id}`)
       const data = await response.data
-      console.log(data);
+      // console.log(data);
       setSingleInputs(data.user);
       setDisplayImage(data?.user?.upload_license)
       setLoader(false)
     } catch (error) {
       setLoader(false)
       errorMessage(error?.response?.data?.message)
-      console.log("error fetching Single user detials", error.message);
+      // console.log("error fetching Single user detials", error.message);
     }
   }
 
-  console.log(singleInputs);
+  // console.log(singleInputs);
 
   const FetchCompanies = async () => {
     try {
@@ -380,7 +381,7 @@ const User = () => {
     } catch (error) {
       setLoader(false)
       errorMessage(error?.response?.data?.message)
-      console.log("Error Fetching Companies", error.message)
+      // console.log("Error Fetching Companies", error.message)
     }
   }
 
@@ -396,7 +397,7 @@ const User = () => {
     } catch (error) {
       setLoader(false)
       errorMessage(error?.response?.data?.message)
-      console.log("Error Approving User Status", error.message);
+      // console.log("Error Approving User Status", error.message);
     }
   }
 
@@ -421,7 +422,7 @@ const User = () => {
       setImage(null)
       setDisplayImage(null)
     } catch (error) {
-      console.log("error clearing input fields", error.message);
+      // console.log("error clearing input fields", error.message);
     }
   }
 
@@ -435,7 +436,7 @@ const User = () => {
     } catch (error) {
       setLoader(false)
       errorMessage(error?.response?.data?.message)
-      console.log("Error Fetching Master Roles", error.message)
+      // console.log("Error Fetching Master Roles", error.message)
     }
   }
 
@@ -449,7 +450,7 @@ const User = () => {
     } catch (error) {
       setLoader(false)
       errorMessage(error?.response?.data?.message)
-      console.log("Error Fetching Master Roles", error.message)
+      // console.log("Error Fetching Master Roles", error.message)
     }
   }
 

@@ -48,7 +48,7 @@ const AssessmentList = () => {
     language: ""
   })
 
-  console.log(inputs);
+  // console.log(inputs);
 
   const [singleInputs, setSingleInputs] = useState({
     question: "",
@@ -70,12 +70,12 @@ const AssessmentList = () => {
 
 
   const handleOpen = () => {
-    console.log(open);
+    // console.log(open);
     setOpen(true)
     setFlag(true)
   };
   const handleClose = () => {
-    console.log(open);
+    // console.log(open);
     setOpen(false)
   };
 
@@ -119,8 +119,8 @@ const AssessmentList = () => {
       return
     }
 
-    console.log("submit initial");
-    console.log(inputs);
+    // console.log("submit initial");
+    // console.log(inputs);
 
 
     const QuestionsFormData = new FormData()
@@ -165,7 +165,8 @@ const AssessmentList = () => {
       setCoursesList(data.coursewithcategory);
       setLoader(false)
     } catch (error) {
-      console.log("Error Fetching Course", error.message);
+      errorMessage(error.response.data.message)
+      // console.log("Error Fetching Course", error.message);
     }
   }
 
@@ -233,7 +234,8 @@ const AssessmentList = () => {
       setQuiz(data.data);
       setLoader(false)
     } catch (error) {
-      console.log("Error Fetching Quiz", error.message);
+      errorMessage(error.response.data.message)
+      // console.log("Error Fetching Quiz", error.message);
     }
 
   }
@@ -247,7 +249,8 @@ const AssessmentList = () => {
       const data = await response.data
       setChapterList(data.chapter);
     } catch (error) {
-      console.log("Error Fetching Chapters", error.message)
+      errorMessage(error.response.data.message)
+      // console.log("Error Fetching Chapters", error.message)
     }
   }
 
@@ -263,7 +266,8 @@ const AssessmentList = () => {
       setSingleInputs(data.question);
       setLoader(false)
     } catch (error) {
-      console.log("Error While Fetching By Single Id", error.message);
+      errorMessage(error.response.data.message)
+      // console.log("Error While Fetching By Single Id", error.message);
     }
   }
 
@@ -271,7 +275,7 @@ const AssessmentList = () => {
 
   const UpdateQuestionById = async (e) => {
     e.preventDefault()
-    console.log("update by id", singleInputs._id);
+    // console.log("update by id", singleInputs._id);
 
     const formData = new FormData()
 
@@ -288,7 +292,7 @@ const AssessmentList = () => {
 
     try {
       setLoader(true)
-      console.log(`/Quiz/update?quetionId=${singleInputs?._id}`);
+      // console.log(`/Quiz/update?quetionId=${singleInputs?._id}`);
       const response = await axiosInstance.patch(`/Quiz/update?quetionId=${singleInputs?._id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -300,7 +304,8 @@ const AssessmentList = () => {
       setOpen(false)
       setLoader(false)
     } catch (error) {
-      console.log("Error Updating Data", error.message);
+      errorMessage(error.response.data.message)
+      // console.log("Error Updating Data", error.message);
     }
 
     ClearInputs()
@@ -315,7 +320,8 @@ const AssessmentList = () => {
       fetchQuestion()
       setLoader(false)
     } catch (error) {
-      console.log("Error Deleting Data", error.message);
+      errorMessage(error.response.data.message)
+      // console.log("Error Deleting Data", error.message);
     }
   }
 
@@ -334,6 +340,7 @@ const AssessmentList = () => {
         chapterId: ""
       }))
     } catch (error) {
+      // errorMessage(error.response.data.message)
       console.log("error clearing input fields", error.message);
     }
   }
@@ -352,15 +359,16 @@ const AssessmentList = () => {
 
     }
 
-    console.log(`/homepage/fetchChapters${additionalURL}`)
+    // console.log(`/homepage/fetchChapters${additionalURL}`)
 
 
     try {
       const response = await axiosInstance.get(`/homepage/fetchChapters${additionalURL}`)
       const data = await response.data
-      console.log(data)
+      // console.log(data)
     } catch (error) {
-      console.log("error fetching chapters with course id", error.message);
+      errorMessage(error.response.data.message)
+      // console.log("error fetching chapters with course id", error.message);
     }
   }
 
@@ -371,7 +379,8 @@ const AssessmentList = () => {
       setLanguage(data?.Language);
 
     } catch (error) {
-      console.log("Error Fetching Languages", error.message);
+      errorMessage(error.response.data.message)
+      // console.log("Error Fetching Languages", error.message);
     }
   }
 
@@ -408,11 +417,12 @@ const AssessmentList = () => {
       successMessage(data?.message);
       clearCsvInputs()
     } catch (error) {
-      console.log("Error Uploading Csv File", error.message);
+      errorMessage(error.response.data.message)
+      // console.log("Error Uploading Csv File", error.message);
     }
   }
 
-  console.log(csvInputs);
+  // console.log(csvInputs);
 
   const clearCsvInputs = () => {
     try {
@@ -464,9 +474,9 @@ const AssessmentList = () => {
           <table className="w-[100%]">
             <thead>
               <tr className=" border-b">
-                <th className="border-r ">
+                {/* <th className="border-r ">
                   <input type="checkbox" />
-                </th>
+                </th> */}
                 <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
                   <h1 className="flex items-center justify-center">#</h1>
                 </th>
@@ -493,7 +503,7 @@ const AssessmentList = () => {
                 Quiz?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.reverse()?.map((item, index) => {
                   return (
                     <tr className="bg-gray-100 text-center border-b text-sm text-gray-600" key={index}>
-                      <td className="border-r">  <input type="checkbox" /></td>
+                      {/* <td className="border-r">  <input type="checkbox" /></td> */}
                       <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 ">{index + 1 + page * rowsPerPage}</td>
                       <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500  text-start ml-5">{item.question}</td>
                       <div className="flex flex-wrap">

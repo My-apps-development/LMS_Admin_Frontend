@@ -140,8 +140,8 @@ const CourseList = () => {
 
 
     const handleOpenSubModal = (singleCourseTitle, singleCourseId) => {
-        console.log(singleCourseId);
-        console.log(singleCourseTitle);
+        // console.log(singleCourseId);
+        // console.log(singleCourseTitle);
         setIsSubModalOpen(true)
         setParentCourseId(singleCourseId)
         setParentCourseName(singleCourseTitle)
@@ -218,19 +218,16 @@ const CourseList = () => {
             setIsSettingModalOpen(false)
         } catch (error) {
             errorMessage(error?.response?.data?.message)
-            console.log("Error Inserting Setting Inputs", error.message);
+            // console.log("Error Inserting Setting Inputs", error.message);
         }
     }
 
     const PostChapter = async (e) => {
 
-        console.log(flag);
-
-
-
+        // console.log(flag);
         e.preventDefault()
 
-        console.log(chapters);
+        // console.log(chapters);
 
         const postChapter = new FormData()
         postChapter.append("title", chapters.title)
@@ -259,7 +256,7 @@ const CourseList = () => {
                 }
             })
             const data = await response.data
-            console.log(data);
+  
             successMessage(data.message)
             FetchChapters()
             fetchCourses()
@@ -272,7 +269,7 @@ const CourseList = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error?.response?.data?.message)
-            console.log("Error Posting Chapters", error.message)
+            // console.log("Error Posting Chapters", error.message)
         }
     }
 
@@ -314,7 +311,7 @@ const CourseList = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
-            console.log("Error Updating Chapter By Id", error.message);
+            // console.log("Error Updating Chapter By Id", error.message);
         }
 
         ClearInputs()
@@ -323,7 +320,7 @@ const CourseList = () => {
     const PostCourse = async (e) => {
         e.preventDefault()
 
-        console.log(postVideo);
+        // console.log(postVideo);
 
         if (!CourseInputs.title) {
             errorMessage("Course Name Required")
@@ -393,7 +390,7 @@ const CourseList = () => {
         } catch (error) {
             errorMessage(error.response.data.message)
             setLoader(false)
-            console.log("Error Creating course", error.message);
+            // console.log("Error Creating course", error.message);
         }
 
     }
@@ -408,7 +405,7 @@ const CourseList = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
-            console.log("Error fetching categories data", error.message);
+            // console.log("Error fetching categories data", error.message);
         }
     }
 
@@ -423,7 +420,7 @@ const CourseList = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
-            console.log("error fetching data", error.message);
+            // console.log("error fetching data", error.message);
         }
     }
 
@@ -438,12 +435,12 @@ const CourseList = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
-            console.log("Error Fetching Chapters", error.message);
+            // console.log("Error Fetching Chapters", error.message);
         }
     }
 
     const handleDeleteCourse = async (_id) => {
-        console.log(_id);
+        // console.log(_id);
         try {
             setLoader(true)
             const response = await axiosInstance.delete("homepage/deleteCourse", { data: { courseId: _id } })
@@ -454,7 +451,7 @@ const CourseList = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
-            console.log("Deleting data Failed", error.message);
+            // console.log("Deleting data Failed", error.message);
         }
     }
 
@@ -538,7 +535,7 @@ const CourseList = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
-            console.log("error updating code", error.message);
+            // console.log("error updating code", error.message);
         }
     }
 
@@ -555,7 +552,7 @@ const CourseList = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
-            console.log("Error Fetching Chapters By Id", error.message)
+            // console.log("Error Fetching Chapters By Id", error.message)
         }
 
     }
@@ -569,13 +566,13 @@ const CourseList = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
-            console.log("Error Fetching Chapters By Id", error.message);
+            // console.log("Error Fetching Chapters By Id", error.message);
         }
     }
 
     const DeleteChapterById = async (_id, courseId) => {
-        console.log(_id);
-        console.log(courseId);
+        // console.log(_id);
+        // console.log(courseId);
         try {
             setLoader(true)
             const response = await axiosInstance.delete("/homepage/deleteChapters", { data: { chapterId: _id, courseId: courseId } })
@@ -586,7 +583,7 @@ const CourseList = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
-            console.log("Error Deleting chapter by Id", error.message);
+            // console.log("Error Deleting chapter by Id", error.message);
         }
     }
 
@@ -597,7 +594,8 @@ const CourseList = () => {
             setLanguage(data?.Language);
         } catch (error) {
             setLoader(false)
-            console.log("Error Fetching Languages", error.message)
+            errorMessage(error.response.data.message)
+            // console.log("Error Fetching Languages", error.message)
         }
     }
 
@@ -608,7 +606,8 @@ const CourseList = () => {
             setSettingData(data?.settingdata);
         } catch (error) {
             setLoader(false)
-            console.log("Error Fetching Course Setting", error.message);
+            errorMessage(error.response.data.message)
+            // console.log("Error Fetching Course Setting", error.message);
         }
     }
 
@@ -619,7 +618,8 @@ const CourseList = () => {
             setRoles(data?.roles);
         } catch (error) {
             setLoader(false)
-            console.log("Error Fetching Master Roles", error.message)
+            errorMessage(error.response.data.message)
+            // console.log("Error Fetching Master Roles", error.message)
         }
     }
 
@@ -640,7 +640,7 @@ const CourseList = () => {
             setUploadProgress(0)
         } catch (error) {
             setLoader(false)
-            console.log("error clearing input fields", error.message);
+            // console.log("error clearing input fields", error.message);
         }
     }
 
@@ -664,7 +664,7 @@ const CourseList = () => {
                     !courseList.length ? <div className="text-2xl"> Oops...! No Courses Found </div> : null
                 }
                 {
-                    loader ? <Loader /> : <div className="h-screen">
+                    loader ? <Loader /> : <div className="">
                         <div>
                             <div>
                                 <div className="font-bold">
