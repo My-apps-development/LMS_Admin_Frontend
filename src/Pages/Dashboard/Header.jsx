@@ -8,7 +8,7 @@ const Header = () => {
         <div className="flex justify-between items-center p-2 w-[100%] font-semibold mt-2 static" data-aos="fade-down">
             <div className="flex justify-center items-center p-2 border-2 w-[50%] ml-20 rounded-lg">
                 <p className="text-4xl w-14 text-center"><FiSearch /></p>
-                <input type="text" name="" id="" className="p-2 w-full" />
+                <input type="search" name="" id="" className="p-2 w-full" placeholder="Search for Courses, Users and Companies"/>
             </div>
 
             <div className="flex justify-center items-center text-2xl p-2 ml-40 text-gray-600 cursor-pointer">

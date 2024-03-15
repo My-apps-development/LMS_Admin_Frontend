@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { errorMessage, successMessage } from "../../Utils/notificationManager"
 import { axiosInstance } from "../../Utils/AxiosSetUp"
 import Loader from "../../Utils/Loader"
+import Select from 'react-select';
 
 
 const Certificate = () => {
@@ -21,13 +22,27 @@ const Certificate = () => {
 
     const [certificateList, setCertificateList] = useState([])
 
-    const [singleCertificate, setSingleCertificate] = useState({})
+    const [certificateFlag, setCertificateFlag] = useState(true)
+
+    const [singleCertificate, setSingleCertificate] = useState({
+        _id:"",
+        fullname: "",
+        userId: "",
+        courseId: "",
+        validDate: "",
+        uploadLogo: "",
+        uploadSignature: "",
+        uploadTemplate: ""
+    })
 
     const [loader, setLoader] = useState(false)
 
+    const [meritUsers, setMeritUsers] = useState([])
+
+    const [selectedUser, setSelectedUser] = useState({})
+
     const [inputs, setInputs] = useState({
-        firstName: "",
-        lastName: "",
+        fullname: "",
         userId: "",
         courseId: "",
         validDate: "",
@@ -49,6 +64,8 @@ const Certificate = () => {
         overflowY: 'auto',
         p: 4,
     };
+
+
 
 
     const handleChangeInputs = (e) => {
@@ -117,14 +134,14 @@ const Certificate = () => {
     const PostCertificate = async (e) => {
         e.preventDefault()
 
-        if (!inputs?.firstName) {
-            errorMessage("first name is required")
-            return
-        }
-        if (!inputs?.lastName) {
-            errorMessage("last name is required")
-            return
-        }
+        // if (!inputs?.fullname) {
+        //     errorMessage("fullname name is required")
+        //     return
+        // }
+        // if (!inputs?.lastName) {
+        //     errorMessage("last name is required")
+        //     return
+        // }
         if (!inputs?.validDate) {
             errorMessage("date is required")
             return
@@ -147,21 +164,22 @@ const Certificate = () => {
         }
 
         const formData = new FormData()
-        formData.append("firstName", inputs?.firstName)
-        formData.append("lastName", inputs?.lastName)
+        formData.append("fullname", selectedUser?.label)
+        // formData.append("us", inputs?.lastName)
         formData.append("validDate", inputs?.validDate)
         formData.append("courseId", inputs?.courseId)
-        formData.append("userId", "65ddd1278afbec893e0b0096")
+        formData.append("userId", selectedUser?.value)
         formData.append("uploadLogo", postLogo)
         formData.append("uploadSignature", postSignature)
         formData.append("uploadTemplate", postCertificate)
-        formData.append("userId", "65f019ee9fa2f461cf1a28e9")
+        // formData.append("userId", "65f019ee9fa2f461cf1a28e9")
 
         try {
             const response = await axiosInstance.post("/certificate/insert", formData)
             const data = await response?.data
             successMessage(data?.message);
             clearInputs()
+            fetchCertificates()
             setIsOpen(false)
         } catch (error) {
             errorMessage(error?.response?.data?.message)
@@ -183,7 +201,7 @@ const Certificate = () => {
         }
     }
 
-    
+
 
 
     const fetchCertificates = async () => {
@@ -203,8 +221,7 @@ const Certificate = () => {
     const clearInputs = () => {
         setInputs((prevInputs) => ({
             ...prevInputs,
-            firstName: "",
-            lastName: "",
+            fullname: '',
             courseId: "",
             validDate: "",
             userId: ""
@@ -221,29 +238,33 @@ const Certificate = () => {
 
     const getSingleCertificate = async (_id) => {
 
-        try{
+        try {
             const response = await axiosInstance.get(`/certificate/single?id=${_id}`)
             const data = await response.data
-            setSingleCertificate(data);
-        } catch(error){
+            setSingleCertificate(data?.certificate);
+            setCertificate(data?.certificate?.uploadTemplate)
+            setLogo(data?.certificate?.uploadLogo)
+            setSignature(data?.certificate?.uploadSignature)
+        } catch (error) {
             errorMessage(error?.response?.data?.message)
             console.log("Error Fetching Single Id", error.message);
         }
     }
 
-    const UpdateCertificate = async(_id) => {
-        
-        try{
-            const response = await axiosInstance.patch(`/certificate/update?id=${_id}`)
+    const UpdateCertificate = async () => {
+
+        try {
+            const response = await axiosInstance.patch(`/certificate/update?id=${singleCertificate?._id}`)
             const data = await response?.data
             console.log(data?.message);
-        } catch(error){
+            setIsOpen(false)
+        } catch (error) {
             errorMessage(error?.response?.data?.message)
-            console.log("Error Updating Certificate",error.message);
+            console.log("Error Updating Certificate", error.message);
         }
     }
 
-    const DeleteCertificate = async(_id) => {
+    const DeleteCertificate = async (_id) => {
 
         console.log(_id);
 
@@ -252,14 +273,25 @@ const Certificate = () => {
             const data = await response.data
             successMessage(data?.message);
             fetchCertificates()
-        } catch(error) {
+        } catch (error) {
             errorMessage(error?.response?.data?.message)
             // console.log("Error Deleting Certificate", error.message);
         }
     }
 
 
-    // console.log(certificateList);
+    console.log(singleCertificate);
+
+
+    const GetMeritUsers = async () => {
+        try {
+            const response = await axiosInstance.get("/assignment/getmerit")
+            const data = await response?.data
+            setMeritUsers(data?.assignmentsWithUserDetails);
+        } catch (error) {
+            console.log("Error Fetching Merit User", error.message);
+        }
+    }
 
 
 
@@ -268,6 +300,7 @@ const Certificate = () => {
     useEffect(() => {
         FetchCourses()
         fetchCertificates()
+        GetMeritUsers()
     }, [])
 
 
@@ -280,7 +313,10 @@ const Certificate = () => {
                     <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300">
                         <div className="w-full justify-between items-center flex p-2">
                             <h1 className="text-2xl">Certificate</h1>
-                            <button type="button" className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-40" onClick={() => setIsOpen(true)}>Add Certificate</button>
+                            <button type="button" className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-40" onClick={() => {
+                                setIsOpen(true)
+                                setCertificateFlag(true)
+                            }}>Add Certificate</button>
                         </div>
                         <div className="mt-10 ml-3 grid grid-cols-4 gap-5">
                             {
@@ -292,19 +328,19 @@ const Certificate = () => {
                                             </div>
                                             <div>
                                                 <div>
-                                                    <h1>{item?.certificate?.firstName} {item?.certificate?.lastName}</h1>
+                                                    <h1>{item?.certificate?.fullname}</h1>
                                                 </div>
                                                 <div className="flex justify-between items-center w-full">
                                                     <h1>Course Name</h1>
                                                     <p>{item?.certificate?.validDate}</p>
                                                 </div>
                                                 <div className="flex justify-between items-center mt-6">
-                                                    <button className="text-blue-600" onClick={()=>{
+                                                    <button className="text-blue-600" onClick={() => {
                                                         setIsOpen(true)
-                                                        UpdateCertificate(item?.certificate?._id)
+                                                        setCertificateFlag(false)
                                                         getSingleCertificate(item?.certificate?._id)
-                                                        }}>Edit</button>
-                                                    <button className="text-red-600" onClick={()=>DeleteCertificate(item?.certificate?._id)}>Delete</button>
+                                                    }}>Edit</button>
+                                                    <button className="text-red-600" onClick={() => DeleteCertificate(item?.certificate?._id)}>Delete</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -318,25 +354,34 @@ const Certificate = () => {
                             <Box sx={style}>
                                 <div className="text-xs overflow-y-visible font-semibold text-gray-600">
                                     <div className="flex justify-between items-center w-full text-black">
-                                        <h1 className="text-2xl">Add Certificate</h1>
+                                        <h1 className="text-2xl">{certificateFlag ? "Add Certificate" : "Update Certificate"}</h1>
                                         <button className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-20" onClick={() => setIsOpen(false)}>Close</button>
                                     </div>
-                                    <form className="flex flex-col mt-10" onSubmit={PostCertificate}>
+                                    <form className="flex flex-col mt-10" onSubmit={certificateFlag ? PostCertificate : UpdateCertificate}>
 
-                                        <div className="grid grid-cols-2">
+                                        <div className="grid grid-cols-1">
+                                            {/* <div className="flex flex-col p-2 gap-3">
+                                                <label htmlFor="">Full Name</label>
+                                                <input type="text" name="fullname" id="fullname" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeInputs} />
+                                            </div> */}
+                                            {/* 
                                             <div className="flex flex-col p-2 gap-3">
-                                                <label htmlFor="">First Name</label>
-                                                <input type="text" name="firstName" id="firstName" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeInputs} />
-                                            </div>
-
-                                            <div className="flex flex-col p-2 gap-3">
-                                                <label htmlFor="">Last Name</label>
+                                                <label htmlFor="">User Name</label>
                                                 <input type="text" name="lastName" id="lastName" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeInputs} />
+                                            </div> */}
+                                            <div className="flex flex-col p-2 gap-3">
+                                                <Select placeholder="Select User" onChange={selectedOption => {
+                                                    // Handle selected option
+                                                    setSelectedUser(selectedOption);
+                                                }} options={meritUsers?.map((user) => ({
+                                                    value: user?.user?._id,
+                                                    label: user?.user?.fullname
+                                                }))} value={certificateFlag ? inputs?.userId : singleCertificate?.userId}/>
                                             </div>
 
                                             <div className="flex flex-col p-2 gap-3">
                                                 <label htmlFor="">Completed Course</label>
-                                                <select name="courseId" id="courseId" onChange={handleChangeInputs} className="p-3 border-2 border-gray-600 rounded-lg">
+                                                <select name="courseId" id="courseId" onChange={handleChangeInputs} className="p-3 border-2 border-gray-600 rounded-lg" value={certificateFlag ? inputs?.courseId : singleCertificate?.courseId}>
                                                     <option value="">Choose Course</option>
                                                     {
                                                         courseList?.map((item) => {
@@ -347,12 +392,12 @@ const Certificate = () => {
                                                     }
                                                 </select>
                                                 {/* <input type="text" name="courseId" id="courseId" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeInputs} /> */}
-                                               
+
                                             </div>
 
                                             <div className="flex flex-col p-2 gap-3">
                                                 <label htmlFor="">Issue Date</label>
-                                                <input type="date" name="validDate" id="validDate" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeInputs} />
+                                                <input type="date" name="validDate" id="validDate" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeInputs} value={certificateFlag ? inputs?.validDate : singleCertificate?.validDate}/>
                                             </div>
                                         </div>
 
@@ -361,7 +406,7 @@ const Certificate = () => {
                                             <div className="flex w-[100%]">
                                                 <div className="flex flex-col p-2 gap-3 w-[50%]">
                                                     <label htmlFor="">Certificate Logo</label>
-                                                    <input type="file" name="uploadLogo" id="uploadLogo" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeLogo} />
+                                                    <input type="file" name="uploadLogo" id="uploadLogo" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeLogo} accept="image/*"/>
                                                 </div>
                                                 <div className="w-[50%] flex justify-center items-center">
                                                     <img src={Logo} alt="" className="w-56 h-56" />
@@ -371,7 +416,7 @@ const Certificate = () => {
                                             <div className="flex w-[100%] ">
                                                 <div className="flex flex-col p-2 gap-3 w-[50%]">
                                                     <label htmlFor="">Certificate Signature</label>
-                                                    <input type="file" name="uploadSignature" id="uploadSignature" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeSignature} />
+                                                    <input type="file" name="uploadSignature" id="uploadSignature" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeSignature} accept="image/*"/>
                                                 </div>
                                                 <div className="w-[50%] flex justify-center items-center">
                                                     <img src={signature} alt="" className="w-56 h-56" />
@@ -382,7 +427,7 @@ const Certificate = () => {
                                             <div className="flex w-[100%]">
                                                 <div className="flex flex-col p-2 gap-3 w-[50%]">
                                                     <label htmlFor="">Certificate Template</label>
-                                                    <input type="file" name="uploadTemplate" id="uploadTemplate" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeCertificate} />
+                                                    <input type="file" name="uploadTemplate" id="uploadTemplate" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeCertificate} accept="image/*"/>
                                                 </div>
                                                 <div className="w-[50%] flex justify-center items-center">
                                                     <img src={certificate} alt="" className="w-56 h-56" />
@@ -390,12 +435,12 @@ const Certificate = () => {
                                             </div>
                                         </div>
 
-                                        <div className="flex flex-col p-2 gap-3">
+                                        {/* <div className="flex flex-col p-2 gap-3">
                                             <label htmlFor="">Description</label>
-                                            <textarea name="description" id="description" cols="10" rows="5" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeInputs}></textarea>
-                                        </div>
+                                            <textarea name="description" id="description" cols="10" rows="5" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeInputs} ></textarea>
+                                        </div> */}
 
-                                        <div className="w-full flex justify-center items-center gap-5 p-2">
+                                        <div className="w-full flex justify-center items-center gap-5 p-2 mt-10">
                                             {/* <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Save</button> */}
                                             <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-42 rounded-lg" type="submit">Issue Certificate</button>
                                         </div>

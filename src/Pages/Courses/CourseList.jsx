@@ -644,6 +644,8 @@ const CourseList = () => {
         }
     }
 
+    console.log(courseList);
+
     useEffect(() => {
         fetchCourses()
         FetchChapters()
@@ -674,7 +676,7 @@ const CourseList = () => {
                                     <div className="flex justify-between items-center">
                                         <p>Total {courseList?.length} video courses are available</p>
                                         <div className="flex gap-2 relative">
-                                            <p className="p-2 flex justify-center items-center gap-2 border-2 border-[#B32073] text-[#B32073] hover:bg-[#B32073] hover:text-white" onClick={() => setVideoIntervalDisplay(!videoIntervalDisplay)}><MdSettings />Settings</p>
+                                            <p className="p-2 flex justify-center items-center gap-2 border-2 border-[#B32073] text-[#B32073] hover:bg-[#B32073] hover:text-white cursor-pointer" onClick={() => setVideoIntervalDisplay(!videoIntervalDisplay)}><MdSettings />Settings</p>
                                             <button className="p-2 border-2 border-[#B32073] bg-[#B32073] flex justify-center items-center gap-3  text-white hover:bg-[#B32073] hover:bg-inherit hover:text-[#B32073]" onClick={handleOpenModal}><FaPlus />Add Course</button>
 
                                             <div className={`absolute mt-14  flex-col justify-center items-center gap-1 border-2 border-gray-600 rounded z-40 ${videoIntervalDisplay ? "flex" : "hidden"}`} >
@@ -709,7 +711,7 @@ const CourseList = () => {
 
                                                 <div className="flex justify-between items-center gap-2 text-xs">
                                                     <p className="text-gray-400">Category: <span className="text-blue-500">{item?.category?.categories}</span></p>
-                                                    {/* <p className="text-gray-400">Videos: <span className="text-blue-500">{item?.course?.videoCount}</span></p> */}
+                                                    <p className="text-gray-400">Language: <span className="text-blue-500">{item?.course?.language}</span></p>
                                                 </div>
                                                 <div className="flex justify-between items-center py-2 text-xs">
                                                     <p className="text-gray-400">status: <span className="text-green-600">{item?.course?.status}</span></p>
@@ -725,7 +727,7 @@ const CourseList = () => {
                                                             <div className="flex justify-between items-center gap-2 border-b-2 w-full cursor-pointer" key={index}>
                                                                 <div className="flex justify-start items-start flex-col">
                                                                     <p>{i?.title}</p>
-                                                                    <p className="text-gray-400 text-xs">Source: {i?.source}</p>
+                                                                    <p className="text-gray-400 text-xs">Source: {i?.source}  &nbsp;  Language: {i?.language}</p>
                                                                 </div>
                                                                 <div className="flex justify-center items-center gap-5 w-28 h-14 font-2xl font-bold">
                                                                     <p className="font-2xl p-2" onClick={() => {
@@ -1056,7 +1058,7 @@ const CourseList = () => {
                                                 <>
                                                     <label htmlFor="">Link</label>
                                                     <input
-                                                        type="text"
+                                                        type={selectedSource == "Upload" ? "file" : "text"}
                                                         name="video_link"
                                                         id="video_link"
                                                         onChange={handleChangeChapter}
@@ -1072,7 +1074,7 @@ const CourseList = () => {
                                                 selectedSource == "Upload" && (
                                                     <>
                                                         <label htmlFor="">Upload Video</label>
-                                                        <input type="file" name="video_link" id="video_link" className="p-3 w-full border-2 border-gray-600 rounded-lg" onChange={handleChangeChapterFile} />
+                                                        <input type={selectedSource == "Upload" ? "file" : "text"} name="video_link" id="video_link" className="p-3 w-full border-2 border-gray-600 rounded-lg" onChange={handleChangeChapterFile} />
                                                         {uploadProgress > 0 && <p>Uploading: {uploadProgress}%</p>}
                                                     </>
                                                 )

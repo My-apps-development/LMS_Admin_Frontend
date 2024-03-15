@@ -598,7 +598,7 @@ const CourseCategory = () => {
                                 <div className="w-[50%]">
                                     <div className="border-2 shadow-lg flex flex-col gap-3 p-3 rounded-lg">
                                         <div className="">
-                                            <img src={image} alt="" className="rounded-lg object-cover aspect-w-16 aspect-h-9" />
+                                            <img src={image} alt="" className="rounded-lg object-contain h-60 w-full" />
                                         </div>
                                         <div>
                                             <h1 className="text-2xl text-[#B32073]">Upload Thumbnail Image</h1>

@@ -393,7 +393,14 @@ const AssessmentList = () => {
     e.preventDefault()
 
     const file = e.target.files[0]
-    setCsvFile(file)
+    const allowedTypes = ['text/csv'];
+
+    if(file && allowedTypes.includes(file.type)){
+      setCsvFile(file)
+    } else {
+      errorMessage("Only CSV files accepted")
+    }
+    
   }
 
   const handleSubmitSCsvFile = async (e) => {
@@ -415,6 +422,7 @@ const AssessmentList = () => {
       const data = await response?.data
 
       successMessage(data?.message);
+      fetchQuestion()
       clearCsvInputs()
     } catch (error) {
       errorMessage(error.response.data.message)
@@ -470,14 +478,14 @@ const AssessmentList = () => {
             <button className="p-2 border-2 border-[#B32073] bg-[#B32073] text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-38" onClick={handleOpen}><FaPlus />Add Question</button>
           </div>
         </div>
-        <div className="w-full mt-5 bg-white rounded-lg" data-aos="fade-down">
+        <div className="w-full mt-5 bg-white rounded-lg overflow-x-auto" data-aos="fade-down">
           <table className="w-[100%]">
             <thead>
               <tr className=" border-b">
                 {/* <th className="border-r ">
                   <input type="checkbox" />
                 </th> */}
-                <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 ">
                   <h1 className="flex items-center justify-center">#</h1>
                 </th>
                 <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
@@ -507,14 +515,14 @@ const AssessmentList = () => {
                       <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 ">{index + 1 + page * rowsPerPage}</td>
                       <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500  text-start ml-5">{item.question}</td>
                       <div className="flex flex-wrap">
-                        <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500  text-start">
-                          <option value="1" className=" text-start ml-5 ">1. {item.option_A}</option>
-                          <option value="2" className=" text-start ml-5 ">2. {item.option_B}</option>
-                          <option value="3" className=" text-start ml-5 ">3. {item.option_C}</option>
-                          <option value="4" className=" text-start ml-5  ">4. {item.option_D}</option>
+                        <td className="p-2 border-r cursor-pointer text-sm font-semibold w-full text-gray-500  text-start break-words text-wrap">
+                          <option value="1" className=" text-start ml-5 break-words">1. {item.option_A}</option>
+                          <option value="2" className=" text-start ml-5 break-words">2. {item.option_B}</option>
+                          <option value="3" className=" text-start ml-5 break-words">3. {item.option_C}</option>
+                          <option value="4" className=" text-start ml-5  break-words">4. {item.option_D}</option>
                         </td>
                       </div>
-                      <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item.correct_option}</td>
+                      <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 break-words">{item.correct_option}</td>
                       <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
                         <p onClick={() => {
                           FetchSingleQuestionById(item?._id)
@@ -732,7 +740,7 @@ const AssessmentList = () => {
 
                   <div className="flex flex-col gap-3 p-2">
                     <label htmlFor="">Upload CSV File</label>
-                    <input type="file" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeCSVFile} />
+                    <input type="file" className="p-3 border-2 border-gray-600 rounded-lg" accept=".csv" onChange={handleChangeCSVFile} />
                   </div>
 
                   <div className="flex justify-center items-center mt-5">
