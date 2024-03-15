@@ -79,14 +79,14 @@ const Login = () => {
 
 
   return (
-    <div className="flex w-[100%] h-screen font-semibold bg-gray-100">
-      <div className="w-[50%] mt-28">
-        <img src="https://img.freepik.com/free-vector/business-teamwork-concept-teamwork-leadership-effort-hard-work-team-strategy-concept-brainstorm-workshop-management-skills-vector-cartoon-illustration-flat-design_1150-56223.jpg?w=1060&t=st=1706766246~exp=1706766846~hmac=915e77b3c2618166d1a563c7ff58ba55fd46adccbdc91a2e6d9899501853a84b" alt="" className="object-fill w-auto h-auto" />
+    <div className="flex w-[100%] h-screen font-semibold bg-gray-100 max-lg:flex-col max-lg:my-10 ">
+      <div className="w-[50%] mt-28 max-sm:hidden max-md:hidden max-lg:w-full">
+        <img src="https://img.freepik.com/free-vector/business-teamwork-concept-teamwork-leadership-effort-hard-work-team-strategy-concept-brainstorm-workshop-management-skills-vector-cartoon-illustration-flat-design_1150-56223.jpg?w=1060&t=st=1706766246~exp=1706766846~hmac=915e77b3c2618166d1a563c7ff58ba55fd46adccbdc91a2e6d9899501853a84b" alt="" className="object-cover w-full h-full mix-blend-multiply" />
       </div>
-      <div className="w-[50%] flex justify-center items-center  bg-slate-100">
-        <div className="w-[75%] h-[600px] border-2 border-gray-300 rounded-lg p-5 flex justify-center items-center flex-col">
+      <div className="w-[50%] flex justify-center items-center  bg-slate-100 max-lg:w-[100%]  max-md:w-full max-sm:w-full">
+        <div className="w-[75%] h-[600px] border-2 border-gray-300 rounded-lg p-5 flex justify-center items-center flex-col max-lg:w-[90%] max-md:w-[90%] max-sm:w-[95%]">
 
-          <div className="mt-10">
+          <div className="mt-10 max-sm:mt-2">
             <img src="/Logo.png" alt="" className="w-28 h-28" />
 
           </div>
@@ -104,15 +104,15 @@ const Login = () => {
             <p>Login for admin user</p>
           </div>
 
-          <div className="w-[70%] grid grid-cols-1 justify-center items-center p-2 gap-5">
+          <div className="w-[70%] grid grid-cols-1 justify-center items-center p-2 gap-5 max-lg:w-[70%] max-md:w-full max-sm:w-full max-sm:text-xs">
             <form className="w-[100%]" onSubmit={handleSubmitData}>
               <div className="p-2 flex flex-col gap-2">
-                <label htmlFor="">Username or Email <span className="text-red-700">*</span></label>
+                <label htmlFor=""className="ml-1">Username or Email <span className="text-red-700">*</span></label>
                 <input type="text" name="email" id="email" className="border-2 p-2 rounded-lg" placeholder="Enter Email or Username" onChange={handleChange} />
               </div>
 
               <div className="p-2 flex flex-col gap-2">
-                <label htmlFor="">Password <span className="text-red-700">*</span></label>
+                <label htmlFor="" className="ml-1">Password <span className="text-red-700">*</span></label>
                 <input type="password" name="password" id="password" className="border-2 p-2 rounded-lg" placeholder="Enter Password" onChange={handleChange} />
               </div>
 
