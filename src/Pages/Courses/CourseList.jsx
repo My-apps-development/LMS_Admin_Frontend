@@ -23,7 +23,7 @@ const CourseList = () => {
     const [postVideo, setPostVideo] = useState(null)
     const [uploadProgress, setUploadProgress] = useState(0);
     const [isSettingModalOpen, setIsSettingModalOpen] = useState(false)
-    const [videoIntervalDisplay, setVideoIntervalDisplay] = useState(false)
+ 
     const [singleCourse, setSingleCourse] = useState({
         title: "",
         description: "",
@@ -47,7 +47,7 @@ const CourseList = () => {
         video_link: ""
     })
     const [chapterFlag, setChapterFlag] = useState(false)
-    const [settingFlag, setSettingFlag] = useState(true)
+   
     const [chapters, setChapters] = useState({
         title: "",
         description: "",
@@ -68,17 +68,15 @@ const CourseList = () => {
         language: "",
         role: ""
     })
-    const [settingInputs, setSettingInputs] = useState({
-        firstmonth: "",
-        secondmonth: "",
-        thirdmonth: ""
-    })
+   
     const [chapterList, setChapterList] = useState([])
     const [language, setLanguage] = useState([])
     const [roles, setRoles] = useState([])
     const [settingData, setSettingData] = useState([])
     const [parentCourseName, setParentCourseName] = useState("")
     const [parentCourseId, setParentCourseId] = useState("")
+
+    // const [settingObject, setSettingObject] = useState({})
 
 
 
@@ -118,7 +116,6 @@ const CourseList = () => {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         width: 800,
-        height: 600,
         bgcolor: 'background.paper',
         border: '2px solid transparent',
         borderRadius: 1,
@@ -201,7 +198,11 @@ const CourseList = () => {
     const handleChangeSettingForm = (e) => {
         e.preventDefault()
 
-        setSettingInputs({ ...settingInputs, [e.target.name]: e.target.value })
+        const { name, value } = e.target;
+        setSettingData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
 
     }
 
@@ -211,7 +212,7 @@ const CourseList = () => {
         e.preventDefault()
 
         try {
-            const response = await axiosInstance.patch(`/setting/update?id=${settingData[0]?._id}`, settingInputs)
+            const response = await axiosInstance.patch(`/setting/update?id=${settingData?._id}`, settingData)
             const data = await response?.data
             successMessage(data?.message);
             GetSettings()
@@ -221,6 +222,8 @@ const CourseList = () => {
             // console.log("Error Inserting Setting Inputs", error.message);
         }
     }
+
+    console.log(settingData);
 
     const PostChapter = async (e) => {
 
@@ -256,7 +259,7 @@ const CourseList = () => {
                 }
             })
             const data = await response.data
-  
+
             successMessage(data.message)
             FetchChapters()
             fetchCourses()
@@ -526,7 +529,7 @@ const CourseList = () => {
                 }
             })
             const data = await response.data
-        
+
             successMessage(data?.message)
             fetchCourses()
             setUploadProgress(0)
@@ -603,13 +606,15 @@ const CourseList = () => {
         try {
             const response = await axiosInstance.get("/setting/get")
             const data = await response.data
-            setSettingData(data?.settingdata);
+            setSettingData(data?.settingdata[0]);
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
             // console.log("Error Fetching Course Setting", error.message);
         }
     }
+
+    console.log(settingData);
 
     const MasterRoles = async () => {
         try {
@@ -676,10 +681,10 @@ const CourseList = () => {
                                     <div className="flex justify-between items-center">
                                         <p>Total {courseList?.length} video courses are available</p>
                                         <div className="flex gap-2 relative">
-                                            <p className="p-2 flex justify-center items-center gap-2 border-2 border-[#B32073] text-[#B32073] hover:bg-[#B32073] hover:text-white cursor-pointer" onClick={() => setVideoIntervalDisplay(!videoIntervalDisplay)}><MdSettings />Settings</p>
+                                            <p className="p-2 flex justify-center items-center gap-2 border-2 border-[#B32073] text-[#B32073] hover:bg-[#B32073] hover:text-white cursor-pointer" onClick={() => setIsSettingModalOpen(true)}><MdSettings />Settings</p>
                                             <button className="p-2 border-2 border-[#B32073] bg-[#B32073] flex justify-center items-center gap-3  text-white hover:bg-[#B32073] hover:bg-inherit hover:text-[#B32073]" onClick={handleOpenModal}><FaPlus />Add Course</button>
 
-                                            <div className={`absolute mt-14  flex-col justify-center items-center gap-1 border-2 border-gray-600 rounded z-40 ${videoIntervalDisplay ? "flex" : "hidden"}`} >
+                                            {/* <div className={`absolute mt-14  flex-col justify-center items-center gap-1 border-2 border-gray-600 rounded z-40 ${videoIntervalDisplay ? "flex" : "hidden"}`} >
                                                 {
                                                     settingData.map((item, index) => {
                                                         return (
@@ -692,7 +697,7 @@ const CourseList = () => {
                                                         )
                                                     })
                                                 }
-                                            </div>
+                                            </div> */}
                                         </div>
 
                                     </div>
@@ -719,7 +724,7 @@ const CourseList = () => {
                                                 </div>
                                             </div>
                                             <Divider />
-                                            <div className="flex justify-between flex-col items-center py-2 w-full">
+                                            <div className=" py-2 h-auto">
                                                 {
                                                     [...chapterList]?.reverse()?.filter(it => it.courseId === item.course?._id)?.map((i, index) => {
 
@@ -1104,23 +1109,23 @@ const CourseList = () => {
                     <Box sx={styleSettingModal}>
                         <div>
                             <div className="flex justify-between items-center font-semibold">
-                                <h1 className="text-2xl">Edit Settings</h1>
+                                <h1 className="text-2xl">Video View Settings</h1>
                                 <button className="p-1 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg" onClick={() => setIsSettingModalOpen(false)}>Close</button>
                             </div>
                             <form className="flex flex-col font-semibold mt-5" onSubmit={PostSettingForm}>
                                 <div className="flex flex-col p-2 gap-3">
                                     <label htmlFor="">First month</label>
-                                    <input type="text" name="firstmonth" id="firstmonth" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeSettingForm} value={settingFlag ? settingInputs.firstmonth : ""} />
+                                    <input type="text" name="firstmonth" id="firstmonth" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeSettingForm} value={settingData?.firstmonth} />
                                 </div>
 
                                 <div className="flex flex-col p-2 gap-3">
                                     <label htmlFor="">Second month</label>
-                                    <input type="text" name="secondmonth" id="secondmonth" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeSettingForm} value={settingFlag ? settingInputs.secondmonth : ""} />
+                                    <input type="text" name="secondmonth" id="secondmonth" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeSettingForm} value={settingData?.secondmonth} />
                                 </div>
 
                                 <div className="flex flex-col p-2 gap-3">
                                     <label htmlFor="">Third month</label>
-                                    <input type="text" name="thirdmonth" id="thirdmonth" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeSettingForm} value={settingFlag ? settingInputs.thirdmonth : ""} />
+                                    <input type="text" name="thirdmonth" id="thirdmonth" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeSettingForm} value={settingData?.thirdmonth} />
                                 </div>
 
                                 <div className="flex justify-center items-center mt-5">
