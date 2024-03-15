@@ -23,7 +23,7 @@ const CourseList = () => {
     const [postVideo, setPostVideo] = useState(null)
     const [uploadProgress, setUploadProgress] = useState(0);
     const [isSettingModalOpen, setIsSettingModalOpen] = useState(false)
- 
+
     const [singleCourse, setSingleCourse] = useState({
         title: "",
         description: "",
@@ -47,7 +47,7 @@ const CourseList = () => {
         video_link: ""
     })
     const [chapterFlag, setChapterFlag] = useState(false)
-   
+
     const [chapters, setChapters] = useState({
         title: "",
         description: "",
@@ -68,7 +68,7 @@ const CourseList = () => {
         language: "",
         role: ""
     })
-   
+
     const [chapterList, setChapterList] = useState([])
     const [language, setLanguage] = useState([])
     const [roles, setRoles] = useState([])
@@ -736,11 +736,12 @@ const CourseList = () => {
                                                                 </div>
                                                                 <div className="flex justify-center items-center gap-5 w-28 h-14 font-2xl font-bold">
                                                                     <p className="font-2xl p-2" onClick={() => {
-                                                                        FetchChapterById(i?._id)
                                                                         fetchCourseById(item?.course?._id)
+                                                                        FetchChapterById(i?._id)
+
                                                                         setIsFlag(false)
                                                                         setChapterFlag(false)
-                                                                        handleOpenSubModal(true)
+                                                                        handleOpenSubModal(singleCourse?.title, singleCourse?._id)
                                                                     }}><CiEdit /></p>
                                                                     <p className="font-2xl p-2" onClick={() => DeleteChapterById(i?._id, item.course?._id)}><MdDelete /></p>
                                                                 </div>
