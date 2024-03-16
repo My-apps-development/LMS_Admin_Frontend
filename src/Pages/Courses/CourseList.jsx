@@ -723,7 +723,7 @@ const CourseList = () => {
                                                 </div>
                                                 <div className="flex justify-between items-center py-2 text-xs">
                                                     <p className="text-gray-400">status: <span className="text-green-600">{item?.course?.status}</span></p>
-                                                    {/* <p className="text-gray-400">Enrolled User: <span className="text-blue-500">{item?.course?.inrolled_users}</span></p> */}
+                                                    <p className="text-gray-400">Source: <span className="text-blue-500">{item?.course?.source}</span></p>
                                                 </div>
                                             </div>
                                             <Divider />
