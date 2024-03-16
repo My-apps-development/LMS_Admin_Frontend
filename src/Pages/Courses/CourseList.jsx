@@ -6,13 +6,15 @@ import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import { axiosInstance } from "../../Utils/AxiosSetUp";
 import { errorMessage, successMessage } from "../../Utils/notificationManager";
-
 import Loader from "../../Utils/Loader";
 import { MdDelete, MdSettings } from "react-icons/md";
-// import { IoIosArrowUp } from "react-icons/io";
+
 
 
 const CourseList = () => {
+
+
+    // -------------------------------------------------  State Starts  ---------------------------------------------------
 
     const [isOpen, setIsOpen] = useState(false)
     const [isSubModalOpen, setIsSubModalOpen] = useState(false)
@@ -76,10 +78,11 @@ const CourseList = () => {
     const [parentCourseName, setParentCourseName] = useState("")
     const [parentCourseId, setParentCourseId] = useState("")
 
-    // const [settingObject, setSettingObject] = useState({})
 
 
+    // -------------------------------------------------  State Ends  ---------------------------------------------------
 
+    // -------------------------------------------------  Modals Style Starts  ---------------------------------------------------
 
 
     const style = {
@@ -96,6 +99,7 @@ const CourseList = () => {
         overflowY: 'auto',
         p: 4,
     };
+
     const styleSubModal = {
         position: 'absolute',
         top: '50%',
@@ -110,6 +114,7 @@ const CourseList = () => {
         overflowY: 'auto',
         p: 4,
     };
+
     const styleSettingModal = {
         position: 'absolute',
         top: '50%',
@@ -124,6 +129,10 @@ const CourseList = () => {
         p: 4,
     }
 
+    // -------------------------------------------------  Modals Style Ends  ---------------------------------------------------
+
+    // -------------------------------------------------  Form Manipulation Starts  ---------------------------------------------------
+
 
     const handleOpenModal = () => {
         setIsFlag(true)
@@ -137,8 +146,7 @@ const CourseList = () => {
 
 
     const handleOpenSubModal = (singleCourseTitle, singleCourseId) => {
-        // console.log(singleCourseId);
-        // console.log(singleCourseTitle);
+
         setIsSubModalOpen(true)
         setParentCourseId(singleCourseId)
         setParentCourseName(singleCourseTitle)
@@ -207,123 +215,12 @@ const CourseList = () => {
     }
 
 
+    // -------------------------------------------------  Form Manipulation Ends  ---------------------------------------------------
 
-    const PostSettingForm = async (e) => {
-        e.preventDefault()
-
-        try {
-            const response = await axiosInstance.patch(`/setting/update?id=${settingData?._id}`, settingData)
-            const data = await response?.data
-            successMessage(data?.message);
-            GetSettings()
-            setIsSettingModalOpen(false)
-        } catch (error) {
-            errorMessage(error?.response?.data?.message)
-            // console.log("Error Inserting Setting Inputs", error.message);
-        }
-    }
-
-    console.log(settingData);
-
-    const PostChapter = async (e) => {
-
-        // console.log(flag);
-        e.preventDefault()
-
-        // console.log(chapters);
-
-        const postChapter = new FormData()
-        postChapter.append("title", chapters.title)
-        postChapter.append("courseId", parentCourseId)
-        postChapter.append("categoryId", chapters.categoryId)
-        postChapter.append("source", chapters.source)
-        postChapter.append("description", chapters.description)
-        postChapter.append("language", chapters.language)
-        postChapter.append("role", chapters.role)
-
-
-        if (selectedSource == "Upload") {
-            postChapter.append("video_link", postVideo)
-        } else {
-            postChapter.append("video_link", CourseInputs.video_link)
-        }
-
-        try {
-            const response = await axiosInstance.post("/homepage/addChapters", postChapter, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-                onUploadProgress: (progressEvent) => {
-                    const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                    setUploadProgress(percentCompleted);
-                }
-            })
-            const data = await response.data
-
-            successMessage(data.message)
-            FetchChapters()
-            fetchCourses()
-            setUploadProgress(0)
-            ClearInputs()
-            setIsSubModalOpen(false)
-            setIsOpen(false)
-            setUploadProgress(0)
-
-        } catch (error) {
-            setLoader(false)
-            errorMessage(error?.response?.data?.message)
-            // console.log("Error Posting Chapters", error.message)
-        }
-    }
-
-    const UpdateChapters = async (e) => {
-        e.preventDefault()
-
-        const updateChapter = new FormData()
-        updateChapter.append("title", singleChapter.title)
-        updateChapter.append("courseId", singleChapter.courseId)
-        updateChapter.append("categoryId", singleChapter.categoryId)
-        updateChapter.append("source", singleChapter.source)
-        updateChapter.append("description", singleChapter.description)
-        updateChapter.append("language", singleChapter.language)
-        updateChapter.append("role", singleChapter.role)
-        updateChapter.append("video_link", singleChapter.video_link)
-
-
-        if (selectedSource == "Upload") {
-            updateChapter.append("video_link", postVideo)
-        } else {
-            updateChapter.append("video_link", CourseInputs.video_link)
-        }
-
-        try {
-            setLoader(true)
-            const response = await axiosInstance.patch(`/homepage/updateChapters?chapterId=${singleChapter?._id}`, updateChapter, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-                onUploadProgress: (progressEvent) => {
-                    const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                    setUploadProgress(percentCompleted);
-                }
-            })
-            const data = await response.data
-            successMessage(data?.message)
-            setIsSubModalOpen(false)
-            setLoader(false)
-        } catch (error) {
-            setLoader(false)
-            errorMessage(error.response.data.message)
-            // console.log("Error Updating Chapter By Id", error.message);
-        }
-
-        ClearInputs()
-    }
+    // -------------------------------------------------  CRUD Operation In Course Starts  ------------------------------------------
 
     const PostCourse = async (e) => {
         e.preventDefault()
-
-        // console.log(postVideo);
 
         if (!CourseInputs.title) {
             errorMessage("Course Name Required")
@@ -393,23 +290,9 @@ const CourseList = () => {
         } catch (error) {
             errorMessage(error.response.data.message)
             setLoader(false)
-            // console.log("Error Creating course", error.message);
+
         }
 
-    }
-
-    const fetchCategories = async () => {
-        try {
-            setLoader(true)
-            const response = await axiosInstance.get("/category/fetch")
-            const data = await response.data
-            setCategoryList(data.categories);
-            setLoader(false)
-        } catch (error) {
-            setLoader(false)
-            errorMessage(error.response.data.message)
-            // console.log("Error fetching categories data", error.message);
-        }
     }
 
     const fetchCourses = async () => {
@@ -427,35 +310,21 @@ const CourseList = () => {
         }
     }
 
-    const FetchChapters = async () => {
+    const fetchCourseById = async (_id) => {
+        setFlag(false)
 
         try {
             setLoader(true)
-            const response = await axiosInstance.get("/homepage/fetchChapters")
-            const data = await response.data
-            setChapterList(data.chapter)
+            const response = await axiosInstance.get(`https://myappsdevelopment.co.in/homepage/singlecourse?courseid=${_id} `)
+            const data = await response?.data
+            setSingleCourse(data?.Courses);
+            setSelectedSource(data?.Courses?.source)
             setLoader(false)
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
-            // console.log("Error Fetching Chapters", error.message);
         }
-    }
 
-    const handleDeleteCourse = async (_id) => {
-        // console.log(_id);
-        try {
-            setLoader(true)
-            const response = await axiosInstance.delete("homepage/deleteCourse", { data: { courseId: _id } })
-            const data = await response.data
-            successMessage(data.message);
-            fetchCourses()
-            setLoader(false)
-        } catch (error) {
-            setLoader(false)
-            errorMessage(error.response.data.message)
-            // console.log("Deleting data Failed", error.message);
-        }
     }
 
     const UpdateCourse = async (e) => {
@@ -538,27 +407,88 @@ const CourseList = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
-            // console.log("error updating code", error.message);
+
         }
     }
 
-    const fetchCourseById = async (_id) => {
-        setFlag(false)
-
+    const handleDeleteCourse = async (_id) => {
         try {
             setLoader(true)
-            const response = await axiosInstance.get(`https://myappsdevelopment.co.in/homepage/singlecourse?courseid=${_id} `)
+            const response = await axiosInstance.delete("homepage/deleteCourse", { data: { courseId: _id } })
             const data = await response.data
-            // console.log(data?.Courses);
-            setSingleCourse(data.Courses);
-            setSelectedSource(data?.Courses?.source)
+            successMessage(data.message);
+            fetchCourses()
             setLoader(false)
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
-            // console.log("Error Fetching Chapters By Id", error.message)
+        }
+    }
+
+    // -------------------------------------------------  CRUD Operation In Course Starts  ------------------------------------------
+
+    // -------------------------------------------------  CRUD Operation In Chapters Starts  ------------------------------------------
+
+
+    const PostChapter = async (e) => {
+
+        e.preventDefault()
+
+        const postChapter = new FormData()
+        postChapter.append("title", chapters.title)
+        postChapter.append("courseId", parentCourseId)
+        postChapter.append("categoryId", chapters.categoryId)
+        postChapter.append("source", chapters.source)
+        postChapter.append("description", chapters.description)
+        postChapter.append("language", chapters.language)
+        postChapter.append("role", chapters.role)
+
+
+        if (selectedSource == "Upload") {
+            postChapter.append("video_link", postVideo)
+        } else {
+            postChapter.append("video_link", CourseInputs.video_link)
         }
 
+        try {
+            const response = await axiosInstance.post("/homepage/addChapters", postChapter, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                onUploadProgress: (progressEvent) => {
+                    const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    setUploadProgress(percentCompleted);
+                }
+            })
+            const data = await response.data
+
+            successMessage(data.message)
+            FetchChapters()
+            fetchCourses()
+            setUploadProgress(0)
+            ClearInputs()
+            setIsSubModalOpen(false)
+            setIsOpen(false)
+            setUploadProgress(0)
+
+        } catch (error) {
+            setLoader(false)
+            errorMessage(error?.response?.data?.message)
+        }
+    }
+
+    const FetchChapters = async () => {
+
+        try {
+            setLoader(true)
+            const response = await axiosInstance.get("/homepage/fetchChapters")
+            const data = await response.data
+            setChapterList(data.chapter)
+            setLoader(false)
+        } catch (error) {
+            setLoader(false)
+            errorMessage(error.response.data.message)
+        }
     }
 
     const FetchChapterById = async (_id) => {
@@ -572,13 +502,57 @@ const CourseList = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
-            // console.log("Error Fetching Chapters By Id", error.message);
+
         }
     }
 
+    const UpdateChapters = async (e) => {
+        e.preventDefault()
+
+        const updateChapter = new FormData()
+        updateChapter.append("title", singleChapter.title)
+        updateChapter.append("courseId", singleChapter.courseId)
+        updateChapter.append("categoryId", singleChapter.categoryId)
+        updateChapter.append("source", singleChapter.source)
+        updateChapter.append("description", singleChapter.description)
+        updateChapter.append("language", singleChapter.language)
+        updateChapter.append("role", singleChapter.role)
+        updateChapter.append("video_link", singleChapter.video_link)
+
+
+        if (selectedSource == "Upload") {
+            updateChapter.append("video_link", postVideo)
+        } else {
+            updateChapter.append("video_link", CourseInputs.video_link)
+        }
+
+        try {
+            setLoader(true)
+            const response = await axiosInstance.patch(`/homepage/updateChapters?chapterId=${singleChapter?._id}`, updateChapter, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                onUploadProgress: (progressEvent) => {
+                    const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    setUploadProgress(percentCompleted);
+                }
+            })
+            const data = await response.data
+            successMessage(data?.message)
+            setIsSubModalOpen(false)
+            setLoader(false)
+        } catch (error) {
+            setLoader(false)
+            errorMessage(error.response.data.message)
+
+        }
+
+        ClearInputs()
+    }
+
+
     const DeleteChapterById = async (_id, courseId) => {
-        // console.log(_id);
-        // console.log(courseId);
+
         try {
             setLoader(true)
             const response = await axiosInstance.delete("/homepage/deleteChapters", { data: { chapterId: _id, courseId: courseId } })
@@ -589,7 +563,58 @@ const CourseList = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
-            // console.log("Error Deleting chapter by Id", error.message);
+
+        }
+    }
+
+    // -------------------------------------------------  CRUD Operation In Chapters Ends  ------------------------------------------
+
+    // -------------------------------------------------  Setting Section Starts  ---------------------------------------------------
+
+
+    const GetSettings = async () => {
+        try {
+            const response = await axiosInstance.get("/setting/get")
+            const data = await response.data
+            setSettingData(data?.settingdata[0]);
+        } catch (error) {
+            setLoader(false)
+            errorMessage(error.response.data.message)
+          
+        }
+    }
+
+    const PostSettingForm = async (e) => {
+        e.preventDefault()
+
+        try {
+            const response = await axiosInstance.patch(`/setting/update?id=${settingData?._id}`, settingData)
+            const data = await response?.data
+            successMessage(data?.message);
+            GetSettings()
+            setIsSettingModalOpen(false)
+        } catch (error) {
+            errorMessage(error?.response?.data?.message)
+
+        }
+    }
+
+
+    // -------------------------------------------------  Setting Section Ends  ---------------------------------------------------------
+
+    // ------------------------------------------------- Extra Data  Starts -------------------------------------------------------------
+
+    const fetchCategories = async () => {
+        try {
+            setLoader(true)
+            const response = await axiosInstance.get("/category/fetch")
+            const data = await response.data
+            setCategoryList(data.categories);
+            setLoader(false)
+        } catch (error) {
+            setLoader(false)
+            errorMessage(error.response.data.message)
+           
         }
     }
 
@@ -601,23 +626,9 @@ const CourseList = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
-            // console.log("Error Fetching Languages", error.message)
+           
         }
     }
-
-    const GetSettings = async () => {
-        try {
-            const response = await axiosInstance.get("/setting/get")
-            const data = await response.data
-            setSettingData(data?.settingdata[0]);
-        } catch (error) {
-            setLoader(false)
-            errorMessage(error.response.data.message)
-            // console.log("Error Fetching Course Setting", error.message);
-        }
-    }
-
-    console.log(settingData);
 
     const MasterRoles = async () => {
         try {
@@ -627,9 +638,11 @@ const CourseList = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
-            // console.log("Error Fetching Master Roles", error.message)
+           
         }
     }
+
+     // ------------------------------------------------- Extra Data Ends -------------------------------------------------------------
 
     const ClearInputs = () => {
         try {
@@ -648,11 +661,11 @@ const CourseList = () => {
             setUploadProgress(0)
         } catch (error) {
             setLoader(false)
-            // console.log("error clearing input fields", error.message);
+      
         }
     }
 
-    console.log(courseList);
+   
 
     useEffect(() => {
         fetchCourses()
