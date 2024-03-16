@@ -19,6 +19,8 @@ const SideMenu = () => {
 
     const [isCourseOpen, setIsCourseOpen] = useState(false)
     const [isAssignmentOpen, setIsAssignmentOpen] = useState(false)
+
+   
     // const [isEnrollmentOpen, setIsEnrollmentOpen] = useState(false)
 
 
@@ -32,9 +34,13 @@ const SideMenu = () => {
 
     return (
 
-        <div className="fixed">
-            <aside className="w-56 h-screen flex justify-start items-center gap-2 text-sm flex-col  font-semibold shadow-xl" data-aos="fade-right">
-                <div className="mt-10  border-b-2 w-full flex justify-center items-center py-4 border-gray-400">
+        <div className="fixed ">
+
+            <div className={`mt-28 text-xl ml-5 hidden max-sm:block`}>
+                <p><RiMenu2Line /></p>
+            </div>
+            <aside className="w-56 h-screen flex justify-start items-center gap-2 text-sm flex-col  font-semibold shadow-xl max-sm:w-12 max-sm:overflow-hidden max-sm:hover:w-56" data-aos="fade-right">
+                <div className="mt-10  border-b-2 w-full flex justify-center items-center py-4 border-gray-400 max-sm:hidden">
 
 
                     <img src="/Logo.png" alt="" className="w-20 h-20" />
@@ -57,7 +63,7 @@ const SideMenu = () => {
                             <p><FaChevronDown /></p>
                         </div>
                         <div className={`sm ${isCourseOpen ? "flex" : "hidden"} flex-col gap-5 mt-5`}>
-                            <NavLink to="/Courses/Categories" className={({ isActive, isPending }) => isPending ? "flex p-2 text-xl flex-row items-center duration-300 hover:shadow-xl hover:scale-105   pr-6" : isActive ? `flex text-xl flex-row items-center duration-300 scale-105 bg-gray-300 text-[#B32073] rounded hover:text-[#B32073] hover:shadow-xl ${setIsCourseOpen(true)}`: "text-gray-500"}>
+                            <NavLink to="/Courses/Categories" className={({ isActive, isPending }) => isPending ? "flex p-2 text-xl flex-row items-center duration-300 hover:shadow-xl hover:scale-105   pr-6" : isActive ? `flex text-xl flex-row items-center duration-300 scale-105 bg-gray-300 text-[#B32073] rounded hover:text-[#B32073] hover:shadow-xl ${setIsCourseOpen(true)}` : "text-gray-500"}>
                                 <p className="hover:text-[#B32073] w-full p-2 ">Categories</p>
                             </NavLink>
                             <NavLink to="/Courses/CourseList" className={({ isActive, isPending }) => isPending ? "flex text-xl p-2 flex-row items-center duration-300 hover:shadow-xl hover:scale-105   pr-6" : isActive ? `flex text-xl flex-row items-center duration-300 scale-105 bg-gray-300 text-[#B32073] rounded hover:text-[#B32073] hover:shadow-xl ${setIsCourseOpen(true)}` : "text-gray-500"}>
@@ -77,7 +83,7 @@ const SideMenu = () => {
                         <div className={`sm ${isAssignmentOpen ? "flex" : "hidden"} flex-col gap-2 mt-1`}>
 
                             {/* <p >Assignment</p> */}
-                            <NavLink to="/Assessment/Record" className={({ isActive, isPending }) => isPending ? "flex p-2 text-xl flex-row items-center duration-300 hover:shadow-xl hover:scale-105   pr-6" : isActive ? `flex text-xl flex-row items-center duration-300 scale-105 bg-gray-300 text-[#B32073] rounded hover:text-[#B32073] hover:shadow-xl ${setIsAssignmentOpen(true)}`: "text-gray-500"}><p className="hover:text-[#B32073] w-full p-2 rounded hover:bg-gray-300 ">Record</p></NavLink>
+                            <NavLink to="/Assessment/Record" className={({ isActive, isPending }) => isPending ? "flex p-2 text-xl flex-row items-center duration-300 hover:shadow-xl hover:scale-105   pr-6" : isActive ? `flex text-xl flex-row items-center duration-300 scale-105 bg-gray-300 text-[#B32073] rounded hover:text-[#B32073] hover:shadow-xl ${setIsAssignmentOpen(true)}` : "text-gray-500"}><p className="hover:text-[#B32073] w-full p-2 rounded hover:bg-gray-300 ">Record</p></NavLink>
                             <NavLink to="/Assessment/List" className={({ isActive, isPending }) => isPending ? "flex text-xl hover:text-[#B32073] flex-row items-center duration-300 hover:shadow-xl hover:scale-105   pr-6" : isActive ? `flex text-xl flex-row items-center duration-300 scale-105 bg-gray-300 text-[#B32073] rounded hover:text-[#B32073] hover:shadow-xl ${setIsAssignmentOpen(true)}` : "text-gray-500"}><p className="hover:text-[#B32073] w-full p-2 rounded hover:bg-gray-300 ">Question List</p></NavLink>
 
                         </div>
