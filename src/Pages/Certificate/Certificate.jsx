@@ -39,7 +39,10 @@ const Certificate = () => {
 
     const [meritUsers, setMeritUsers] = useState([])
 
-    const [selectedUser, setSelectedUser] = useState({})
+    const [selectedUser, setSelectedUser] = useState({
+        value:"",
+        label:""
+    })
 
     const [inputs, setInputs] = useState({
         fullname: "",
@@ -238,17 +241,27 @@ const Certificate = () => {
 
     const getSingleCertificate = async (_id) => {
 
+        console.log(certificateFlag);
+    
+
         try {
             const response = await axiosInstance.get(`/certificate/single?id=${_id}`)
             const data = await response.data
+            console.log(data);
             setSingleCertificate(data?.certificate);
             setCertificate(data?.certificate?.uploadTemplate)
             setLogo(data?.certificate?.uploadLogo)
             setSignature(data?.certificate?.uploadSignature)
+            setSelectedUser({
+                value: data?.certificate?.userId,
+                label: data?.certificate?.fullname
+            })
         } catch (error) {
             errorMessage(error?.response?.data?.message)
             console.log("Error Fetching Single Id", error.message);
         }
+
+        console.log(selectedUser);
     }
 
     const UpdateCertificate = async () => {
@@ -295,6 +308,7 @@ const Certificate = () => {
 
 
 
+    console.log(selectedUser);
 
 
     useEffect(() => {
@@ -376,7 +390,7 @@ const Certificate = () => {
                                                 }} options={meritUsers?.map((user) => ({
                                                     value: user?.user?._id,
                                                     label: user?.user?.fullname
-                                                }))} value={certificateFlag ? inputs?.userId : singleCertificate?.userId}/>
+                                                }))} value={certificateFlag ? inputs?.userId : selectedUser?.value}/>
                                             </div>
 
                                             <div className="flex flex-col p-2 gap-3">

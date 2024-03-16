@@ -14,40 +14,29 @@ const CourseCategory = () => {
 
     const [subModalOpen, setSubModalOpen] = useState(false)
     const [addModalOpen, setAddModalOpen] = useState(false)
-
     const [categoryList, setCategoryList] = useState([])
     const [subCategoryList, setSubCategoryList] = useState([])
-    // const [subCategory, setSubCategory] = useState([])
     const [loader, setLoader] = useState(false)
     const [image, setImage] = useState(null)
     const [postImage, setPostImage] = useState(null)
-
     const [subCategoryFlag, setSubCategoryFlag] = useState(false)
-
     const [roles, setRoles] = useState([])
-
     const [singleCategory, setSingleCategory] = useState({
         categories: "",
         role: "",
         _id: ""
     })
-
     const [singleSubCategory, setSingleSubCategory] = useState({
         _id: "",
         title: "",
         categoryId: ""
     })
-
     const [flag, setFlag] = useState(true)
-
-
-
     const [inputs, setInputs] = useState({
         categories: "",
         role: "",
 
     })
-
     const [subCategoryInputs, setSubCategoryInputs] = useState({
 
         title: "",
@@ -69,7 +58,7 @@ const CourseCategory = () => {
         const file = e.target.files[0]
         if (file) {
             const reader = new FileReader()
-            // console.log(reader);
+          
             reader.onloadend = () => {
                 setImage(reader.result)
             }
@@ -77,11 +66,6 @@ const CourseCategory = () => {
         }
         setPostImage(file)
     }
-
-
-
-
-
 
     const handleCloseSubmodal = () => {
         setSubModalOpen(false)
@@ -98,14 +82,9 @@ const CourseCategory = () => {
 
     const handleChangeSubcategory = (e) => {
         e.preventDefault()
-
         subCategoryFlag ? setSubCategoryInputs({ ...subCategoryInputs, [e.target.name]: e.target.value }) : setSingleSubCategory({ ...singleSubCategory, [e.target.name]: e.target.value })
 
-
-
     }
-
-    // console.log(singleCategory);
 
     const style = {
         position: 'absolute',
@@ -140,17 +119,14 @@ const CourseCategory = () => {
             setRoles(data?.roles)
 
         } catch (error) {
-            // console.log("Error Fetching master role", error.message)
+            
             errorMessage(error?.response?.data?.message)
         }
     }
 
-
-
     const PostCategory = async (e) => {
         e.preventDefault()
 
-        // console.log(inputs);
         const formData = new FormData();
         formData.append('categories', inputs.categories);
         formData.append('role', inputs.role)
@@ -186,7 +162,7 @@ const CourseCategory = () => {
             setAddModalOpen(false)
             setLoader(false)
         } catch (error) {
-            // console.log("error posting data", error.message);
+            
             errorMessage(error?.response?.data?.message)
         }
 
@@ -204,7 +180,6 @@ const CourseCategory = () => {
             setLoader(false)
 
         } catch (error) {
-            // console.log("Error Fetching Categories");
             errorMessage(error?.response?.data?.message)
         }
     }
@@ -213,7 +188,6 @@ const CourseCategory = () => {
 
         setAddModalOpen(true)
         setFlag(false)
-
 
         try {
             setLoader(true)
@@ -226,11 +200,10 @@ const CourseCategory = () => {
             setSingleCategory(data.category);
             setImage(data.category.upload_thumbnail);
             setLoader(false)
-            // setSingleCategory({...singleCategory, id:data.category._id})
         }
         catch (error) {
             errorMessage(error?.response?.data?.message)
-            // console.log("Error fetching category by Id", error.message);
+           
         }
     }
 
@@ -242,22 +215,16 @@ const CourseCategory = () => {
             return
         }
 
-        // if (!singleCategory.totalsubCategory) {
-        //     errorMessage("total Subcategory Required")
-        //     return
-        // }
-
         if (!postImage) {
             errorMessage("Image is Required")
             return
         }
 
-
         const formData = new FormData();
         formData.append('id', singleCategory._id);
         formData.append('categories', singleCategory.categories);
         formData.append('totalsubCategory', singleCategory.totalsubCategory);
-        // formData.append('SubCategory_parent', singleCategory.SubCategory_parent);
+     
         formData.append('Upload_Category', postImage);
 
         try {
@@ -274,13 +241,11 @@ const CourseCategory = () => {
             setAddModalOpen(false)
             setLoader(false)
         } catch (error) {
-            // console.log("Error Updating data", error.message)
             errorMessage(error?.response?.data?.message)
         }
     }
 
     const DeleteCategory = async (_id) => {
-        // console.log(_id)
         try {
             setLoader(true)
             const response = await axiosInstance.delete(`/category/delete`, { data: { id: _id } })
@@ -293,10 +258,7 @@ const CourseCategory = () => {
         }
     }
 
-
     const FetchSubCategories = async () => {
-
-
 
         try {
             setLoader(true)
@@ -304,9 +266,7 @@ const CourseCategory = () => {
             const data = await response.data
             setSubCategoryList(data.Subcategories);
             setLoader(false)
-
         } catch (error) {
-            // console.log("Error fetching Sub Category List");
             errorMessage(error?.response?.data?.message)
         }
     }
@@ -322,8 +282,6 @@ const CourseCategory = () => {
         }
     }
 
-    // console.log(singleSubCategory);
-
     const PostSubcategory = async (e) => {
         e.preventDefault()
 
@@ -337,18 +295,15 @@ const CourseCategory = () => {
             console.log(data);
         } catch (error) {
             errorMessage(error?.response?.data?.message)
-            // console.log("Error Posting Sub Category", error.message)
+           
         }
     }
 
     const UpdateSubcategory = async (e) => {
         e.preventDefault()
 
-        // console.log(singleSubCategory);
-
         const UpdateSubcategoryForm = new FormData()
         UpdateSubcategoryForm.append("title", singleSubCategory?.title)
-        // UpdateSubcategoryForm.append("subcategoryName")
         UpdateSubcategoryForm.append("categoryId", singleCategory?._id)
 
         try {
@@ -357,18 +312,11 @@ const CourseCategory = () => {
             successMessage(data?.message);
         } catch (error) {
             errorMessage(error?.response?.data?.message)
-            // console.log("Error Updating Data", error.message);
         }
     }
 
-
-
-
-
-
     const DeleteSingleSubCategory = async (_id) => {
 
-        // console.log(_id);
         if (window.confirm("Are you sure want to delete video")) {
             try {
                 setLoader(true)
@@ -379,7 +327,7 @@ const CourseCategory = () => {
                 setLoader(false)
             } catch (error) {
                 errorMessage(error.response.data.message)
-                // console.log("Error Fetching Single Sub Category", error.message);
+             
             }
         }
 
@@ -399,10 +347,6 @@ const CourseCategory = () => {
         }
     }
 
-
-    // console.log(roles);
-
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -410,18 +354,15 @@ const CourseCategory = () => {
                 FetchMasterRoles()
                 await FetchCategories();
                 await FetchSubCategories();
-
                 setLoader(false);
             } catch (error) {
                 errorMessage(error?.response?.data?.message)
-                // console.log("Error fetching data", error.message);
+               
             }
         };
 
         fetchData();
     }, [])
-
-    // console.log(categoryList);
 
     return (
         <div className="w-full">

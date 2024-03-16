@@ -406,6 +406,24 @@ const AssessmentList = () => {
   const handleSubmitSCsvFile = async (e) => {
     e.preventDefault()
 
+    if(!csvInputs.courseId){
+      errorMessage("course is required")
+      return
+    }
+
+    if(!csvInputs.language){
+      errorMessage("language is required")
+      return
+    }
+
+    if(!csvFile){
+      errorMessage("Csv file upload is required")
+      return
+    } else if(csvFile.type === "text/csv"){
+      errorMessage("Only Csv are allowed")
+      return
+    }
+
 
 
     const UploadCsvFile = new FormData()
