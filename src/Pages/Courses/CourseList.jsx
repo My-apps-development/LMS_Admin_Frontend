@@ -549,8 +549,9 @@ const CourseList = () => {
             setLoader(true)
             const response = await axiosInstance.get(`https://myappsdevelopment.co.in/homepage/singlecourse?courseid=${_id} `)
             const data = await response.data
-
+            // console.log(data?.Courses);
             setSingleCourse(data.Courses);
+            setSelectedSource(data?.Courses?.source)
             setLoader(false)
         } catch (error) {
             setLoader(false)
@@ -565,7 +566,9 @@ const CourseList = () => {
         try {
             const response = await axiosInstance.get(`/homepage/singlechapter?chapterid=${_id}`)
             const data = await response.data
+
             setSingleChapter(data.chapters);
+            setSelectedSource(data?.chapters?.source);
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
@@ -766,202 +769,199 @@ const CourseList = () => {
                                 })
                             }
                         </div>
-                    </div>
-                }
-            </div>
+                        <div>
+                            <Modal
+                                open={isOpen}
+                            >
+                                <Box sx={style}>
+                                    <div className="text-xs overflow-y-visible font-semibold text-gray-600">
+                                        <div className="flex justify-between items-center w-full text-black">
+                                            <h1 className="text-2xl">{isFlag ? "Add Course" : "Updating Course"}</h1>
+                                            <button className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-20" onClick={handleCloseModal}>Close</button>
+                                        </div>
+                                        <form onSubmit={flag ? PostCourse : UpdateCourse}>
+                                            <div className="grid grid-cols-2 mt-5">
+                                                <div className="flex flex-col p-2 gap-3">
+                                                    <label htmlFor="">Course Name</label>
+                                                    <input type="text" name="title" id="title" onChange={handleChange} value={isFlag ? CourseInputs.title : singleCourse.title} className="p-3 border-2 border-gray-600 rounded-lg" />
+                                                </div>
 
-            <div>
-                <Modal
-                    open={isOpen}
-                >
-                    <Box sx={style}>
-                        <div className="text-xs overflow-y-visible font-semibold text-gray-600">
-                            <div className="flex justify-between items-center w-full text-black">
-                                <h1 className="text-2xl">{isFlag ? "Add Course" : "Updating Course"}</h1>
-                                <button className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-20" onClick={handleCloseModal}>Close</button>
-                            </div>
-                            <form onSubmit={flag ? PostCourse : UpdateCourse}>
-                                <div className="grid grid-cols-2 mt-5">
-                                    <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">Course Name</label>
-                                        <input type="text" name="title" id="title" onChange={handleChange} value={isFlag ? CourseInputs.title : singleCourse.title} className="p-3 border-2 border-gray-600 rounded-lg" />
-                                    </div>
+                                                <div className="flex flex-col p-2 gap-3">
+                                                    <label htmlFor="">Category</label>
+                                                    <select name="categoryId" id="categoryId" onChange={handleChange} value={isFlag ? CourseInputs.categoryId : singleCourse?.categoryId} className="p-3 border-2 border-gray-600 rounded-lg" >
+                                                        <option value="Choose Option">Choose Options</option>
+                                                        {
+                                                            categoryList?.map((item, index) => {
+                                                                return (
+                                                                    <option key={index} value={item?._id}>{item?.categories}</option>
+                                                                )
+                                                            })
+                                                        }
+                                                    </select>
 
-                                    <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">Category</label>
-                                        <select name="categoryId" id="categoryId" onChange={handleChange} value={isFlag ? CourseInputs.categoryId : singleCourse?.categoryId} className="p-3 border-2 border-gray-600 rounded-lg" >
-                                            <option value="Choose Option">Choose Options</option>
-                                            {
-                                                categoryList?.map((item, index) => {
-                                                    return (
-                                                        <option key={index} value={item?._id}>{item?.categories}</option>
-                                                    )
-                                                })
-                                            }
-                                        </select>
+                                                </div>
 
-                                    </div>
+                                            </div>
 
-                                </div>
+                                            <div className="grid grid-cols-2">
+                                                <div className="flex flex-col p-2 gap-3">
+                                                    <label htmlFor="">Role</label>
+                                                    <select name="role" id="role" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={isFlag ? CourseInputs.role : singleCourse?.role} >
+                                                        <option value="">Choose Role</option>
+                                                        {
+                                                            roles?.map((item, index) => {
+                                                                return (
+                                                                    <option key={index} value={item}>{item}</option>
+                                                                )
+                                                            })
+                                                        }
 
-                                <div className="grid grid-cols-2">
-                                    <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">Role</label>
-                                        <select name="role" id="role" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={isFlag ? CourseInputs.role : singleCourse?.role} >
-                                            <option value="">Choose Role</option>
-                                            {
-                                                roles?.map((item, index) => {
-                                                    return (
-                                                        <option key={index} value={item}>{item}</option>
-                                                    )
-                                                })
-                                            }
+                                                    </select>
+                                                </div>
 
-                                        </select>
-                                    </div>
+                                                <div className="flex flex-col p-2 gap-3">
+                                                    <label htmlFor="">language</label>
+                                                    <select name="language" id="language" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={isFlag ? CourseInputs.language : singleCourse?.language} >
+                                                        <option value="">Choose language</option>
+                                                        {
+                                                            language?.map((item, index) => {
+                                                                return (
+                                                                    <option key={index} value={item}>{item}</option>
+                                                                )
+                                                            })
+                                                        }
 
-                                    <div className="flex flex-col p-2 gap-3">
-                                        <label htmlFor="">language</label>
-                                        <select name="language" id="language" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={isFlag ? CourseInputs.language : singleCourse?.language} >
-                                            <option value="">Choose language</option>
-                                            {
-                                                language?.map((item, index) => {
-                                                    return (
-                                                        <option key={index} value={item}>{item}</option>
-                                                    )
-                                                })
-                                            }
+                                                    </select>
+                                                </div>
+                                            </div>
 
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div className="flex flex-col p-2 gap-3">
-                                    <div>
-                                        <label htmlFor="">Source</label>
-                                    </div>
-                                    <div className="flex p-2 gap-3">
-                                        {/* <div className="flex justify-center items-center p-2 gap-3">
+                                            <div className="flex flex-col p-2 gap-3">
+                                                <div>
+                                                    <label htmlFor="">Source</label>
+                                                </div>
+                                                <div className="flex p-2 gap-3">
+                                                    {/* <div className="flex justify-center items-center p-2 gap-3">
                                             <input type="radio" name="source" id="source" value="Youtube" onChange={handleChange} checked={isFlag ? CourseInputs.source == "Youtube" : singleCourse.source && singleCourse.source.toLowerCase() === "Youtube"} className="p-3 border-2 border-gray-600 rounded-lg" />
                                             <label htmlFor="">Youtube</label>
 
                                         </div> */}
-                                        <div className="flex justify-center items-center p-2 gap-3">
-                                            <input type="radio" name="source" id="source" value="vimeo" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={isFlag ? CourseInputs.source == "vimeo" : singleCourse.source == "vimeo"} />
-                                            <label htmlFor="">Vimeo</label>
+                                                    <div className="flex justify-center items-center p-2 gap-3">
+                                                        <input type="radio" name="source" id="source" value="vimeo" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={isFlag ? CourseInputs.source == "vimeo" : singleCourse.source == "vimeo"} />
+                                                        <label htmlFor="">Vimeo</label>
 
-                                        </div>
-                                        <div className="flex justify-center items-center p-2 gap-3">
-                                            <input type="radio" name="source" id="source" value="Dropbox" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={isFlag ? CourseInputs.source == "Dropbox" : singleCourse.source == "Dropbox"} />
-                                            <label htmlFor="">Drop Box</label>
+                                                    </div>
+                                                    <div className="flex justify-center items-center p-2 gap-3">
+                                                        <input type="radio" name="source" id="source" value="Dropbox" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={isFlag ? CourseInputs.source == "Dropbox" : singleCourse.source == "Dropbox"} />
+                                                        <label htmlFor="">Drop Box</label>
 
-                                        </div>
-                                        <div className="flex justify-center items-center p-2 gap-3">
-                                            <input type="radio" name="source" id="source" value="embed" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={isFlag ? CourseInputs.source == "embed" : singleCourse.source == "embed"} />
-                                            <label htmlFor="">embed</label>
+                                                    </div>
+                                                    <div className="flex justify-center items-center p-2 gap-3">
+                                                        <input type="radio" name="source" id="source" value="embed" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={isFlag ? CourseInputs.source == "embed" : singleCourse.source == "embed"} />
+                                                        <label htmlFor="">embed</label>
 
-                                        </div>
-                                        <div className="flex justify-center items-center p-2 gap-3">
-                                            <input type="radio" name="source" id="source" value="Upload" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={isFlag ? CourseInputs.source == "Upload" : singleCourse.source == "Upload"} />
-                                            <label htmlFor="">Upload</label>
+                                                    </div>
+                                                    <div className="flex justify-center items-center p-2 gap-3">
+                                                        <input type="radio" name="source" id="source" value="Upload" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" checked={isFlag ? CourseInputs.source == "Upload" : singleCourse.source == "Upload"} />
+                                                        <label htmlFor="">Upload</label>
 
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex flex-col p-2 gap-3">
-                                    {selectedSource !== "Upload" && (
-                                        <>
-                                            <label htmlFor="">Link</label>
-                                            <input
-                                                type={selectedSource == "Upload" ? "file" : "text"}
-                                                name="video_link"
-                                                id="video_link"
-                                                onChange={handleChange}
-                                                className="p-3 border-2 border-gray-600 rounded-lg"
-                                                value={isFlag ? CourseInputs.video_link : singleCourse?.video_link}
-                                            />
-                                        </>
-                                    )}
-                                </div>
-                                <div className="flex justify-center items-start p-2 gap-3 flex-col w-full">
-                                    {
-                                        selectedSource == "Upload" && (
-                                            <>
-                                                <label htmlFor="">Upload Video</label>
-                                                <input type={selectedSource == "Upload" ? "file" : "text"} name="video_link" id="video_link" className="p-3 w-full border-2 border-gray-600 rounded-lg" onChange={handleChangeVedioFile} />
-                                                {uploadProgress > 0 && <p>Uploading: {uploadProgress}%</p>}
-                                            </>
-                                        )
-                                    }
-                                </div>
-                                <div className="flex flex-col p-2 gap-3">
-                                    <label htmlFor="">Description</label>
-                                    <textarea name="description" id="description" value={isFlag ? CourseInputs.description : singleCourse.description} cols="10" rows="5" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" ></textarea>
-                                </div>
-                                <div className="flex flex-col">
-                                    <div className="flex justify-start items-center py-4 px-2">
-                                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-36" type="button" onClick={() => {
-                                            setChapterFlag(true)
-                                            setIsFlag(false)
-                                            handleOpenSubModal(singleCourse?.title, singleCourse?._id)
-
-
-                                            // setCreateChapter([...createChapter, { title: "", source: "", description: "", chapterLink: "" }])
-                                        }}><FaPlus /> Add Chapters</button>
-                                    </div>
-                                    <div className="flex flex-col justify-center items-start p-2 gap-3">
-                                        <div>
-                                            <label htmlFor=""> Status </label>
-                                        </div>
-                                        <div className="flex">
-                                            <div className="flex justify-center items-center p-2 gap-3">
-                                                <input type="radio" name="status" id="status" value="Active" checked={isFlag ? CourseInputs.status == "Active" : singleCourse.status == "Active"} onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" />
-                                                <label>Active</label>
-
+                                                    </div>
+                                                </div>
                                             </div>
-
-                                            <div className="flex justify-center items-center p-2 gap-3">
-                                                <input type="radio" name="status" id="status" value="Pending" checked={isFlag ? CourseInputs.status == "Pending" : singleCourse.status === "Pending"} onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" />
-                                                <label htmlFor="">Pending</label>
-
+                                            <div className="flex flex-col p-2 gap-3">
+                                                {selectedSource !== "Upload" && (
+                                                    <>
+                                                        <label htmlFor="">Link</label>
+                                                        <input
+                                                            type={selectedSource == "Upload" ? "file" : "text"}
+                                                            name="video_link"
+                                                            id="video_link"
+                                                            onChange={handleChange}
+                                                            className="p-3 border-2 border-gray-600 rounded-lg"
+                                                            value={isFlag ? CourseInputs.video_link : singleCourse?.video_link}
+                                                        />
+                                                    </>
+                                                )}
                                             </div>
-
-                                            <div className="flex justify-center items-center p-2 gap-3">
-                                                <input type="radio" name="status" id="status" value="Inactive" checked={isFlag ? CourseInputs.status == "Inactive" : singleCourse.status == "Inactive"} onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" />
-                                                <label htmlFor="">Inactive</label>
-
+                                            <div className="flex justify-center items-start p-2 gap-3 flex-col w-full">
+                                                {
+                                                    selectedSource == "Upload" && (
+                                                        <>
+                                                            <label htmlFor="">Upload Video</label>
+                                                            <input type={selectedSource == "Upload" ? "file" : "text"} name="video_link" id="video_link" className="p-3 w-full border-2 border-gray-600 rounded-lg" onChange={handleChangeVedioFile} />
+                                                            {uploadProgress > 0 && <p>Uploading: {uploadProgress}%</p>}
+                                                        </>
+                                                    )
+                                                }
                                             </div>
-                                        </div>
+                                            <div className="flex flex-col p-2 gap-3">
+                                                <label htmlFor="">Description</label>
+                                                <textarea name="description" id="description" value={isFlag ? CourseInputs.description : singleCourse.description} cols="10" rows="5" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" ></textarea>
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <div className="flex justify-start items-center py-4 px-2">
+                                                    <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-36" type="button" onClick={() => {
+                                                        setChapterFlag(true)
+                                                        setIsFlag(false)
+                                                        handleOpenSubModal(singleCourse?.title, singleCourse?._id)
+
+
+                                                        // setCreateChapter([...createChapter, { title: "", source: "", description: "", chapterLink: "" }])
+                                                    }}><FaPlus /> Add Chapters</button>
+                                                </div>
+                                                <div className="flex flex-col justify-center items-start p-2 gap-3">
+                                                    <div>
+                                                        <label htmlFor=""> Status </label>
+                                                    </div>
+                                                    <div className="flex">
+                                                        <div className="flex justify-center items-center p-2 gap-3">
+                                                            <input type="radio" name="status" id="status" value="Active" checked={isFlag ? CourseInputs.status == "Active" : singleCourse.status == "Active"} onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" />
+                                                            <label>Active</label>
+
+                                                        </div>
+
+                                                        <div className="flex justify-center items-center p-2 gap-3">
+                                                            <input type="radio" name="status" id="status" value="Pending" checked={isFlag ? CourseInputs.status == "Pending" : singleCourse.status === "Pending"} onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" />
+                                                            <label htmlFor="">Pending</label>
+
+                                                        </div>
+
+                                                        <div className="flex justify-center items-center p-2 gap-3">
+                                                            <input type="radio" name="status" id="status" value="Inactive" checked={isFlag ? CourseInputs.status == "Inactive" : singleCourse.status == "Inactive"} onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" />
+                                                            <label htmlFor="">Inactive</label>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="w-full flex justify-center items-center gap-5 p-2">
+                                                    {/* <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button> */}
+                                                    <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg">{isFlag ? "Add Course" : "Update Course"}</button>
+                                                </div>
+                                            </div>
+                                        </form>
                                     </div>
-                                    <div className="w-full flex justify-center items-center gap-5 p-2">
-                                        {/* <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button> */}
-                                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg">{isFlag ? "Add Course" : "Update Course"}</button>
-                                    </div>
-                                </div>
-                            </form>
+                                </Box>
+                            </Modal>
                         </div>
-                    </Box>
-                </Modal>
-            </div>
-            <div>
-                <Modal
-                    open={isSubModalOpen}
-                >
-                    <Box sx={styleSubModal}>
-                        <div className="text-xs overflow-y-visible font-semibold text-gray-600">
-                            <div className="flex justify-between items-center w-full text-black">
-                                <h1 className="text-2xl">{chapterFlag ? "Add Chapter" : "Update Chapter"}</h1>
-                                <button className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-20" onClick={handleCloseSubModal}>Close</button>
-                            </div>
-                            <form action="" onSubmit={chapterFlag ? PostChapter : UpdateChapters}>
-                                <div className="mt-10">
-                                    <div className="grid grid-cols-1">
-                                        <div className="flex flex-col p-2 gap-3">
-                                            <label htmlFor="">Parent Course Name</label>
 
-                                            <input type="text" id="title" value={parentCourseName} onChange={handleChangeChapter} className="p-3 border-2 border-gray-600 rounded-lg" />
+                        <div>
+                            <Modal
+                                open={isSubModalOpen}
+                            >
+                                <Box sx={styleSubModal}>
+                                    <div className="text-xs overflow-y-visible font-semibold text-gray-600">
+                                        <div className="flex justify-between items-center w-full text-black">
+                                            <h1 className="text-2xl">{chapterFlag ? "Add Chapter" : "Update Chapter"}</h1>
+                                            <button className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-20" onClick={handleCloseSubModal}>Close</button>
+                                        </div>
+                                        <form action="" onSubmit={chapterFlag ? PostChapter : UpdateChapters}>
+                                            <div className="mt-10">
+                                                <div className="grid grid-cols-1">
+                                                    <div className="flex flex-col p-2 gap-3">
+                                                        <label htmlFor="">Parent Course Name</label>
 
-                                            {/* <select className="p-3 border-2 border-gray-600 rounded-lg" name="courseId" onChange={handleChangeChapter} value={isFlag ? CourseInputs?.title : singleCourse?.title}>
+                                                        <input type="text" id="title" value={parentCourseName} onChange={handleChangeChapter} className="p-3 border-2 border-gray-600 rounded-lg" />
+
+                                                        {/* <select className="p-3 border-2 border-gray-600 rounded-lg" name="courseId" onChange={handleChangeChapter} value={isFlag ? CourseInputs?.title : singleCourse?.title}>
                                                 <option value="">Choose Option</option>
                                                 {
                                                     courseList?.map((item) => {
@@ -972,8 +972,8 @@ const CourseList = () => {
                                                 }
                                             </select> */}
 
-                                        </div>
-                                        {/* <div className="flex flex-col p-2 gap-3">
+                                                    </div>
+                                                    {/* <div className="flex flex-col p-2 gap-3">
                                             <label htmlFor="">Category</label>
                                         
                                             <select className="p-3 border-2 border-gray-600 rounded-lg" name="categoryId" onChange={handleChangeChapter} value={chapterFlag ? chapters?.categoryId : singleChapter?.categoryId}>
@@ -988,156 +988,158 @@ const CourseList = () => {
                                             </select>
                                            
                                         </div> */}
-                                    </div>
-                                    <div className="flex flex-col gap-2">
-                                        <div className="flex flex-col p-2 gap-3">
-                                            <label htmlFor="">Vedio Title</label>
-                                            <input type="text" className=" p-3 border-2 border-gray-600 rounded-lg" name="title" id="title" onChange={handleChangeChapter} value={chapterFlag ? chapters?.title : singleChapter?.title} />
-                                        </div>
-                                        <div className="grid grid-cols-2">
-                                            <div className="flex flex-col p-2 gap-3">
-                                                <label htmlFor="">Role</label>
-                                                <select name="role" id="role" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value={chapterFlag ? chapters.role : singleChapter?.role} >
-                                                    <option value="">Choose Role</option>
-                                                    {
-                                                        roles?.map((item, index) => {
-                                                            return (
-                                                                <option key={index} value={item}>{item}</option>
-                                                            )
-                                                        })
-                                                    }
+                                                </div>
+                                                <div className="flex flex-col gap-2">
+                                                    <div className="flex flex-col p-2 gap-3">
+                                                        <label htmlFor="">Vedio Title</label>
+                                                        <input type="text" className=" p-3 border-2 border-gray-600 rounded-lg" name="title" id="title" onChange={handleChangeChapter} value={chapterFlag ? chapters?.title : singleChapter?.title} />
+                                                    </div>
+                                                    <div className="grid grid-cols-2">
+                                                        <div className="flex flex-col p-2 gap-3">
+                                                            <label htmlFor="">Role</label>
+                                                            <select name="role" id="role" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value={chapterFlag ? chapters.role : singleChapter?.role} >
+                                                                <option value="">Choose Role</option>
+                                                                {
+                                                                    roles?.map((item, index) => {
+                                                                        return (
+                                                                            <option key={index} value={item}>{item}</option>
+                                                                        )
+                                                                    })
+                                                                }
 
-                                                </select>
-                                                {/* <input type="text" name="role" id="role" className="p-3 border-2 border-gray-600 rounded-lg"/> */}
-                                            </div>
+                                                            </select>
+                                                            {/* <input type="text" name="role" id="role" className="p-3 border-2 border-gray-600 rounded-lg"/> */}
+                                                        </div>
 
-                                            <div className="flex flex-col p-2 gap-3">
-                                                <label htmlFor="">language</label>
-                                                <select name="language" id="language" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value={chapterFlag ? chapters.language : singleChapter?.language} >
-                                                    <option value="">Choose language</option>
-                                                    {
-                                                        language?.map((item, index) => {
-                                                            return (
-                                                                <option key={index} value={item}>{item}</option>
-                                                            )
-                                                        })
-                                                    }
+                                                        <div className="flex flex-col p-2 gap-3">
+                                                            <label htmlFor="">language</label>
+                                                            <select name="language" id="language" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value={chapterFlag ? chapters.language : singleChapter?.language} >
+                                                                <option value="">Choose language</option>
+                                                                {
+                                                                    language?.map((item, index) => {
+                                                                        return (
+                                                                            <option key={index} value={item}>{item}</option>
+                                                                        )
+                                                                    })
+                                                                }
 
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div className="flex flex-col p-2 gap-3">
-                                            <div className="flex justify-start items-start">
-                                                <h1>Source</h1>
-                                            </div>
-                                            <div className="flex p-2 gap-3">
-                                                {/* <div className="flex justify-center items-center p-2 gap-3">
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex flex-col p-2 gap-3">
+                                                        <div className="flex justify-start items-start">
+                                                            <h1>Source</h1>
+                                                        </div>
+                                                        <div className="flex p-2 gap-3">
+                                                            {/* <div className="flex justify-center items-center p-2 gap-3">
                                                     <input type="radio" name="source" id="source" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value="youtube" checked={chapterFlag ? chapters?.source == "youtube" : singleChapter?.source == "youtube"} />
                                                     <label htmlFor="">Youtube</label>
 
                                                 </div> */}
 
-                                                <div className="flex justify-center items-center p-2 gap-3">
-                                                    <input type="radio" name="source" id="source" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value="Vimeo" checked={chapterFlag ? chapters?.source == "Vimeo" : singleChapter?.source == "vimeo"} />
-                                                    <label htmlFor="">Vimeo</label>
+                                                            <div className="flex justify-center items-center p-2 gap-3">
+                                                                <input type="radio" name="source" id="source" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value="Vimeo" checked={chapterFlag ? chapters?.source == "Vimeo" : singleChapter?.source == "vimeo"} />
+                                                                <label htmlFor="">Vimeo</label>
 
-                                                </div>
-                                                <div className="flex justify-center items-center p-2 gap-3">
-                                                    <input type="radio" name="source" id="source" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value="dropbox" checked={chapterFlag ? chapters.source == "dropbox" : singleChapter?.source == "dropbox"} />
-                                                    <label htmlFor="">Drop Box</label>
+                                                            </div>
+                                                            <div className="flex justify-center items-center p-2 gap-3">
+                                                                <input type="radio" name="source" id="source" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value="dropbox" checked={chapterFlag ? chapters.source == "dropbox" : singleChapter?.source == "dropbox"} />
+                                                                <label htmlFor="">Drop Box</label>
 
-                                                </div>
-                                                <div className="flex justify-center items-center p-2 gap-3">
-                                                    <input type="radio" name="source" id="source" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value="embed" checked={chapterFlag ? chapters.source == "embed" : singleChapter?.source == "embed"} />
-                                                    <label htmlFor="">embed</label>
+                                                            </div>
+                                                            <div className="flex justify-center items-center p-2 gap-3">
+                                                                <input type="radio" name="source" id="source" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value="embed" checked={chapterFlag ? chapters.source == "embed" : singleChapter?.source == "embed"} />
+                                                                <label htmlFor="">embed</label>
 
-                                                </div>
-                                                <div className="flex justify-center items-center p-2 gap-3">
-                                                    <input type="radio" name="source" id="source" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value="Upload" checked={chapterFlag ? chapters.source == "Upload" : singleChapter?.source == "Upload"} />
-                                                    <label htmlFor="">Upload</label>
+                                                            </div>
+                                                            <div className="flex justify-center items-center p-2 gap-3">
+                                                                <input type="radio" name="source" id="source" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value="Upload" checked={chapterFlag ? chapters.source == "Upload" : singleChapter?.source == "Upload"} />
+                                                                <label htmlFor="">Upload</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex flex-col p-2 gap-3">
+
+                                                        {selectedSource !== "Upload" && (
+                                                            <>
+                                                                <label htmlFor="">Link</label>
+                                                                <input
+                                                                    type={selectedSource == "Upload" ? "file" : "text"}
+                                                                    name="video_link"
+                                                                    id="video_link"
+                                                                    onChange={handleChangeChapter}
+                                                                    className="p-3 border-2 border-gray-600 rounded-lg"
+                                                                    value={chapterFlag ? chapters?.video_link : singleChapter?.video_link}
+                                                                />
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                    <div className="flex justify-center items-start p-2 gap-3 flex-col w-full">
+
+                                                        {
+                                                            selectedSource == "Upload" && (
+                                                                <>
+                                                                    <label htmlFor="">Upload Video</label>
+                                                                    <input type={selectedSource == "Upload" ? "file" : "text"} name="video_link" id="video_link" className="p-3 w-full border-2 border-gray-600 rounded-lg" onChange={handleChangeChapterFile} />
+                                                                    {uploadProgress > 0 && <p>Uploading: {uploadProgress}%</p>}
+                                                                </>
+                                                            )
+                                                        }
+
+                                                    </div>
+                                                    <div className="flex flex-col p-2 gap-3">
+                                                        <label htmlFor="">Description</label>
+                                                        <textarea name="description" id="" cols="10" rows="5" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value={chapterFlag ? chapters?.description : singleChapter?.description}></textarea>
+                                                    </div>
+                                                    <div className="w-full flex justify-center items-center gap-5 p-2">
+                                                        <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button>
+                                                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg" type="submit">{chapterFlag ? "Add Chapter" : "Update Chapter"}</button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="flex flex-col p-2 gap-3">
-
-                                            {selectedSource !== "Upload" && (
-                                                <>
-                                                    <label htmlFor="">Link</label>
-                                                    <input
-                                                        type={selectedSource == "Upload" ? "file" : "text"}
-                                                        name="video_link"
-                                                        id="video_link"
-                                                        onChange={handleChangeChapter}
-                                                        className="p-3 border-2 border-gray-600 rounded-lg"
-                                                        value={chapterFlag ? chapters?.video_link : singleChapter?.video_link}
-                                                    />
-                                                </>
-                                            )}
-                                        </div>
-                                        <div className="flex justify-center items-start p-2 gap-3 flex-col w-full">
-
-                                            {
-                                                selectedSource == "Upload" && (
-                                                    <>
-                                                        <label htmlFor="">Upload Video</label>
-                                                        <input type={selectedSource == "Upload" ? "file" : "text"} name="video_link" id="video_link" className="p-3 w-full border-2 border-gray-600 rounded-lg" onChange={handleChangeChapterFile} />
-                                                        {uploadProgress > 0 && <p>Uploading: {uploadProgress}%</p>}
-                                                    </>
-                                                )
-                                            }
-
-                                        </div>
-                                        <div className="flex flex-col p-2 gap-3">
-                                            <label htmlFor="">Description</label>
-                                            <textarea name="description" id="" cols="10" rows="5" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value={chapterFlag ? chapters?.description : singleChapter?.description}></textarea>
-                                        </div>
-                                        <div className="w-full flex justify-center items-center gap-5 p-2">
-                                            <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button>
-                                            <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg" type="submit">{chapterFlag ? "Add Chapter" : "Update Chapter"}</button>
-                                        </div>
+                                        </form>
                                     </div>
-                                </div>
-                            </form>
+                                </Box>
+                            </Modal>
                         </div>
-                    </Box>
-                </Modal>
-            </div>
 
-            <div>
-                <Modal
-                    open={isSettingModalOpen}
-                >
-                    <Box sx={styleSettingModal}>
                         <div>
-                            <div className="flex justify-between items-center font-semibold">
-                                <h1 className="text-2xl">Video View Settings</h1>
-                                <button className="p-1 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg" onClick={() => setIsSettingModalOpen(false)}>Close</button>
-                            </div>
-                            <form className="flex flex-col font-semibold mt-5" onSubmit={PostSettingForm}>
-                                <div className="flex flex-col p-2 gap-3">
-                                    <label htmlFor="">First month</label>
-                                    <input type="text" name="firstmonth" id="firstmonth" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeSettingForm} value={settingData?.firstmonth} />
-                                </div>
+                            <Modal
+                                open={isSettingModalOpen}
+                            >
+                                <Box sx={styleSettingModal}>
+                                    <div>
+                                        <div className="flex justify-between items-center font-semibold">
+                                            <h1 className="text-2xl">Video View Settings</h1>
+                                            <button className="p-1 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg" onClick={() => setIsSettingModalOpen(false)}>Close</button>
+                                        </div>
+                                        <form className="flex flex-col font-semibold mt-5" onSubmit={PostSettingForm}>
+                                            <div className="flex flex-col p-2 gap-3">
+                                                <label htmlFor="">First month</label>
+                                                <input type="text" name="firstmonth" id="firstmonth" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeSettingForm} value={settingData?.firstmonth} />
+                                            </div>
 
-                                <div className="flex flex-col p-2 gap-3">
-                                    <label htmlFor="">Second month</label>
-                                    <input type="text" name="secondmonth" id="secondmonth" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeSettingForm} value={settingData?.secondmonth} />
-                                </div>
+                                            <div className="flex flex-col p-2 gap-3">
+                                                <label htmlFor="">Second month</label>
+                                                <input type="text" name="secondmonth" id="secondmonth" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeSettingForm} value={settingData?.secondmonth} />
+                                            </div>
 
-                                <div className="flex flex-col p-2 gap-3">
-                                    <label htmlFor="">Third month</label>
-                                    <input type="text" name="thirdmonth" id="thirdmonth" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeSettingForm} value={settingData?.thirdmonth} />
-                                </div>
+                                            <div className="flex flex-col p-2 gap-3">
+                                                <label htmlFor="">Third month</label>
+                                                <input type="text" name="thirdmonth" id="thirdmonth" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeSettingForm} value={settingData?.thirdmonth} />
+                                            </div>
 
-                                <div className="flex justify-center items-center mt-5">
-                                    <button className="p-1 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg" type="submit">Submit</button>
-                                </div>
-                            </form>
+                                            <div className="flex justify-center items-center mt-5">
+                                                <button className="p-1 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg" type="submit">Submit</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </Box>
+                            </Modal>
                         </div>
-                    </Box>
-                </Modal>
+                    </div>
+                }
             </div>
-
         </div>
     )
 }
