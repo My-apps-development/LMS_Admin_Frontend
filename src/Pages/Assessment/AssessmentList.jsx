@@ -419,10 +419,7 @@ const AssessmentList = () => {
     if(!csvFile){
       errorMessage("Csv file upload is required")
       return
-    } else if(csvFile.type === "text/csv"){
-      errorMessage("Only Csv are allowed")
-      return
-    }
+    } 
 
 
 
