@@ -17,6 +17,7 @@ const User = () => {
   const [flag, setFlag] = useState(true)
   const [roles, setRoles] = useState([])
   const [language, setLanguage] = useState([])
+  const [search, setSearch] = useState("")
 
 
 
@@ -475,6 +476,8 @@ const User = () => {
 
 
 
+
+
   // console.log(singleInputs);
   useEffect(() => {
     FetchUsers()
@@ -498,7 +501,10 @@ const User = () => {
               <p>Total {userList?.length} Users in Table </p>
             </div>
             <div className="flex justify-between items-center p-2">
-              <h1>User List</h1>
+              <div className="flex justify-center items-center gap-5">
+                <h1>User List: </h1>
+                <input type="search" name="search" id="search" className="border-2 border-gray-600 focus:border-[#B32073] focus:outline-[#B32073] w-80 p-2 rounded-lg" placeholder="Search for users, role and language" value={search} onChange={(e) => setSearch(e.target.value)} />
+              </div>
               <button className="p-2 border-2 border-[#B32073] bg-[#B32073] text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-32" onClick={handleOpen}><FaPlus />Add</button>
             </div>
             <div>
@@ -541,7 +547,13 @@ const User = () => {
                   </thead>
                   <tbody>
                     {
-                      userList?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => {
+                      userList?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.filter((user) => {
+                        const searchString = search?.toLowerCase();
+                        const fullNameMatch = user?.fullname?.toLowerCase().includes(searchString);
+                        const roleMatch = user?.role?.toLowerCase().includes(searchString);
+                        const languageMatch = user?.language?.toLowerCase().includes(searchString);
+                        return fullNameMatch || roleMatch || languageMatch;
+                      })?.map((item, index) => {
                         return (
                           <tr className="bg-gray-100 text-center border-b text-sm text-gray-600" key={index}>
                             <td className="border-r">  <input type="checkbox" /></td>
