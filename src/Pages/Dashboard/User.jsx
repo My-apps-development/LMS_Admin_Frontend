@@ -503,7 +503,7 @@ const User = () => {
             <div className="flex justify-between items-center p-2">
               <div className="flex justify-center items-center gap-5">
                 <h1>User List: </h1>
-                <input type="search" name="search" id="search" className="border-2 border-gray-600 focus:border-[#B32073] focus:outline-[#B32073] w-80 p-2 rounded-lg" placeholder="Search for users, role and language" value={search} onChange={(e) => setSearch(e.target.value)} />
+                <input type="search" name="search" id="search" className="border-2 border-gray-600 focus:border-[#B32073] focus:outline-[#B32073] w-80 p-2 rounded-lg" placeholder="Search for users, role and language" value={search} onChange={(e) => setSearch(e.target.value)} autoComplete="off"/>
               </div>
               <button className="p-2 border-2 border-[#B32073] bg-[#B32073] text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-32" onClick={handleOpen}><FaPlus />Add</button>
             </div>
@@ -513,7 +513,7 @@ const User = () => {
                   <thead>
                     <tr className=" border-b">
                       <th className="border-r">
-                        <input type="checkbox" />
+                        #
                       </th>
                       <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
                         <h1 className="flex items-center justify-center">User</h1>
@@ -554,9 +554,10 @@ const User = () => {
                         const languageMatch = user?.language?.toLowerCase().includes(searchString);
                         return fullNameMatch || roleMatch || languageMatch;
                       })?.map((item, index) => {
+                        const itemIndex = page * rowsPerPage + index + 1; 
                         return (
                           <tr className="bg-gray-100 text-center border-b text-sm text-gray-600" key={index}>
-                            <td className="border-r">  <input type="checkbox" /></td>
+                            <td className="border-r">{itemIndex}</td>
                             <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.fullname} </td>
                             <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.role}</td>
                             <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.email}</td>

@@ -88,12 +88,12 @@ const AddCompany = () => {
                                 </div>
                                 <div className="flex flex-col gap-2">
                                     <label htmlFor="">Email</label>
-                                    <input type="text" name="email" id="email" className="border-2 border-gray-600 p-2 rounded" placeholder='Companey Email' onChange={handleChange} />
+                                    <input type="text" name="email" id="email" className="border-2 border-gray-600 p-2 rounded" placeholder='Companey Email' autoComplete="off" onChange={handleChange} />
                                 </div>
 
                                 <div className="flex flex-col gap-2">
                                     <label htmlFor="">password</label>
-                                    <input type="text" name="password" id="password" className="border-2 border-gray-600 p-2 rounded" placeholder='Password' onChange={handleChange} />
+                                    <input type="password" name="password" id="password" className="border-2 border-gray-600 p-2 rounded" placeholder='Password' onChange={handleChange} />
                                 </div>
 
                                 <div className="flex flex-col gap-2">
