@@ -23,6 +23,7 @@ const Certificate = () => {
     const [certificateList, setCertificateList] = useState([])
 
     const [certificateFlag, setCertificateFlag] = useState(true)
+    const [search, setSearch] = useState("")
 
     const [singleCertificate, setSingleCertificate] = useState({
         _id: "",
@@ -32,7 +33,7 @@ const Certificate = () => {
         validDate: "",
         uploadLogo: "",
         uploadSignature: "",
-        uploadTemplate: ""
+        description: ""
     })
 
     const [singleCertificateUser, setSingleCertificateUser] = useState("")
@@ -53,7 +54,7 @@ const Certificate = () => {
         validDate: "",
         uploadLogo: "",
         uploadSignature: "",
-        uploadTemplate: ""
+        description: ""
     })
 
     const style = {
@@ -163,8 +164,8 @@ const Certificate = () => {
             errorMessage("signature is required")
             return
         }
-        if (!postCertificate) {
-            errorMessage("certificate is required")
+        if (!inputs?.description) {
+            errorMessage("description is required")
             return
         }
 
@@ -176,7 +177,7 @@ const Certificate = () => {
         formData.append("userId", selectedUser?.value)
         formData.append("uploadLogo", postLogo)
         formData.append("uploadSignature", postSignature)
-        formData.append("uploadTemplate", postCertificate)
+        formData.append("description", inputs?.description)
         // formData.append("userId", "65f019ee9fa2f461cf1a28e9")
 
         try {
@@ -185,7 +186,7 @@ const Certificate = () => {
             successMessage(data?.message);
             clearInputs()
             fetchCertificates()
-          
+
             setIsOpen(false)
         } catch (error) {
             errorMessage(error?.response?.data?.message)
@@ -230,7 +231,7 @@ const Certificate = () => {
             fullname: '',
             courseId: "",
             validDate: "",
-            selectedUser:{}
+            selectedUser: {}
         }))
 
         setLogo(null)
@@ -279,7 +280,7 @@ const Certificate = () => {
         formData.append("userId", selectedUser?.value)
         formData.append("uploadLogo", postLogo)
         formData.append("uploadSignature", postSignature)
-        formData.append("uploadTemplate", postCertificate)
+        formData.append("description", singleCertificate?.description)
 
         try {
             const response = await axiosInstance.patch(`/certificate/update?id=${singleCertificate?._id}`, formData, { headers: { "Content-Type": "mutipart/form-data" } })
@@ -352,29 +353,65 @@ const Certificate = () => {
                                 setCertificateFlag(true)
                             }}>Add Certificate</button>
                         </div>
-                        <div className="mt-10 ml-3 grid grid-cols-4 gap-5">
+                        <div className="ml-3">
+                            <label htmlFor="">Users: </label>
+                            <input type="search" name="search" id="search" className="border-2 border-gray-600 focus:border-[#B32073] focus:outline-[#B32073] w-80 p-2 rounded-lg mt-10 ml-5" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search for User, Course Name" autoComplete="off"/>
+                        </div>
+                        <div className="mt-10 grid grid-cols-2 gap-2 w-full">
                             {
-                                [...certificateList]?.reverse()?.map((item, index) => {
+                                [...certificateList]?.reverse()?.filter((user) => {
+                                    const searchString = search?.toLowerCase();
+                                    const fullNameMatch = user?.users?.fullname?.toLowerCase().includes(searchString);
+                                    const course = user?.courses?.title?.toLowerCase().includes(searchString);
+                                    return fullNameMatch || course
+                                })?.map((item, index) => {
                                     return (
-                                        <div className="border-2 w-72 shadow-lg flex flex-col gap-3 p-3 rounded-lg hover:scale-95 duration-300 bg-white" key={index} data-aos="flip-left">
-                                            <div >
+                                        <div className="border-2 shadow-lg flex flex-col gap-3 rounded-lg hover:scale-95 duration-300 bg-white w-full" key={index} data-aos="flip-left">
+                                            {/* <div >
                                                 <img src={item?.certificate?.uploadTemplate} alt="" className="rounded-lg object-cover w-72 h-72" />
-                                            </div>
+                                            </div> */}
                                             <div>
-                                                <div>
-                                                    <h1>{item?.users?.fullname}</h1>
-                                                </div>
-                                                <div className="flex justify-between items-center w-full">
-                                                    <h1>{item?.courses?.title}</h1>
-                                                    <p>{item?.certificate?.validDate}</p>
+                                                <div className="flex justify-center items-center">
+                                                    <div className="w-[90%]  shadow-2xl flex justify-center items-center flex-col font-semibold p-10 certificate-template">
+                                                        <div className="border-2 border-[#B32073] rounded-lg p-5 flex flex-col gap-4 w-full ">
+                                                            <div className="flex justify-between items-center gap-5">
+                                                                <div className="flex flex-col gap-3">
+                                                                    <h1 className="text-sm">Digital Certificate</h1>
+                                                                    <h1 className="text-sm">Awarded to</h1>
+                                                                </div>
+                                                                <div>
+                                                                    <img src={item?.certificate?.uploadLogo} alt="" className="w-24 h-24" />
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex flex-col gap-3">
+                                                                <h1 className="text-xl">{item?.users?.fullname}</h1>
+                                                                <p className="text-sm">for completing</p>
+                                                            </div>
+                                                            <div className="flex flex-col gap-3">
+                                                                <h1 className="text-xl capitalize">{item?.courses?.title}</h1>
+                                                                <p className="text-sm capitalize">valid date: {item?.certificate?.validDate}</p>
+                                                            </div>
+                                                            {
+                                                                !item?.certificate?.description ? (<div className="text-sm">
+                                                                    <p>Your dedication and effort have paid off, and you &apos; re now equipped with
+                                                                        essential skills to visualize data like a pro. Well done on this significant
+                                                                        achievement!
+                                                                    </p>
+                                                                </div>) : (<p>{ item?.certificate?.description}</p>)
+                                                            }
+                                                            <div className=" w-full">
+                                                                <img src={item?.certificate?.uploadSignature} alt="" className="w-32 h-32 float-end" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div className="flex justify-between items-center mt-6">
-                                                    <button className="text-blue-600" onClick={() => {
+                                                    <button className="text-blue-600 p-2" onClick={() => {
                                                         setIsOpen(true)
                                                         setCertificateFlag(false)
                                                         getSingleCertificate(item?.certificate?._id)
                                                     }}>Edit</button>
-                                                    <button className="text-red-600" onClick={() => DeleteCertificate(item?.certificate?._id)}>Delete</button>
+                                                    <button className="text-red-600 p-2" onClick={() => DeleteCertificate(item?.certificate?._id)}>Delete</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -382,6 +419,8 @@ const Certificate = () => {
                                 })
                             }
                         </div>
+
+
                         <Modal
                             open={isOpen}
                         >
@@ -416,7 +455,7 @@ const Certificate = () => {
                                                         }))} value={selectedUser} />
                                                     </div> : <div className="flex flex-col gap-3">
                                                         <label htmlFor="">UserName</label>
-                                                        <input type="text" name="" id="" className="p-3 cursor-not-allowed border-2 border-gray-600 rounded-lg" value={singleCertificateUser} disabled/>
+                                                        <input type="text" name="" id="" className="p-3 cursor-not-allowed border-2 border-gray-600 rounded-lg" value={singleCertificateUser} disabled />
                                                     </div>
                                                 }
                                             </div>
@@ -466,7 +505,7 @@ const Certificate = () => {
                                             </div>
 
 
-                                            <div className="flex w-[100%]">
+                                            {/* <div className="flex w-[100%]">
                                                 <div className="flex flex-col p-2 gap-3 w-[50%]">
                                                     <label htmlFor="">Certificate Template</label>
                                                     <input type="file" name="uploadTemplate" id="uploadTemplate" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeCertificate} accept="image/*" />
@@ -474,13 +513,13 @@ const Certificate = () => {
                                                 <div className="w-[50%] flex justify-center items-center">
                                                     <img src={certificate} alt="" className="w-56 h-56" />
                                                 </div>
-                                            </div>
+                                            </div> */}
                                         </div>
 
-                                        {/* <div className="flex flex-col p-2 gap-3">
+                                        <div className="flex flex-col p-2 gap-3">
                                             <label htmlFor="">Description</label>
                                             <textarea name="description" id="description" cols="10" rows="5" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeInputs} ></textarea>
-                                        </div> */}
+                                        </div>
 
                                         <div className="w-full flex justify-center items-center gap-5 p-2 mt-10">
                                             {/* <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Save</button> */}
