@@ -35,6 +35,8 @@ const Certificate = () => {
         uploadTemplate: ""
     })
 
+    const [singleCertificateUser, setSingleCertificateUser] = useState("")
+
     const [loader, setLoader] = useState(false)
 
     const [meritUsers, setMeritUsers] = useState([])
@@ -183,6 +185,7 @@ const Certificate = () => {
             successMessage(data?.message);
             clearInputs()
             fetchCertificates()
+          
             setIsOpen(false)
         } catch (error) {
             errorMessage(error?.response?.data?.message)
@@ -227,7 +230,7 @@ const Certificate = () => {
             fullname: '',
             courseId: "",
             validDate: "",
-            userId: ""
+            selectedUser:{}
         }))
 
         setLogo(null)
@@ -249,6 +252,7 @@ const Certificate = () => {
             const data = await response.data
             console.log(data);
             setSingleCertificate(data?.data?.certificate);
+            setSingleCertificateUser(data?.data?.user?.fullname);
             setCertificate(data?.data?.certificate?.uploadTemplate)
             setLogo(data?.data?.certificate?.uploadLogo)
             setSignature(data?.data?.certificate?.uploadSignature)
@@ -310,10 +314,14 @@ const Certificate = () => {
 
     const GetMeritUsers = async () => {
         try {
+            setLoader(true)
             const response = await axiosInstance.get("/assignment/getmerit")
             const data = await response?.data
             setMeritUsers(data?.assignmentsWithUserDetails);
+            setLoader(false)
         } catch (error) {
+            setLoader(false)
+            errorMessage(error?.response?.data?.message)
             console.log("Error Fetching Merit User", error.message);
         }
     }
@@ -396,13 +404,21 @@ const Certificate = () => {
                                                 <input type="text" name="lastName" id="lastName" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeInputs} />
                                             </div> */}
                                             <div className="flex flex-col p-2 gap-3">
-                                                <Select placeholder="Select User" onChange={selectedOption => {
-                                                    // Handle selected option
-                                                    setSelectedUser(selectedOption);
-                                                }} options={meritUsers?.map((user) => ({
-                                                    value: user?.user?._id,
-                                                    label: user?.user?.fullname
-                                                }))} value={selectedUser} />
+                                                {
+                                                    certificateFlag ? <div className="flex flex-col gap-3">
+                                                        <label htmlFor="">UserName</label>
+                                                        <Select placeholder="Select User" onChange={selectedOption => {
+                                                            // Handle selected option
+                                                            setSelectedUser(selectedOption);
+                                                        }} options={meritUsers?.map((user) => ({
+                                                            value: user?.user?._id,
+                                                            label: user?.user?.fullname
+                                                        }))} value={selectedUser} />
+                                                    </div> : <div className="flex flex-col gap-3">
+                                                        <label htmlFor="">UserName</label>
+                                                        <input type="text" name="" id="" className="p-3 cursor-not-allowed border-2 border-gray-600 rounded-lg" value={singleCertificateUser} disabled/>
+                                                    </div>
+                                                }
                                             </div>
 
                                             <div className="flex flex-col p-2 gap-3">
