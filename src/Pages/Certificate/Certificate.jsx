@@ -25,7 +25,7 @@ const Certificate = () => {
     const [certificateFlag, setCertificateFlag] = useState(true)
 
     const [singleCertificate, setSingleCertificate] = useState({
-        _id:"",
+        _id: "",
         fullname: "",
         userId: "",
         courseId: "",
@@ -40,8 +40,8 @@ const Certificate = () => {
     const [meritUsers, setMeritUsers] = useState([])
 
     const [selectedUser, setSelectedUser] = useState({
-        value:"",
-        label:""
+        value: "",
+        label: ""
     })
 
     const [inputs, setInputs] = useState({
@@ -242,19 +242,19 @@ const Certificate = () => {
     const getSingleCertificate = async (_id) => {
 
         console.log(certificateFlag);
-    
+
 
         try {
             const response = await axiosInstance.get(`/certificate/single?id=${_id}`)
             const data = await response.data
             console.log(data);
-            setSingleCertificate(data?.certificate);
-            setCertificate(data?.certificate?.uploadTemplate)
-            setLogo(data?.certificate?.uploadLogo)
-            setSignature(data?.certificate?.uploadSignature)
+            setSingleCertificate(data?.data?.certificate);
+            setCertificate(data?.data?.certificate?.uploadTemplate)
+            setLogo(data?.data?.certificate?.uploadLogo)
+            setSignature(data?.data?.certificate?.uploadSignature)
             setSelectedUser({
-                value: data?.certificate?.userId,
-                label: data?.certificate?.fullname
+                value: data?.data?.user?._id,
+                label: data?.data?.user?.fullname
             })
         } catch (error) {
             errorMessage(error?.response?.data?.message)
@@ -264,12 +264,24 @@ const Certificate = () => {
         console.log(selectedUser);
     }
 
-    const UpdateCertificate = async () => {
+    const UpdateCertificate = async (e) => {
+        e.preventDefault()
+
+        const formData = new FormData()
+        formData.append("fullname", selectedUser?.label)
+        // formData.append("us", inputs?.lastName)
+        formData.append("validDate", singleCertificate?.validDate)
+        formData.append("courseId", singleCertificate?.courseId)
+        formData.append("userId", selectedUser?.value)
+        formData.append("uploadLogo", postLogo)
+        formData.append("uploadSignature", postSignature)
+        formData.append("uploadTemplate", postCertificate)
 
         try {
-            const response = await axiosInstance.patch(`/certificate/update?id=${singleCertificate?._id}`)
+            const response = await axiosInstance.patch(`/certificate/update?id=${singleCertificate?._id}`, formData, { headers: { "Content-Type": "mutipart/form-data" } })
             const data = await response?.data
             console.log(data?.message);
+            fetchCertificates()
             setIsOpen(false)
         } catch (error) {
             errorMessage(error?.response?.data?.message)
@@ -308,7 +320,7 @@ const Certificate = () => {
 
 
 
-    console.log(selectedUser);
+
 
 
     useEffect(() => {
@@ -342,10 +354,10 @@ const Certificate = () => {
                                             </div>
                                             <div>
                                                 <div>
-                                                    <h1>{item?.certificate?.fullname}</h1>
+                                                    <h1>{item?.users?.fullname}</h1>
                                                 </div>
                                                 <div className="flex justify-between items-center w-full">
-                                                    <h1>Course Name</h1>
+                                                    <h1>{item?.courses?.title}</h1>
                                                     <p>{item?.certificate?.validDate}</p>
                                                 </div>
                                                 <div className="flex justify-between items-center mt-6">
@@ -390,7 +402,7 @@ const Certificate = () => {
                                                 }} options={meritUsers?.map((user) => ({
                                                     value: user?.user?._id,
                                                     label: user?.user?.fullname
-                                                }))} value={certificateFlag ? inputs?.userId : selectedUser?.value}/>
+                                                }))} value={selectedUser} />
                                             </div>
 
                                             <div className="flex flex-col p-2 gap-3">
@@ -411,7 +423,7 @@ const Certificate = () => {
 
                                             <div className="flex flex-col p-2 gap-3">
                                                 <label htmlFor="">Issue Date</label>
-                                                <input type="date" name="validDate" id="validDate" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeInputs} value={certificateFlag ? inputs?.validDate : singleCertificate?.validDate}/>
+                                                <input type="date" name="validDate" id="validDate" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeInputs} value={certificateFlag ? inputs?.validDate : singleCertificate?.validDate} />
                                             </div>
                                         </div>
 
@@ -420,7 +432,7 @@ const Certificate = () => {
                                             <div className="flex w-[100%]">
                                                 <div className="flex flex-col p-2 gap-3 w-[50%]">
                                                     <label htmlFor="">Certificate Logo</label>
-                                                    <input type="file" name="uploadLogo" id="uploadLogo" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeLogo} accept="image/*"/>
+                                                    <input type="file" name="uploadLogo" id="uploadLogo" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeLogo} accept="image/*" />
                                                 </div>
                                                 <div className="w-[50%] flex justify-center items-center">
                                                     <img src={Logo} alt="" className="w-56 h-56" />
@@ -430,7 +442,7 @@ const Certificate = () => {
                                             <div className="flex w-[100%] ">
                                                 <div className="flex flex-col p-2 gap-3 w-[50%]">
                                                     <label htmlFor="">Certificate Signature</label>
-                                                    <input type="file" name="uploadSignature" id="uploadSignature" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeSignature} accept="image/*"/>
+                                                    <input type="file" name="uploadSignature" id="uploadSignature" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeSignature} accept="image/*" />
                                                 </div>
                                                 <div className="w-[50%] flex justify-center items-center">
                                                     <img src={signature} alt="" className="w-56 h-56" />
@@ -441,7 +453,7 @@ const Certificate = () => {
                                             <div className="flex w-[100%]">
                                                 <div className="flex flex-col p-2 gap-3 w-[50%]">
                                                     <label htmlFor="">Certificate Template</label>
-                                                    <input type="file" name="uploadTemplate" id="uploadTemplate" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeCertificate} accept="image/*"/>
+                                                    <input type="file" name="uploadTemplate" id="uploadTemplate" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeCertificate} accept="image/*" />
                                                 </div>
                                                 <div className="w-[50%] flex justify-center items-center">
                                                     <img src={certificate} alt="" className="w-56 h-56" />
