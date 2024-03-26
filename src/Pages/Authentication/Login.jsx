@@ -1,6 +1,5 @@
 // import axios from "axios";
 import { useState } from "react";
-import { FcGoogle } from "react-icons/fc";
 import { errorMessage, successMessage } from "../../Utils/notificationManager";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../Utils/AxiosSetUp";

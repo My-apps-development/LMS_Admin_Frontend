@@ -14,11 +14,11 @@ const Certificate = () => {
 
     const [Logo, setLogo] = useState(null)
     const [signature, setSignature] = useState(null)
-    const [certificate, setCertificate] = useState(null)
+    // const [certificate, setCertificate] = useState(null)
 
     const [postLogo, setPostLogo] = useState(null)
     const [postSignature, setPostSignature] = useState(null)
-    const [postCertificate, setPostCertificate] = useState(null)
+    // const [postCertificate, setPostCertificate] = useState(null)
 
     const [certificateList, setCertificateList] = useState([])
 
@@ -120,21 +120,21 @@ const Certificate = () => {
         setPostSignature(file)
     }
 
-    const handleChangeCertificate = (e) => {
-        e.preventDefault()
+    // const handleChangeCertificate = (e) => {
+    //     e.preventDefault()
 
-        const file = e.target.files[0]
+    //     const file = e.target.files[0]
 
-        if (file) {
-            const reader = new FileReader()
-            reader.onloadend = () => {
-                setCertificate(reader.result)
-            }
+    //     if (file) {
+    //         const reader = new FileReader()
+    //         reader.onloadend = () => {
+    //             setCertificate(reader.result)
+    //         }
 
-            reader.readAsDataURL(file)
-        }
-        setPostCertificate(file)
-    }
+    //         reader.readAsDataURL(file)
+    //     }
+    //     setPostCertificate(file)
+    // }
 
 
     const PostCertificate = async (e) => {
@@ -235,12 +235,12 @@ const Certificate = () => {
         }))
 
         setLogo(null)
-        setCertificate(null)
+        // setCertificate(null)
         setSignature(null)
 
-        setPostCertificate(null)
+        // setPostCertificate(null)
         setPostLogo(null)
-        setPostCertificate(null)
+        // setPostCertificate(null)
     }
 
     const getSingleCertificate = async (_id) => {
@@ -254,7 +254,7 @@ const Certificate = () => {
             console.log(data);
             setSingleCertificate(data?.data?.certificate);
             setSingleCertificateUser(data?.data?.user?.fullname);
-            setCertificate(data?.data?.certificate?.uploadTemplate)
+            // setCertificate(data?.data?.certificate?.uploadTemplate)
             setLogo(data?.data?.certificate?.uploadLogo)
             setSignature(data?.data?.certificate?.uploadSignature)
             setSelectedUser({

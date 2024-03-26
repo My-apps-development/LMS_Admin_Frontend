@@ -5,14 +5,14 @@ import { FaPlus } from "react-icons/fa";
 import { axiosInstance } from "../../Utils/AxiosSetUp";
 import { errorMessage, successMessage } from "../../Utils/notificationManager";
 import { CiEdit } from "react-icons/ci";
-import { MdDelete } from "react-icons/md";
+// import { MdDelete } from "react-icons/md";
 import Loader from "../../Utils/Loader";
 
 
 const User = () => {
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [open, setOpen] = useState(false);
   const [flag, setFlag] = useState(true)
   const [roles, setRoles] = useState([])
@@ -21,7 +21,7 @@ const User = () => {
 
 
 
-  const [approvalStatus, setApprovalStatus] = useState("Pending")
+  // const [approvalStatus, setApprovalStatus] = useState("Pending")
 
   // const [Image, setImage] = useState()
 
@@ -67,7 +67,7 @@ const User = () => {
   const [displayImage, setDisplayImage] = useState(null)
 
 
-  const lengthOfTable = userList.length
+  const lengthOfTable = userList?.length
 
 
   const style = {
@@ -320,29 +320,29 @@ const User = () => {
   //   setOpen(!open)
   // }
 
-  const handleDelete = async (_id) => {
+  // const handleDelete = async (_id) => {
 
-    // console.log(_id);
+  //   // console.log(_id);
 
-    try {
-      setLoader(true)
-      const response = await axiosInstance.delete("/userDelete", { data: { id: _id } })
-      const data = await response.data
-      if (response.status === 200) {
-        successMessage(data.message);
-        FetchUsers()
-      } else {
-        errorMessage(data.message)
-      }
-      setLoader(false)
+  //   try {
+  //     setLoader(true)
+  //     const response = await axiosInstance.delete("/userDelete", { data: { id: _id } })
+  //     const data = await response.data
+  //     if (response.status === 200) {
+  //       successMessage(data.message);
+  //       FetchUsers()
+  //     } else {
+  //       errorMessage(data.message)
+  //     }
+  //     setLoader(false)
 
-    } catch (error) {
-      setLoader(false)
-      errorMessage(error?.response?.data?.message)
-      // console.log("Error deleting", error.message);
-    }
-    // console.log(_id);
-  }
+  //   } catch (error) {
+  //     setLoader(false)
+  //     errorMessage(error?.response?.data?.message)
+  //     // console.log("Error deleting", error.message);
+  //   }
+  //   // console.log(_id);
+  // }
 
   // const FetchCourse = async () => {
   //   try {
@@ -457,19 +457,19 @@ const User = () => {
 
   // console.log(userInputs);
 
-  const statusColors = {
-    Pending: 'bg-yellow-200',
-    Approved: 'bg-green-200',
-    Rejected: 'bg-red-200',
-  };
+  // const statusColors = {
+  //   Pending: 'bg-yellow-200',
+  //   Approved: 'bg-green-200',
+  //   Rejected: 'bg-red-200',
+  // };
 
-  const handleChangeApproval = (e) => {
-    e.preventDefault()
+  // const handleChangeApproval = (e) => {
+  //   e.preventDefault()
 
-    setApprovalStatus(e.target.value);
+  //   setApprovalStatus(e.target.value);
 
 
-  }
+  // }
 
 
 
@@ -552,6 +552,7 @@ const User = () => {
                         const fullNameMatch = user?.fullname?.toLowerCase().includes(searchString);
                         const roleMatch = user?.role?.toLowerCase().includes(searchString);
                         const languageMatch = user?.language?.toLowerCase().includes(searchString);
+                       
                         return fullNameMatch || roleMatch || languageMatch;
                       })?.map((item, index) => {
                         const itemIndex = page * rowsPerPage + index + 1; 

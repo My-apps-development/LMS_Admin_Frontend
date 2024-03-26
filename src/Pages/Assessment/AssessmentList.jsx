@@ -5,7 +5,6 @@ import { FaPlus } from "react-icons/fa";
 import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
 import { axiosInstance } from "../../Utils/AxiosSetUp";
-import { Redactor } from '@texttree/notepad-rcl';
 import { errorMessage, successMessage } from "../../Utils/notificationManager";
 import Loader from "../../Utils/Loader";
 // import JoditEditor from "jodit-react";
@@ -21,13 +20,15 @@ const AssessmentList = () => {
   const [Flag, setFlag] = useState(true)
   const [loader, setLoader] = useState(false)
   const [courseList, setCoursesList] = useState([])
-  const [chapterList, setChapterList] = useState([])
+  // const [chapterList, setChapterList] = useState([])
 
   const [csvModalOpen, setCsvModalOpen] = useState(false)
 
   const [csvFile, setCsvFile] = useState(null)
 
   const [QuestionFile, setQuestionFile] = useState(null)
+
+  const [QuestionAudio, setQuestionAudio] = useState(null)
 
   const [csvInputs, setCsvInputs] = useState({
     courseId: "",
@@ -85,6 +86,12 @@ const AssessmentList = () => {
     Flag ? setInputs({ ...inputs, [e.target.name]: e.target.value }) : setSingleInputs({ ...singleInputs, [e.target.name]: e.target.value })
   }
 
+  const handleChangeAudio = (e) => {
+    e.preventDefault()
+
+    setQuestionAudio(e.target.files[0])
+  }
+
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -132,8 +139,9 @@ const AssessmentList = () => {
     QuestionsFormData.append("correct_option", inputs.correct_option)
     QuestionsFormData.append("marks", inputs.marks)
     QuestionsFormData.append("language", inputs.language)
-    QuestionsFormData.append("courseId", inputs.chapterId)
+    QuestionsFormData.append("courseId", inputs.courseId)
     QuestionsFormData.append("question_image", QuestionFile)
+    QuestionsFormData.append("question_audio", QuestionAudio)
 
     try {
       setLoader(true)
@@ -243,16 +251,16 @@ const AssessmentList = () => {
   // console.log(Quiz);
 
 
-  const FetchChapters = async () => {
-    try {
-      const response = await axiosInstance.get("/homepage/fetchChapters")
-      const data = await response.data
-      setChapterList(data.chapter);
-    } catch (error) {
-      errorMessage(error.response.data.message)
-      // console.log("Error Fetching Chapters", error.message)
-    }
-  }
+  // const FetchChapters = async () => {
+  //   try {
+  //     const response = await axiosInstance.get("/homepage/fetchChapters")
+  //     const data = await response.data
+  //     setChapterList(data.chapter);
+  //   } catch (error) {
+  //     errorMessage(error.response.data.message)
+  //     // console.log("Error Fetching Chapters", error.message)
+  //   }
+  // }
 
 
   const FetchSingleQuestionById = async (questionid) => {
@@ -346,31 +354,31 @@ const AssessmentList = () => {
   }
 
 
-  const fetchChapterWithCourseId = async (courseId = null) => {
+  // const fetchChapterWithCourseId = async (courseId = null) => {
 
 
 
 
-    let additionalURL = ""
+  //   let additionalURL = ""
 
 
-    if (courseId) {
-      additionalURL += `?courseId=${courseId}`
+  //   if (courseId) {
+  //     additionalURL += `?courseId=${courseId}`
 
-    }
+  //   }
 
-    // console.log(`/homepage/fetchChapters${additionalURL}`)
+  //   // console.log(`/homepage/fetchChapters${additionalURL}`)
 
 
-    try {
-      const response = await axiosInstance.get(`/homepage/fetchChapters${additionalURL}`)
-      const data = await response.data
-      // console.log(data)
-    } catch (error) {
-      errorMessage(error.response.data.message)
-      // console.log("error fetching chapters with course id", error.message);
-    }
-  }
+  //   try {
+  //     const response = await axiosInstance.get(`/homepage/fetchChapters${additionalURL}`)
+  //     const data = await response.data
+  //     // console.log(data)
+  //   } catch (error) {
+  //     errorMessage(error.response.data.message)
+  //     // console.log("error fetching chapters with course id", error.message);
+  //   }
+  // }
 
   const FetchLanguages = async () => {
     try {
@@ -395,31 +403,31 @@ const AssessmentList = () => {
     const file = e.target.files[0]
     const allowedTypes = ['text/csv'];
 
-    if(file && allowedTypes.includes(file.type)){
+    if (file && allowedTypes.includes(file.type)) {
       setCsvFile(file)
     } else {
       errorMessage("Only CSV files accepted")
     }
-    
+
   }
 
   const handleSubmitSCsvFile = async (e) => {
     e.preventDefault()
 
-    if(!csvInputs.courseId){
+    if (!csvInputs.courseId) {
       errorMessage("course is required")
       return
     }
 
-    if(!csvInputs.language){
+    if (!csvInputs.language) {
       errorMessage("language is required")
       return
     }
 
-    if(!csvFile){
+    if (!csvFile) {
       errorMessage("Csv file upload is required")
       return
-    } 
+    }
 
 
 
@@ -468,7 +476,7 @@ const AssessmentList = () => {
   useEffect(() => {
     fetchQuestion()
     FetchCourses()
-    FetchChapters()
+    // FetchChapters()
     FetchLanguages()
 
   }, [])
@@ -479,138 +487,143 @@ const AssessmentList = () => {
     <div>
       <AdminDashboard />
       {
-        loader ? <Loader /> : 
-     
+        loader ? <Loader /> :
 
-      <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300">
-        <div className="p-2 ">
-          <h1 className="text-2xl">Assessment</h1>
-        </div>
-        <div className="flex justify-between items-center p-2">
-          <h1>Question List</h1>
-          <div className="flex gap-5">
-            <button className="p-2 border-2 border-[#B32073] bg-[#B32073] text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-38" onClick={() => setCsvModalOpen(true)}> <FaPlus /> Add CSV File</button>
-            <button className="p-2 border-2 border-[#B32073] bg-[#B32073] text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-38" onClick={handleOpen}><FaPlus />Add Question</button>
-          </div>
-        </div>
-        <div className="w-full mt-5 bg-white rounded-lg overflow-x-auto" data-aos="fade-down">
-          <table className="w-[100%]">
-            <thead>
-              <tr className=" border-b">
-                {/* <th className="border-r ">
+
+          <div className="ml-56 p-3 flex flex-col font-semibold text-gray-600 bg-gray-300">
+            <div className="p-2 ">
+              <h1 className="text-2xl">Assessment</h1>
+            </div>
+            <div className="flex justify-between items-center p-2">
+              <h1>Question List</h1>
+              <div className="flex gap-5">
+                <button className="p-2 border-2 border-[#B32073] bg-[#B32073] text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-38" onClick={() => setCsvModalOpen(true)}> <FaPlus /> Add CSV File</button>
+                <button className="p-2 border-2 border-[#B32073] bg-[#B32073] text-white hover:bg-pink-800 flex justify-center items-center gap-3 w-38" onClick={handleOpen}><FaPlus />Add Question</button>
+              </div>
+            </div>
+            <div className="w-full mt-5 bg-white rounded-lg overflow-x-auto" data-aos="fade-down">
+              <table className="w-[100%]">
+                <thead>
+                  <tr className=" border-b">
+                    {/* <th className="border-r ">
                   <input type="checkbox" />
                 </th> */}
-                <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 ">
-                  <h1 className="flex items-center justify-center">#</h1>
-                </th>
-                <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                  <h1 className="flex items-center justify-center">Question</h1>
-                </th>
-                <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                  <h1 className="flex items-center justify-center">Options</h1>
-                </th>
-                <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                  <h1 className="flex items-center justify-center">Answer</h1>
-                </th>
-                <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
-                  <h1 className="flex items-center justify-center">Action</h1>
-                </th>
+                    <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 ">
+                      <h1 className="flex items-center justify-center">#</h1>
+                    </th>
+                    <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                      <h1 className="flex items-center justify-center">Question</h1>
+                    </th>
+                    <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                      <h1 className="flex items-center justify-center">Options</h1>
+                    </th>
+                    <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                      <h1 className="flex items-center justify-center">Answers</h1>
+                    </th>
+                    <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                      <h1 className="flex items-center justify-center">Action</h1>
+                    </th>
 
 
-              </tr>
-            </thead>
-             {/* {loader ? <Loader /> : null} */}
-            <tbody>
-             
-              {
-                Quiz?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.reverse()?.map((item, index) => {
-                  return (
-                    <tr className="bg-gray-100 text-center border-b text-sm text-gray-600" key={index}>
-                      {/* <td className="border-r">  <input type="checkbox" /></td> */}
-                      <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 ">{index + 1 + page * rowsPerPage}</td>
-                      <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500  text-start ml-5">{item.question}</td>
-                      <div className="flex flex-wrap">
-                        <td className="p-2 border-r cursor-pointer text-sm font-semibold w-full text-gray-500  text-start break-words text-wrap">
-                          <option value="1" className=" text-start ml-5 break-words">1. {item.option_A}</option>
-                          <option value="2" className=" text-start ml-5 break-words">2. {item.option_B}</option>
-                          <option value="3" className=" text-start ml-5 break-words">3. {item.option_C}</option>
-                          <option value="4" className=" text-start ml-5  break-words">4. {item.option_D}</option>
-                        </td>
-                      </div>
-                      <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 break-words">{item.correct_option}</td>
-                      <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 font-semibold text-gray-500 ">
-                        <p onClick={() => {
-                          FetchSingleQuestionById(item?._id)
-                          setOpen(true)
+                  </tr>
+                </thead>
+                {/* {loader ? <Loader /> : null} */}
+                <tbody>
 
-                          setFlag(false)
-                        }}><CiEdit /></p>
-                        <p onClick={() => {
-                          DeleteQuestionById(item?._id)
-                        }}><MdDelete /></p>
-                      </td>
+                  {
+                    Quiz?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.reverse()?.map((item, index) => {
+                      return (
+                        <tr className="bg-gray-100 text-center border-b text-sm text-gray-600" key={index}>
+                          {/* <td className="border-r">  <input type="checkbox" /></td> */}
+                          <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 whitespace-pre-wrap break-words">{index + 1 + page * rowsPerPage}</td>
+                          <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500  text-start ml-5 whitespace-pre-wrap break-words">
+                            <div>
+                              <h1>{item?.question}</h1>
+                              {item?.question_image && <img src={item?.question_image} alt={item?._id} className="w-24 h-24" />}
+                            </div>
+                          </td>
+                          <div className="flex flex-wrap">
+                            <td className="p-2 border-r cursor-pointer text-sm font-semibold w-full text-gray-500  text-start  text-wrap whitespace-pre-wrap break-words">
+                              <option value="1" className=" text-start ml-5 whitespace-pre-wrap break-words">1. {item?.option_A}</option>
+                              <option value="2" className=" text-start ml-5 whitespace-pre-wrap  break-words">2. {item?.option_B}</option>
+                              <option value="3" className=" text-start ml-5 whitespace-pre-wrap  break-words">3. {item?.option_C}</option>
+                              <option value="4" className=" text-start ml-5 whitespace-pre-wrap   break-words">4. {item?.option_D}</option>
+                            </td>
+                          </div>
+                          <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 whitespace-pre-wrap break-words">{item.correct_option}</td>
+                          <td className="p-2 border-r cursor-pointer text-2xl flex justify-center items-center gap-5 whitespace-pre-wrap break-words font-semibold text-gray-500 ">
+                            <p onClick={() => {
+                              FetchSingleQuestionById(item?._id)
+                              setOpen(true)
 
-                    </tr>
-                  )
-                })
-              }
+                              setFlag(false)
+                            }}><CiEdit /></p>
+                            <p onClick={() => {
+                              DeleteQuestionById(item?._id)
+                            }} className="text-red-600"><MdDelete /></p>
+                          </td>
+
+                        </tr>
+                      )
+                    })
+                  }
 
 
-            </tbody>
-          </table>
-          <table>
-            <thead></thead>
-            <tbody>
-              <tr>
-                <td><TablePagination
-                  rowsPerPageOptions={[5, 10, 100]}
-                  component="div"
-                  count={totalQuizLength}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                /></td>
+                </tbody>
+              </table>
+              <table>
+                <thead></thead>
+                <tbody>
+                  <tr>
+                    <td><TablePagination
+                      rowsPerPageOptions={[5, 10, 100]}
+                      component="div"
+                      count={totalQuizLength}
+                      rowsPerPage={rowsPerPage}
+                      page={page}
+                      onPageChange={handleChangePage}
+                      onRowsPerPageChange={handleChangeRowsPerPage}
+                    /></td>
 
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div>
-          <Modal
-            open={open}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <Modal
+                open={open}
 
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-          >
-            <Box sx={style}>
-              <div className="w-full font-semibold text-gray-600 flex flex-col gap-5">
-                <div className="flex justify-between items-center w-full text-black">
-                  <h1 className="text-2xl">{Flag ? "Add Question" : "Edit Question"}</h1>
-                  <button className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-20" onClick={handleClose}>Close</button>
-                </div>
-
-                <form action="" onSubmit={Flag ? handleSubmit : UpdateQuestionById}>
-                  <div className="grid grid-cols-2">
-                    <div className="flex flex-col p-2 gap-3">
-                      <label htmlFor="">Select Course</label>
-                      <select name="courseId" id="courseId" className="p-3 border-2 border-gray-600 rounded-lg" value={Flag ? inputs.courseId : singleInputs.courseId} onChange={(e) => {
-                        handleChange(e), fetchChapterWithCourseId(e.target.value)
-                      }}>
-                        <option value="Choose Option">Choose Option</option>
-
-                        {
-                          courseList?.map((item, index) => {
-                            return (
-                              <option key={index} value={item?.course?._id}>{item?.course?.title}</option>
-                            )
-                          })
-                        }
-
-                      </select>
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <Box sx={style}>
+                  <div className="w-full font-semibold text-gray-600 flex flex-col gap-5">
+                    <div className="flex justify-between items-center w-full text-black">
+                      <h1 className="text-2xl">{Flag ? "Add Question" : "Edit Question"}</h1>
+                      <button className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-20" onClick={handleClose}>Close</button>
                     </div>
 
-                    {/* <div className="flex flex-col p-2 gap-3">
+                    <form action="" onSubmit={Flag ? handleSubmit : UpdateQuestionById}>
+                      <div className="grid grid-cols-2">
+                        <div className="flex flex-col p-2 gap-3">
+                          <label htmlFor="">Select Course</label>
+                          <select name="courseId" id="courseId" className="p-3 border-2 focus:outline-[#B32073] border-gray-600 rounded-lg" value={Flag ? inputs.courseId : singleInputs.courseId} onChange={(e) => {
+                            handleChange(e)
+                          }}>
+                            <option value="Choose Option">Choose Option</option>
+
+                            {
+                              courseList?.map((item, index) => {
+                                return (
+                                  <option key={index} value={item?.course?._id}>{item?.course?.title}</option>
+                                )
+                              })
+                            }
+
+                          </select>
+                        </div>
+
+                        {/* <div className="flex flex-col p-2 gap-3">
                       <label htmlFor="">Video/Chapters</label>
                       <select name="chapterId" id="chapterId" className="p-3 border-2 border-gray-600 rounded-lg" value={Flag ? inputs?.chapterId : singleInputs?.chapterId} onChange={handleChange}>
                         <option value="Choose Option">Choose Option</option>
@@ -626,148 +639,150 @@ const AssessmentList = () => {
                     </div> */}
 
 
-                    <div className="flex flex-col gap-3 p-2">
-                      <label htmlFor="">Language</label>
-                      <select name="language" id="language" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} value={Flag ? inputs?.language : singleInputs?.language}>
-                        <option value="">Choose Language</option>
-                        {
-                          Language?.map((item, index) => {
-                            return (
-                              <option key={index} value={item}>{item}</option>
-                            )
-                          })
-                        }
-                      </select>
-                    </div>
-                  </div>
-
-
-
-                  <div className="flex flex-col p-2 gap-3">
-                    <label htmlFor="">Question</label>
-
-                    <input type="text" name="question" id="question" value={Flag ? inputs?.question : singleInputs?.question} className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
-
-                    <label htmlFor="">Upload Image</label>
-                    <input type="file" name="question_image" id="question_image" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeImage} />
-                  </div>
-
-                  <div className="flex flex-col p-2 gap-3">
-                    <label htmlFor="">Option A</label>
-                    <input type="text" name="option_A" id="option_A" value={Flag ? inputs?.option_A : singleInputs?.option_A} className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
-                  </div>
-
-                  <div className="flex flex-col p-2 gap-3">
-                    <label htmlFor="">Option B</label>
-                    <input type="text" name="option_B" id="option_B" value={Flag ? inputs?.option_B : singleInputs?.option_B} className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
-                  </div>
-
-                  <div className="flex flex-col p-2 gap-3">
-                    <label htmlFor="">Option C</label>
-                    <input type="text" name="option_C" id="option_C" value={Flag ? inputs?.option_C : singleInputs?.option_C} className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
-                  </div>
-
-                  <div className="flex flex-col p-2 gap-3">
-                    <label htmlFor="">Option D</label>
-                    <input type="text" name="option_D" id="option_D" value={Flag ? inputs?.option_D : singleInputs?.option_D} className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
-                  </div>
-
-                  <div className="grid grid-cols-2 justify-between items-center">
-                    <div className="flex flex-col p-2 gap-3">
-                      <label htmlFor="">Add Marks</label>
-                      <input type="text" name="marks" id="marks" value={Flag ? inputs?.marks : singleInputs?.marks} className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChange} />
-                    </div>
-
-                    <div className="flex flex-col p-2">
-                      <label htmlFor="">Correct Answer</label>
-                      <div className="flex gap-4">
-                        <input type="radio" name="correct_option" id="correct_option_A" value={Flag ? inputs?.option_A : singleInputs?.option_A} checked={Flag ? inputs.correct_option === inputs?.option_A : singleInputs.correct_option === singleInputs?.option_A} onChange={handleChange} />
-                        <label htmlFor="">A</label>
-                        <input type="radio" name="correct_option" id="correct_option_B" value={Flag ? inputs?.option_B : singleInputs?.option_B} checked={Flag ? inputs.correct_option === inputs?.option_B : singleInputs.correct_option === singleInputs?.option_B} onChange={handleChange} />
-                        <label htmlFor="">B</label>
-                        <input type="radio" name="correct_option" id="correct_option_C" value={Flag ? inputs?.option_C : singleInputs?.option_C} checked={Flag ? inputs.correct_option === inputs?.option_C : singleInputs.correct_option === singleInputs?.option_C} onChange={handleChange} />
-                        <label htmlFor="">C</label>
-                        <input type="radio" name="correct_option" id="correct_option_D" value={Flag ? inputs?.option_D : singleInputs?.option_D} checked={Flag ? inputs.correct_option === inputs?.option_D : singleInputs.correct_option === singleInputs?.option_D} onChange={handleChange} />
-                        <label htmlFor="">D</label>
+                        <div className="flex flex-col gap-3 p-2">
+                          <label htmlFor="">Language</label>
+                          <select name="language" id="language" className="p-3 border-2 focus:outline-[#B32073] border-gray-600 rounded-lg" onChange={handleChange} value={Flag ? inputs?.language : singleInputs?.language}>
+                            <option value="">Choose Language</option>
+                            {
+                              Language?.map((item, index) => {
+                                return (
+                                  <option key={index} value={item}>{item}</option>
+                                )
+                              })
+                            }
+                          </select>
+                        </div>
                       </div>
+
+
+
+                      <div className="flex flex-col p-2 gap-3">
+                        <label htmlFor="">Question</label>
+
+                        <input type="text" name="question" id="question" value={Flag ? inputs?.question : singleInputs?.question} className="p-3 border-2 border-gray-600 rounded-lg focus:outline-[#B32073]" onChange={handleChange} />
+
+                        <label htmlFor="">Upload Image</label>
+                        <input type="file" name="question_image" id="question_image" className="p-3 focus:outline-[#B32073] border-2 border-gray-600 rounded-lg" onChange={handleChangeImage} />
+
+                        <label htmlFor="">Upload Audio</label>
+                        <input type="file" name="question_audio" id="question_audio" className="p-3 focus:outline-[#B32073] border-2 border-gray-600 rounded-lg" onChange={handleChangeAudio} />
+                      </div>
+                      <div className="flex flex-col p-2 gap-3">
+                        <label htmlFor="">Option A</label>
+                        <input type="text" name="option_A" id="option_A" value={Flag ? inputs?.option_A : singleInputs?.option_A} className="p-3 border-2 border-gray-600 rounded-lg focus:outline-[#B32073]" onChange={handleChange} />
+                      </div>
+
+                      <div className="flex flex-col p-2 gap-3">
+                        <label htmlFor="">Option B</label>
+                        <input type="text" name="option_B" id="option_B" value={Flag ? inputs?.option_B : singleInputs?.option_B} className="p-3 border-2 border-gray-600 rounded-lg focus:outline-[#B32073]" onChange={handleChange} />
+                      </div>
+
+                      <div className="flex flex-col p-2 gap-3">
+                        <label htmlFor="">Option C</label>
+                        <input type="text" name="option_C" id="option_C" value={Flag ? inputs?.option_C : singleInputs?.option_C} className="p-3 border-2 border-gray-600 rounded-lg focus:outline-[#B32073]" onChange={handleChange} />
+                      </div>
+
+                      <div className="flex flex-col p-2 gap-3">
+                        <label htmlFor="">Option D</label>
+                        <input type="text" name="option_D" id="option_D" value={Flag ? inputs?.option_D : singleInputs?.option_D} className="p-3 border-2 border-gray-600 rounded-lg focus:outline-[#B32073]" onChange={handleChange} />
+                      </div>
+
+                      <div className="grid grid-cols-2 justify-between items-center">
+                        <div className="flex flex-col p-2 gap-3">
+                          <label htmlFor="">Add Marks</label>
+                          <input type="text" name="marks" id="marks" value={Flag ? inputs?.marks : singleInputs?.marks} className="p-3 border-2 border-gray-600 rounded-lg focus:outline-[#B32073]" onChange={handleChange} />
+                        </div>
+
+                        <div className="flex flex-col p-2">
+                          <label htmlFor="">Correct Answer</label>
+                          <div className="flex gap-4">
+                            <input type="radio" name="correct_option" id="correct_option_A" value={Flag ? inputs?.option_A : singleInputs?.option_A} checked={Flag ? inputs.correct_option === inputs?.option_A : singleInputs.correct_option === singleInputs?.option_A} onChange={handleChange} />
+                            <label htmlFor="">A</label>
+                            <input type="radio" name="correct_option" id="correct_option_B" value={Flag ? inputs?.option_B : singleInputs?.option_B} checked={Flag ? inputs.correct_option === inputs?.option_B : singleInputs.correct_option === singleInputs?.option_B} onChange={handleChange} />
+                            <label htmlFor="">B</label>
+                            <input type="radio" name="correct_option" id="correct_option_C" value={Flag ? inputs?.option_C : singleInputs?.option_C} checked={Flag ? inputs.correct_option === inputs?.option_C : singleInputs.correct_option === singleInputs?.option_C} onChange={handleChange} />
+                            <label htmlFor="">C</label>
+                            <input type="radio" name="correct_option" id="correct_option_D" value={Flag ? inputs?.option_D : singleInputs?.option_D} checked={Flag ? inputs.correct_option === inputs?.option_D : singleInputs.correct_option === singleInputs?.option_D} onChange={handleChange} />
+                            <label htmlFor="">D</label>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="w-full flex justify-center items-center gap-5">
+                        {/* <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg" onClick={() => setOpen(false)}>Cancel</button> */}
+                        <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-40 rounded-lg">{Flag ? "Add Question" : " Update Question"}</button>
+                      </div>
+
+
+
+                    </form>
+
+                  </div>
+
+
+
+
+
+                </Box>
+              </Modal>
+            </div>
+            <div>
+              <Modal
+                open={csvModalOpen}
+              >
+                <Box sx={csvModalStyle}>
+                  <div className="font-semibold">
+                    <div className="flex justify-between items-center mx-2">
+                      <h1 className="text-xl font-bold">Add CSV File</h1>
+                      <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-24 rounded-lg" onClick={() => setCsvModalOpen(false)}>Cancel</button>
                     </div>
+                    <form onSubmit={handleSubmitSCsvFile}>
+                      <div className="flex flex-col p-2 gap-3">
+                        <label htmlFor="">Select Course</label>
+                        <select name="courseId" id="courseId" className="p-3 border-2 focus:outline-[#B32073] border-gray-600 rounded-lg" onChange={handleChangeCsvInput} value={csvInputs.courseId}>
+                          <option value="Choose Option">Choose Option</option>
+
+                          {
+                            courseList?.map((item, index) => {
+                              return (
+                                <option key={index} value={item?.course?._id}>{item?.course?.title}</option>
+                              )
+                            })
+                          }
+
+                        </select>
+                      </div>
+
+
+                      <div className="flex flex-col gap-3 p-2">
+                        <label htmlFor="">Language</label>
+                        <select name="language" id="language" className="p-3 focus:outline-[#B32073] border-2 border-gray-600 rounded-lg" onChange={handleChangeCsvInput} value={csvInputs.language}>
+                          <option value="">Choose Language</option>
+                          {
+                            Language?.map((item, index) => {
+                              return (
+                                <option key={index} value={item}>{item}</option>
+                              )
+                            })
+                          }
+                        </select>
+                      </div>
+
+                      <div className="flex flex-col gap-3 p-2">
+                        <label htmlFor="">Upload CSV File</label>
+                        <input type="file" className="p-3 border-2 border-gray-600 focus:outline-[#B32073] rounded-lg" accept=".csv" onChange={handleChangeCSVFile} />
+                      </div>
+
+                      <div className="flex justify-center items-center mt-5">
+                        <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-24 rounded-lg" type="submit">Submit</button>
+                      </div>
+                    </form>
                   </div>
-
-                  <div className="w-full flex justify-center items-center gap-5">
-                    {/* <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg" onClick={() => setOpen(false)}>Cancel</button> */}
-                    <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-40 rounded-lg">{Flag ? "Add Question" : " Update Question"}</button>
-                  </div>
-
-
-
-                </form>
-
-              </div>
-
-
-
-
-
-            </Box>
-          </Modal>
-        </div>
-        <div>
-          <Modal
-            open={csvModalOpen}
-          >
-            <Box sx={csvModalStyle}>
-              <div className="font-semibold">
-                <div className="flex justify-between items-center mx-2">
-                  <h1 className="text-xl font-bold">Add CSV File</h1>
-                  <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-24 rounded-lg" onClick={() => setCsvModalOpen(false)}>Cancel</button>
-                </div>
-                <form onSubmit={handleSubmitSCsvFile}>
-                  <div className="flex flex-col p-2 gap-3">
-                    <label htmlFor="">Select Course</label>
-                    <select name="courseId" id="courseId" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeCsvInput} value={csvInputs.courseId}>
-                      <option value="Choose Option">Choose Option</option>
-
-                      {
-                        courseList?.map((item, index) => {
-                          return (
-                            <option key={index} value={item?.course?._id}>{item?.course?.title}</option>
-                          )
-                        })
-                      }
-
-                    </select>
-                  </div>
-
-
-                  <div className="flex flex-col gap-3 p-2">
-                    <label htmlFor="">Language</label>
-                    <select name="language" id="language" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeCsvInput} value={csvInputs.language}>
-                      <option value="">Choose Language</option>
-                      {
-                        Language?.map((item, index) => {
-                          return (
-                            <option key={index} value={item}>{item}</option>
-                          )
-                        })
-                      }
-                    </select>
-                  </div>
-
-                  <div className="flex flex-col gap-3 p-2">
-                    <label htmlFor="">Upload CSV File</label>
-                    <input type="file" className="p-3 border-2 border-gray-600 rounded-lg" accept=".csv" onChange={handleChangeCSVFile} />
-                  </div>
-
-                  <div className="flex justify-center items-center mt-5">
-                    <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-24 rounded-lg" type="submit">Submit</button>
-                  </div>
-                </form>
-              </div>
-            </Box>
-          </Modal>
-        </div>
-      </div>
-       }
+                </Box>
+              </Modal>
+            </div>
+          </div>
+      }
     </div>
   )
 }
