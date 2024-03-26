@@ -174,7 +174,7 @@ const BodyDashboard = () => {
         fetchChapters()
         fetchCertificates()
         GroupUserByWeek(UserList)
-    }, [chapterList, UserList])
+    }, [])
     return (
         <>
             {loader ? <Loader /> :
