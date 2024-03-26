@@ -539,7 +539,12 @@ const AssessmentList = () => {
                           <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500  text-start ml-5 whitespace-pre-wrap break-words">
                             <div>
                               <h1>{item?.question}</h1>
-                              {item?.question_image && <img src={item?.question_image} alt={item?._id} className="w-24 h-24" />}
+                              <div className="flex gap-5">
+                                {item?.question_image && <img src={item?.question_image} alt={item?._id} className="w-24 h-24" />}
+                                {item?.question_audio && <audio controls>
+                                  <source src={item?.question_audio} type="audio/mp3" />
+                                </audio>}
+                              </div>
                             </div>
                           </td>
                           <div className="flex flex-wrap">
