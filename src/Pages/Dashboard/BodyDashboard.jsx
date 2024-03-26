@@ -7,9 +7,9 @@ import { axiosInstance } from "../../Utils/AxiosSetUp";
 import { IoNewspaperSharp } from "react-icons/io5";
 import { FaUsers } from "react-icons/fa6";
 import { MdOutlineAssignment } from "react-icons/md";
-import { HiMiniNewspaper } from "react-icons/hi2";
-import { PiVideoFill } from "react-icons/pi";
-import { MdOutlineOndemandVideo } from "react-icons/md";
+// import { HiMiniNewspaper } from "react-icons/hi2";
+// import { PiVideoFill } from "react-icons/pi";
+// import { MdOutlineOndemandVideo } from "react-icons/md";
 import Loader from "../../Utils/Loader";
 import { errorMessage } from "../../Utils/notificationManager";
 
@@ -41,7 +41,7 @@ const BodyDashboard = () => {
     const [certificateList, setCertificateList] = useState([])
 
 
-    // console.log(UserList);
+
 
 
 
@@ -120,6 +120,52 @@ const BodyDashboard = () => {
 
 
 
+    const GroupUserByWeek = (users) => {
+        const currentWeek = getWeekNumber(new Date());
+        const groupedUsers = {};
+        
+
+        // Initialize counts for the last 7 weeks
+        for (let i = currentWeek - 6; i <= currentWeek; i++) {
+            groupedUsers[i] = 0;
+        }
+
+        // Count users for each week within the last 7 weeks
+        [...users]?.reverse()?.forEach((user) => {
+            const createdAt = new Date(user.createdAt);
+            const weekNumber = getWeekNumber(createdAt);
+          
+            if (weekNumber >= currentWeek - 6 && weekNumber <= currentWeek) {
+                groupedUsers[weekNumber] = (groupedUsers[weekNumber] || 0) + 1;
+            }
+        });
+
+        const userDataUpdate = {
+            labels: userData?.labels,
+            datasets: [
+                {
+                    label: 'User',
+                    data: Object.values(groupedUsers),
+                    backgroundColor: '#d24787',
+                    borderColor: 'black',
+                    borderWidth: 1,
+                },
+            ],
+        };
+        // console.log(userDataUpdate);
+
+        setUserData(userDataUpdate);
+    };
+
+    // Function to get the week number of a given date
+    const getWeekNumber = (date) => {
+        const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+        const millisecondsPerWeek = 7 * 24 * 60 * 60 * 1000;
+        const weekNumber = Math.ceil((date - firstDayOfYear) / millisecondsPerWeek);
+        return weekNumber;
+    };
+
+
 
     useEffect(() => {
         fetchCourses()
@@ -127,7 +173,8 @@ const BodyDashboard = () => {
         fetchUsers()
         fetchChapters()
         fetchCertificates()
-    }, [])
+        GroupUserByWeek(UserList)
+    }, [chapterList, UserList])
     return (
         <>
             {loader ? <Loader /> :
