@@ -391,7 +391,7 @@ const CourseCategory = () => {
                             <div key={index}>
                                 <div className="border-2 shadow-lg flex flex-col gap-3 p-3 rounded-lg hover:scale-95 duration-300 bg-white" data-aos="flip-left">
                                     <div>
-                                        <img src={item.upload_thumbnail} alt="" className="rounded-lg object-cover w-full h-72" />
+                                        <img src={item.upload_thumbnail} alt="" className="rounded-lg object-cover w-full h-72" loading="lazy" />
                                     </div>
                                     <div>
                                         <h1 className="text-2xl">{item.categories}</h1>
@@ -501,7 +501,7 @@ const CourseCategory = () => {
 
                                     <div className="flex flex-col p-2 gap-3">
                                         <label htmlFor="">Role</label>
-                                        <select name="role" id="role" className="p-3 border-2 border-gray-600 text-lg rounded-lg" onChange={handleChange}>
+                                        <select name="role" id="role" className="p-3 border-2 border-gray-600 text-lg rounded-lg" onChange={handleChange} value={flag ? inputs?.role : singleCategory?.role}>
                                             <option value="">Choose Role</option>
                                             {
                                                 roles?.map((item, index) => {

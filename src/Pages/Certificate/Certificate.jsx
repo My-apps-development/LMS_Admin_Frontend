@@ -500,7 +500,7 @@ const Certificate = () => {
                                                     <input type="file" name="uploadSignature" id="uploadSignature" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeSignature} accept="image/*" />
                                                 </div>
                                                 <div className="w-[50%] flex justify-center items-center">
-                                                    <img src={signature} alt="" className="w-56 h-56" />
+                                                    <img src={signature} alt="" className="w-56 h-56" loading="lazy"/>
                                                 </div>
                                             </div>
 
