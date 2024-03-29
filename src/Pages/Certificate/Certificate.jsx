@@ -77,7 +77,7 @@ const Certificate = () => {
     const handleChangeInputs = (e) => {
         e.preventDefault()
 
-        setInputs({ ...inputs, [e.target.name]: e.target.value })
+        certificateFlag ? setInputs({ ...inputs, [e.target.name]: e.target.value }) : setSingleCertificate({...singleCertificate, [e.target.name]: e.target.value})
     }
 
 
@@ -91,7 +91,7 @@ const Certificate = () => {
 
 
             reader.onloadend = () => {
-                console.log(reader);
+                // console.log(reader);
                 setLogo(reader.result)
             }
 
@@ -190,7 +190,7 @@ const Certificate = () => {
             setIsOpen(false)
         } catch (error) {
             errorMessage(error?.response?.data?.message)
-            console.log("error posting certificate", error.message)
+            // console.log("error posting certificate", error.message)
         }
     }
 
@@ -203,7 +203,7 @@ const Certificate = () => {
             const data = await response.data
             setCourseList(data?.coursewithcategory);
         } catch (error) {
-            console.log("Error Fetching Courses", error.message);
+            // console.log("Error Fetching Courses", error.message);
             errorMessage(error.response.data.message)
         }
     }
@@ -221,7 +221,7 @@ const Certificate = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error?.response?.data?.message)
-            console.log("Error Fetching Certificates", error.message);
+            // console.log("Error Fetching Certificates", error.message);
         }
     }
 
@@ -245,13 +245,13 @@ const Certificate = () => {
 
     const getSingleCertificate = async (_id) => {
 
-        console.log(certificateFlag);
+        // console.log(certificateFlag);
 
 
         try {
             const response = await axiosInstance.get(`/certificate/single?id=${_id}`)
             const data = await response.data
-            console.log(data);
+            // console.log(data);
             setSingleCertificate(data?.data?.certificate);
             setSingleCertificateUser(data?.data?.user?.fullname);
             // setCertificate(data?.data?.certificate?.uploadTemplate)
@@ -263,10 +263,10 @@ const Certificate = () => {
             })
         } catch (error) {
             errorMessage(error?.response?.data?.message)
-            console.log("Error Fetching Single Id", error.message);
+            // console.log("Error Fetching Single Id", error.message);
         }
 
-        console.log(selectedUser);
+        // console.log(selectedUser);
     }
 
     const UpdateCertificate = async (e) => {
@@ -285,18 +285,18 @@ const Certificate = () => {
         try {
             const response = await axiosInstance.patch(`/certificate/update?id=${singleCertificate?._id}`, formData, { headers: { "Content-Type": "mutipart/form-data" } })
             const data = await response?.data
-            console.log(data?.message);
+            // console.log(data?.message);
             fetchCertificates()
             setIsOpen(false)
         } catch (error) {
             errorMessage(error?.response?.data?.message)
-            console.log("Error Updating Certificate", error.message);
+            // console.log("Error Updating Certificate", error.message);
         }
     }
 
     const DeleteCertificate = async (_id) => {
 
-        console.log(_id);
+        // console.log(_id);
 
         try {
             const response = await axiosInstance.delete(`/certificate/delete?id=${_id}`)
@@ -310,7 +310,7 @@ const Certificate = () => {
     }
 
 
-    console.log(singleCertificate);
+    // console.log(singleCertificate);
 
 
     const GetMeritUsers = async () => {
@@ -323,7 +323,7 @@ const Certificate = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error?.response?.data?.message)
-            console.log("Error Fetching Merit User", error.message);
+            // console.log("Error Fetching Merit User", error.message);
         }
     }
 
@@ -518,7 +518,7 @@ const Certificate = () => {
 
                                         <div className="flex flex-col p-2 gap-3">
                                             <label htmlFor="">Description</label>
-                                            <textarea name="description" id="description" cols="10" rows="5" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeInputs} ></textarea>
+                                            <textarea name="description" id="description" cols="10" rows="5" className="p-3 border-2 border-gray-600 rounded-lg" value={certificateFlag ? inputs?.description : singleCertificate?.description} onChange={handleChangeInputs} ></textarea>
                                         </div>
 
                                         <div className="w-full flex justify-center items-center gap-5 p-2 mt-10">
