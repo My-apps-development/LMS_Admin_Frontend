@@ -31,7 +31,7 @@ const AssignmentRecord = () => {
             setLoader(true)
             const response = await axiosInstance.get("/assignment/get")
             const data = await response.data
-            setAssignmentRecord(data?.assignmentsWithUserDetails);
+            setAssignmentRecord(data?.assignmentsWithUserAndCompanyDetails);
             setLoader(false)
         } catch (error) {
             errorMessage(error.response.data.message)
@@ -46,7 +46,7 @@ const AssignmentRecord = () => {
 
         // console.log(assignmentRecord);
 
-        ExportAssignmentRecord(assignmentRecord, "sheet-1")
+        ExportAssignmentRecord(assignmentRecord, "Assessment_Record")
 
     }
 
@@ -80,6 +80,10 @@ const AssignmentRecord = () => {
 
                                     <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
                                         <h1 className="flex items-center justify-center">User Name</h1>
+                                    </th>
+
+                                    <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
+                                        <h1 className="flex items-center justify-center">Company Name</h1>
                                     </th>
 
                                     <th className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
@@ -126,6 +130,8 @@ const AssignmentRecord = () => {
                                             <tr className="bg-gray-100 text-center border-b text-sm text-gray-600" key={index}>
                                                 {/* <td className="border-r">  <input type="checkbox" /></td> */}
                                                 <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.user?.fullname} </td>
+                                                
+                                                <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.company?.name} </td>
                                                 <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">
                                                     {item?.user?.mobile}
                                                 </td>

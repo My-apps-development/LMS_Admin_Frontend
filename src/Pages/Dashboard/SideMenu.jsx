@@ -33,15 +33,15 @@ const SideMenu = () => {
     return (
 
         <div className="fixed">
-            <aside className="w-56 h-screen flex justify-start items-center gap-2 text-sm flex-col  font-semibold shadow-xl" data-aos="fade-right">
-                <div className="mt-10  border-b-2 w-full flex justify-center items-center py-4 border-gray-400">
+            <aside className="w-56 h-screen flex justify-start items-center gap-2 text-sm flex-col  font-semibold shadow-xl max-sm:h-14" data-aos="fade-right">
+                <div className="mt-10  border-b-2 w-full flex justify-center items-center py-4 border-gray-400 max-sm:hidden">
 
 
                     <img src="/Logo.png" alt="" className="w-20 h-20" />
 
                 </div>
 
-                <div className="w-[100%] flex flex-col gap-2 px-5 mt-10">
+                <div className="w-[100%] flex flex-col gap-2 px-5 mt-10 max-sm:flex-row max-sm:z-10 max-sm:my-28">
                     <NavLink to="/" className={({ isActive, isPending }) => isPending ? "flex  flex-row items-center duration-300 hover:shadow-xl hover:scale-105 hover:text-[#B32073]  pr-6" : isActive ? "flex text-[#B32073] flex-row items-center duration-300 scale-105 pr-6 bg-gray-300  rounded hover:text-[#B32073] hover:shadow-xl " : "text-gray-500"}>
                         <div className="p-2 hover:bg-gray-300 rounded-lg flex gap-2 w-full hover:text-[#B32073]">
                             <p className="flex justify-center items-center "><MdSpaceDashboard /></p>

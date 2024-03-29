@@ -48,7 +48,7 @@ const User = () => {
     license_num: "",
     role: "",
     language: "",
-    company: "",
+    companyid: "",
     status: ""
 
   })
@@ -226,7 +226,7 @@ const User = () => {
     fD.append("language", userInputs.language)
     fD.append("upload_license", image)
     fD.append("email", userInputs.email)
-    fD.append("company", userInputs.company)
+    fD.append("companyid", userInputs.company)
     fD.append("status", userInputs.status)
 
 
@@ -295,6 +295,7 @@ const User = () => {
     UpdatedFormData.append("email", singleInputs.email)
     UpdatedFormData.append("course", singleInputs.course)
     UpdatedFormData.append("status", singleInputs.status)
+    UpdatedFormData.append("companyid", singleInputs.company)
 
 
     try {
@@ -417,8 +418,8 @@ const User = () => {
         role: "",
         language: "",
         course: "",
-        status: ""
-
+        status: "",
+        company:""
       }))
       setImage(null)
       setDisplayImage(null)
@@ -702,7 +703,7 @@ const User = () => {
 
                           <div className="flex flex-col p-2 gap-3">
                             <label htmlFor="">Company</label>
-                            <select name="company" id="company" className="p-3 border-2 border-gray-600 rounded-lg" value={flag ? userInputs?.course : singleInputs?.course} onChange={handleChange}>
+                            <select name="company" id="company" className="p-3 border-2 border-gray-600 rounded-lg" value={flag ? userInputs?.company : singleInputs?.companyid} onChange={handleChange}>
                               <option value="Driver">Choose Options</option>
                               {
                                 companiesList?.map((item, index) => {

@@ -184,7 +184,7 @@ const BodyDashboard = () => {
                     <div className="flex justify-start items-center p-3 w-full mt-5">
                         <h1 className="text-2xl text-gray-700 ml-3">Dashboard</h1>
                     </div>
-                    <div className="grid grid-cols-4 py-2 px-5 gap-5 w-[100%] text-xl ">
+                    <div className="grid grid-cols-4 py-2 px-5 gap-5 w-[100%] text-xl max-sm:grid-cols-1">
                         <div className="flex flex-col gap-5 py-3 justify-center items-start border-2 rounded-lg shadow-lg bg-white" data-aos="flip-left">
                             <p className="text-[#B32073] ml-5 mt-3"><IoBookSharp /></p>
                             <p className="ml-5 text-gray-500">Total Courses</p>
