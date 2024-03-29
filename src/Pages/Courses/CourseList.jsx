@@ -75,8 +75,8 @@ const CourseList = () => {
     const [language, setLanguage] = useState([])
     const [roles, setRoles] = useState([])
     const [settingData, setSettingData] = useState([])
-    const [parentCourseName, setParentCourseName] = useState("")
-    const [parentCourseId, setParentCourseId] = useState("")
+    // const [parentCourseName, setParentCourseName] = useState("")
+    // const [parentCourseId, setParentCourseId] = useState("")
 
 
 
@@ -145,11 +145,11 @@ const CourseList = () => {
     }
 
 
-    const handleOpenSubModal = (singleCourseTitle, singleCourseId) => {
-
+    const handleOpenSubModal = () => {
+        // console.log(singleCourseTitle);
         setIsSubModalOpen(true)
-        setParentCourseId(singleCourseId)
-        setParentCourseName(singleCourseTitle)
+        // setParentCourseId(singleCourseId)
+        // setParentCourseName(singleCourseTitle)
     }
 
 
@@ -387,23 +387,25 @@ const CourseList = () => {
         }
 
         try {
-            setLoader(true)
-            const response = await axiosInstance.patch(`/homepage/updateCourse?courseId=${singleCourse._id}`, UpdatedFormData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-                onUploadProgress: (progressEvent) => {
-                    const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                    setUploadProgress(percentCompleted);
-                }
-            })
-            const data = await response.data
+            if (window.confirm("Are you sure you want to update course?")) {
+                setLoader(true)
+                const response = await axiosInstance.patch(`/homepage/updateCourse?courseId=${singleCourse._id}`, UpdatedFormData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                    onUploadProgress: (progressEvent) => {
+                        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                        setUploadProgress(percentCompleted);
+                    }
+                })
+                const data = await response.data
 
-            successMessage(data?.message)
-            fetchCourses()
-            setUploadProgress(0)
-            setIsOpen(false)
-            setLoader(false)
+                successMessage(data?.message)
+                fetchCourses()
+                setUploadProgress(0)
+                setIsOpen(false)
+                setLoader(false)
+            }
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
@@ -413,12 +415,14 @@ const CourseList = () => {
 
     const handleDeleteCourse = async (_id) => {
         try {
-            setLoader(true)
-            const response = await axiosInstance.delete("homepage/deleteCourse", { data: { courseId: _id } })
-            const data = await response.data
-            successMessage(data.message);
-            fetchCourses()
-            setLoader(false)
+            if (window.confirm("Are you sure you want to delete course?")) {
+                setLoader(true)
+                const response = await axiosInstance.delete("homepage/deleteCourse", { data: { courseId: _id } })
+                const data = await response.data
+                successMessage(data.message);
+                fetchCourses()
+                setLoader(false)
+            }
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
@@ -436,7 +440,7 @@ const CourseList = () => {
 
         const postChapter = new FormData()
         postChapter.append("title", chapters.title)
-        postChapter.append("courseId", parentCourseId)
+        postChapter.append("courseId", singleCourse?._id)
         postChapter.append("categoryId", chapters.categoryId)
         postChapter.append("source", chapters.source)
         postChapter.append("description", chapters.description)
@@ -527,20 +531,25 @@ const CourseList = () => {
         }
 
         try {
-            setLoader(true)
-            const response = await axiosInstance.patch(`/homepage/updateChapters?chapterId=${singleChapter?._id}`, updateChapter, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-                onUploadProgress: (progressEvent) => {
-                    const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                    setUploadProgress(percentCompleted);
-                }
-            })
-            const data = await response.data
-            successMessage(data?.message)
-            setIsSubModalOpen(false)
-            setLoader(false)
+            if (window.confirm("Are you sure want to update chapter?")) {
+                setLoader(true)
+                const response = await axiosInstance.patch(`/homepage/updateChapters?chapterId=${singleChapter?._id}`, updateChapter, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                    onUploadProgress: (progressEvent) => {
+                        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                        setUploadProgress(percentCompleted);
+                    }
+                })
+                const data = await response.data
+                successMessage(data?.message)
+                FetchChapters()
+                fetchCourses()
+
+                setIsSubModalOpen(false)
+                setLoader(false)
+            }
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
@@ -554,12 +563,14 @@ const CourseList = () => {
     const DeleteChapterById = async (_id, courseId) => {
 
         try {
-            setLoader(true)
-            const response = await axiosInstance.delete("/homepage/deleteChapters", { data: { chapterId: _id, courseId: courseId } })
-            const data = await response.data
-            successMessage(data.message)
-            FetchChapters()
-            setLoader(false)
+            if (window.confirm("Are you sure you want to delete chapter?")) {
+                setLoader(true)
+                const response = await axiosInstance.delete("/homepage/deleteChapters", { data: { chapterId: _id, courseId: courseId } })
+                const data = await response.data
+                successMessage(data.message)
+                FetchChapters()
+                setLoader(false)
+            }
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
@@ -580,7 +591,7 @@ const CourseList = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
-          
+
         }
     }
 
@@ -614,7 +625,7 @@ const CourseList = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
-           
+
         }
     }
 
@@ -626,7 +637,7 @@ const CourseList = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
-           
+
         }
     }
 
@@ -638,11 +649,11 @@ const CourseList = () => {
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
-           
+
         }
     }
 
-     // ------------------------------------------------- Extra Data Ends -------------------------------------------------------------
+    // ------------------------------------------------- Extra Data Ends -------------------------------------------------------------
 
     const ClearInputs = () => {
         try {
@@ -661,11 +672,11 @@ const CourseList = () => {
             setUploadProgress(0)
         } catch (error) {
             setLoader(false)
-      
+
         }
     }
 
-   
+
 
     useEffect(() => {
         fetchCourses()
@@ -731,12 +742,14 @@ const CourseList = () => {
                                                 <h1 className="text-xl text-gray-600 capitalize">{item?.course?.title}</h1>
 
                                                 <div className="flex justify-between items-center gap-2 text-xs">
-                                                    <p className="text-gray-400">Category: <span className="text-blue-500">{item?.category?.categories}</span></p>
-                                                    <p className="text-gray-400">Language: <span className="text-blue-500">{item?.course?.language}</span></p>
+                                                    <p className="text-gray-400 w-[50%]">Category: <span className="text-blue-500 text-end w-[25%]">{item?.category?.categories}</span></p>
+                                                    <p className="text-gray-400 w-[50%] text-end">Language: <span className="text-blue-500 text-end w-[25%]">{item?.course?.language}</span></p>
                                                 </div>
                                                 <div className="flex justify-between items-center py-2 text-xs">
-                                                    <p className="text-gray-400">status: <span className="text-green-600">{item?.course?.status}</span></p>
-                                                    <p className="text-gray-400">Source: <span className="text-blue-500">{item?.course?.source}</span></p>
+                                                    <p className="text-gray-400 w-[50%]" >status: <span className={`${item?.course?.status?.toLowerCase() === "active" ? 'text-green-600' : "text-red-600"} capitalize text-end w-[25%]`}>{item?.course?.status?.toLowerCase()}</span></p>
+                                                    <p className="text-gray-400 w-[50%] text-end">Source:  <span className={`text-end w-[25%] ${item?.course?.source?.toLowerCase() === "upload" ? 'text-blue-500' : item?.course?.source?.toLowerCase() === "embed" ? 'text-yellow-500' : item?.course?.source?.toLowerCase() === "vimeo" ? 'text-green-500' : item?.course?.source?.toLowerCase()?.trim() === "dropbox" ? "text-orange-500" : 'text-black'}`}>
+                                                        {item?.course?.source}
+                                                    </span></p>
                                                 </div>
                                             </div>
                                             <Divider />
@@ -759,7 +772,7 @@ const CourseList = () => {
                                                                         setChapterFlag(false)
                                                                         handleOpenSubModal(singleCourse?.title, singleCourse?._id)
                                                                     }}><CiEdit /></p>
-                                                                    <p className="font-2xl p-2" onClick={() => DeleteChapterById(i?._id, item.course?._id)}><MdDelete /></p>
+                                                                    <p className="font-2xl p-2 text-red-600" onClick={() => DeleteChapterById(i?._id, item.course?._id)}><MdDelete /></p>
                                                                 </div>
 
                                                             </div>
@@ -796,7 +809,7 @@ const CourseList = () => {
                                             <div className="grid grid-cols-2 mt-5">
                                                 <div className="flex flex-col p-2 gap-3">
                                                     <label htmlFor="">Course Name</label>
-                                                    <input type="text" name="title" id="title" onChange={handleChange} value={isFlag ? CourseInputs.title : singleCourse.title} className="p-3 border-2 border-gray-600 rounded-lg" />
+                                                    <input type="text" name="title" id="title" onChange={handleChange} value={isFlag ? CourseInputs.title : singleCourse.title} autoComplete="off" className="p-3 border-2 border-gray-600 rounded-lg" />
                                                 </div>
 
                                                 <div className="flex flex-col p-2 gap-3">
@@ -911,7 +924,7 @@ const CourseList = () => {
                                                 <textarea name="description" id="description" value={isFlag ? CourseInputs.description : singleCourse.description} cols="10" rows="5" onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" ></textarea>
                                             </div>
                                             <div className="flex flex-col">
-                                                <div className="flex justify-start items-center py-4 px-2">
+                                                <div className={` justify-start items-center py-4 px-2 ${isFlag ? "hidden" : "flex"}`}>
                                                     <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-36" type="button" onClick={() => {
                                                         setChapterFlag(true)
                                                         setIsFlag(false)
@@ -931,12 +944,12 @@ const CourseList = () => {
                                                             <label>Active</label>
 
                                                         </div>
-
+                                                        {/* 
                                                         <div className="flex justify-center items-center p-2 gap-3">
                                                             <input type="radio" name="status" id="status" value="Pending" checked={isFlag ? CourseInputs.status == "Pending" : singleCourse.status === "Pending"} onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" />
                                                             <label htmlFor="">Pending</label>
 
-                                                        </div>
+                                                        </div> */}
 
                                                         <div className="flex justify-center items-center p-2 gap-3">
                                                             <input type="radio" name="status" id="status" value="Inactive" checked={isFlag ? CourseInputs.status == "Inactive" : singleCourse.status == "Inactive"} onChange={handleChange} className="p-3 border-2 border-gray-600 rounded-lg" />
@@ -972,7 +985,7 @@ const CourseList = () => {
                                                     <div className="flex flex-col p-2 gap-3">
                                                         <label htmlFor="">Parent Course Name</label>
 
-                                                        <input type="text" id="title" value={parentCourseName} onChange={handleChangeChapter} className="p-3 border-2 border-gray-600 rounded-lg" />
+                                                        <input type="text" id="title" value={singleCourse?.title} onChange={handleChangeChapter} className="p-3 border-2 border-gray-600 rounded-lg" />
 
                                                         {/* <select className="p-3 border-2 border-gray-600 rounded-lg" name="courseId" onChange={handleChangeChapter} value={isFlag ? CourseInputs?.title : singleCourse?.title}>
                                                 <option value="">Choose Option</option>

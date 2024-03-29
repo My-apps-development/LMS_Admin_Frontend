@@ -49,7 +49,7 @@ const AssessmentList = () => {
     language: ""
   })
 
-  // console.log(inputs);
+  console.log(inputs);
 
   const [singleInputs, setSingleInputs] = useState({
     question: "",
@@ -296,21 +296,23 @@ const AssessmentList = () => {
     formData.append("marks", singleInputs.marks)
     formData.append("chapterId", singleInputs.chapterId)
     formData.append("courseId", singleInputs.courseId)
-    formData.append("question_image", QuestionFile)
+    formData.append("question_image", QuestionFile?.trim())
 
     try {
-      setLoader(true)
-      // console.log(`/Quiz/update?quetionId=${singleInputs?._id}`);
-      const response = await axiosInstance.patch(`/Quiz/update?quetionId=${singleInputs?._id}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        }
-      })
-      const data = await response.data
-      successMessage(data.message);
-      fetchQuestion()
-      setOpen(false)
-      setLoader(false)
+      if (window.confirm("Are you sure you want to update question?")) {
+        setLoader(true)
+       
+        const response = await axiosInstance.patch(`/Quiz/update?quetionId=${singleInputs?._id}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          }
+        })
+        const data = await response.data
+        successMessage(data.message);
+        fetchQuestion()
+        setOpen(false)
+        setLoader(false)
+      }
     } catch (error) {
       errorMessage(error.response.data.message)
       // console.log("Error Updating Data", error.message);
@@ -321,12 +323,14 @@ const AssessmentList = () => {
 
   const DeleteQuestionById = async (_id) => {
     try {
-      setLoader(true)
-      const response = await axiosInstance.delete("/Quiz/delete", { data: { QuestionId: _id } })
-      const data = await response.data
-      successMessage(data.massage)
-      fetchQuestion()
-      setLoader(false)
+      if (window.confirm("Are you sure want to delete question")) {
+        setLoader(true)
+        const response = await axiosInstance.delete("/Quiz/delete", { data: { QuestionId: _id } })
+        const data = await response.data
+        successMessage(data.massage)
+        fetchQuestion()
+        setLoader(false)
+      }
     } catch (error) {
       errorMessage(error.response.data.message)
       // console.log("Error Deleting Data", error.message);
@@ -345,40 +349,17 @@ const AssessmentList = () => {
         correct_option: "",
         marks: "",
         courseId: "",
-        chapterId: ""
+        chapterId: "",
+        language: ""
       }))
+      setQuestionFile(null)
+      setQuestionAudio(null)
     } catch (error) {
       // errorMessage(error.response.data.message)
       console.log("error clearing input fields", error.message);
     }
   }
 
-
-  // const fetchChapterWithCourseId = async (courseId = null) => {
-
-
-
-
-  //   let additionalURL = ""
-
-
-  //   if (courseId) {
-  //     additionalURL += `?courseId=${courseId}`
-
-  //   }
-
-  //   // console.log(`/homepage/fetchChapters${additionalURL}`)
-
-
-  //   try {
-  //     const response = await axiosInstance.get(`/homepage/fetchChapters${additionalURL}`)
-  //     const data = await response.data
-  //     // console.log(data)
-  //   } catch (error) {
-  //     errorMessage(error.response.data.message)
-  //     // console.log("error fetching chapters with course id", error.message);
-  //   }
-  // }
 
   const FetchLanguages = async () => {
     try {
@@ -447,6 +428,7 @@ const AssessmentList = () => {
       successMessage(data?.message);
       fetchQuestion()
       clearCsvInputs()
+      setCsvModalOpen(false)
     } catch (error) {
       errorMessage(error.response.data.message)
       // console.log("Error Uploading Csv File", error.message);
@@ -481,7 +463,7 @@ const AssessmentList = () => {
 
   }, [])
 
-  // console.log(Quiz);
+  console.log(Quiz);
 
   return (
     <div>
@@ -552,7 +534,7 @@ const AssessmentList = () => {
                               <option value="1" className=" text-start ml-5 whitespace-pre-wrap break-words">1. {item?.option_A}</option>
                               <option value="2" className=" text-start ml-5 whitespace-pre-wrap  break-words">2. {item?.option_B}</option>
                               <option value="3" className=" text-start ml-5 whitespace-pre-wrap  break-words">3. {item?.option_C}</option>
-                              <option value="4" className=" text-start ml-5 whitespace-pre-wrap   break-words">4. {item?.option_D}</option>
+                              {item?.option_D == "" && <option value="4" className=" text-start ml-5 whitespace-pre-wrap   break-words">4. {item?.option_D}</option>}
                             </td>
                           </div>
                           <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 whitespace-pre-wrap break-words">{item.correct_option}</td>

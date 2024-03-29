@@ -224,6 +224,7 @@ const CourseCategory = () => {
         formData.append('id', singleCategory._id);
         formData.append('categories', singleCategory.categories);
         formData.append('totalsubCategory', singleCategory.totalsubCategory);
+        formData.append("role", singleCategory?.role)
      
         formData.append('Upload_Category', postImage);
 
@@ -305,6 +306,7 @@ const CourseCategory = () => {
         const UpdateSubcategoryForm = new FormData()
         UpdateSubcategoryForm.append("title", singleSubCategory?.title)
         UpdateSubcategoryForm.append("categoryId", singleCategory?._id)
+        UpdateSubcategoryForm.append("role", singleCategory?.role)
 
         try {
             const response = await axiosInstance.patch(`category/update/subcategory?subcategoryId=${singleSubCategory?._id}`, UpdateSubcategoryForm)
