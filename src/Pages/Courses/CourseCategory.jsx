@@ -255,7 +255,8 @@ const CourseCategory = () => {
             FetchCategories()
             setLoader(false)
         } catch (error) {
-            console.log("Error Deleting Category", error.message);
+            errorMessage(error?.response?.data?.message)
+            // console.log("Error Deleting Category", error.message);
         }
     }
 
@@ -276,10 +277,11 @@ const CourseCategory = () => {
         try {
             const response = await axiosInstance.get(`/category/singlesubcategory?subcategoryid=${_id}`)
             const data = await response.data
-            console.log(data);
+            // console.log(data);
             setSingleSubCategory(data?.subcategory);
         } catch (error) {
-            console.log("Error Fetching Single Subcategory by Id", error.message);
+            errorMessage(error?.response?.data?.message)
+            // console.log("Error Fetching Single Subcategory by Id", error.message);
         }
     }
 

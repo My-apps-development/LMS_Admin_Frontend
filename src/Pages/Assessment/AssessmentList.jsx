@@ -49,7 +49,7 @@ const AssessmentList = () => {
     language: ""
   })
 
-  console.log(inputs);
+  // console.log(inputs);
 
   const [singleInputs, setSingleInputs] = useState({
     question: "",
@@ -158,7 +158,7 @@ const AssessmentList = () => {
     } catch (error) {
       setLoader(false)
       errorMessage(error.response.data.message)
-      console.log("Error Posting Data", error.message)
+      // console.log("Error Posting Data", error.message)
     }
 
     ClearInputs()
@@ -463,7 +463,7 @@ const AssessmentList = () => {
 
   }, [])
 
-  console.log(Quiz);
+  // console.log(Quiz);
 
   return (
     <div>
