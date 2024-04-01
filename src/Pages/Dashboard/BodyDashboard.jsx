@@ -16,21 +16,12 @@ import { errorMessage } from "../../Utils/notificationManager";
 
 
 const BodyDashboard = () => {
-    const [userData, setUserData] = useState({
-        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', "Week 5", "Week 6", "Week 7"],
-        datasets: [
-            {
-                label: "User",
-                data: [25, 50, 75, 100, 25, 43, 12],
-                backgroundColor: [
-                    "#d24787"
-                ],
-                borderColor: "black",
-                borderWidth: 1,
+    const [dates, setDates] = useState([])
+    const [count, setCount] = useState([])
+    const [userCount, setUserCount] = useState([])
 
-            },
-        ],
-    });
+    // console.log(dates, count);
+
 
     const [loader, setLoader] = useState(false)
 
@@ -42,7 +33,22 @@ const BodyDashboard = () => {
 
 
 
+    console.log(dates, count);
+    const [userData, setUserData] = useState({
+        labels: [],
+        datasets: [
+            {
+                label: "User",
+                data: [],
+                backgroundColor: [
+                    "#d24787"
+                ],
+                borderColor: "black",
+                borderWidth: 1,
 
+            },
+        ],
+    });
 
 
 
@@ -120,50 +126,52 @@ const BodyDashboard = () => {
 
 
 
-    const GroupUserByWeek = (users) => {
-        const currentWeek = getWeekNumber(new Date());
-        const groupedUsers = {};
-        
-
-        // Initialize counts for the last 7 weeks
-        for (let i = currentWeek - 6; i <= currentWeek; i++) {
-            groupedUsers[i] = 0;
-        }
-
-        // Count users for each week within the last 7 weeks
-        [...users]?.reverse()?.forEach((user) => {
-            const createdAt = new Date(user.createdAt);
-            const weekNumber = getWeekNumber(createdAt);
-          
-            if (weekNumber >= currentWeek - 6 && weekNumber <= currentWeek) {
-                groupedUsers[weekNumber] = (groupedUsers[weekNumber] || 0) + 1;
-            }
-        });
-
-        const userDataUpdate = {
-            labels: userData?.labels,
-            datasets: [
-                {
-                    label: 'User',
-                    data: Object.values(groupedUsers),
-                    backgroundColor: '#d24787',
-                    borderColor: 'black',
-                    borderWidth: 1,
-                },
-            ],
-        };
-        // console.log(userDataUpdate);
-
-        setUserData(userDataUpdate);
-    };
+    
 
     // Function to get the week number of a given date
-    const getWeekNumber = (date) => {
-        const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
-        const millisecondsPerWeek = 7 * 24 * 60 * 60 * 1000;
-        const weekNumber = Math.ceil((date - firstDayOfYear) / millisecondsPerWeek);
-        return weekNumber;
-    };
+   
+
+
+    const getLatestUserChartData = async () => {
+        try {
+            setLoader(true)
+            const response = await axiosInstance.get("/userchart")
+            const data = await response?.data
+            setUserCount(data?.userCountsByDays);
+
+            let weekDates = []
+            let UserCount = []
+
+            userCount?.forEach((date) => {
+                weekDates?.push(date?._id)
+                UserCount?.push(date?.count)
+            })
+
+            setDates(weekDates);
+            setCount(UserCount);
+
+            setUserData({
+            ...userData,
+            labels: weekDates,
+            datasets: [
+                {
+                    label: "User",
+                    data: UserCount,
+                    backgroundColor: [
+                        "#d24787"
+                    ],
+                    borderColor: "black",
+                    borderWidth: 1,
+    
+                },
+            ]
+        });
+            setLoader(false)
+        } catch (error) {
+            setLoader(false)
+            errorMessage(error?.response?.data?.message)
+        }
+    }
 
 
 
@@ -173,7 +181,9 @@ const BodyDashboard = () => {
         fetchUsers()
         fetchChapters()
         fetchCertificates()
-        GroupUserByWeek(UserList)
+        getLatestUserChartData()
+
+  
     }, [])
     return (
         <>
