@@ -583,7 +583,7 @@ const User = () => {
                             <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.mobile}</td>
 
                             <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500">{item?.language}</td>
-                            <td className="p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 capitalize">{item?.status}</td>
+                            <td className={`p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 capitalize ${item?.status === "active" ? "text-green-600" : "text-red-600"} ${item?.status === "pending" && "text-orange-600"}`}>{item?.status?.toLowerCase()}</td>
                             <td className={`p-2 border-r cursor-pointer text-sm font-semibold text-gray-500 `}>
 
 

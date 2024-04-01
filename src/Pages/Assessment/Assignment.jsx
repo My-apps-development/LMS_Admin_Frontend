@@ -34,6 +34,7 @@ const AssignmentRecord = () => {
             setAssignmentRecord(data?.assignmentsWithUserAndCompanyDetails);
             setLoader(false)
         } catch (error) {
+            setLoader(false)
             errorMessage(error.response.data.message)
             // console.log("Error Fetching Assignment Record", error.message)
         }
