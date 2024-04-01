@@ -18,6 +18,7 @@ const User = () => {
   const [roles, setRoles] = useState([])
   const [language, setLanguage] = useState([])
   const [search, setSearch] = useState("")
+  const [categoryList, setCategoryList] = useState([])
 
 
 
@@ -36,7 +37,8 @@ const User = () => {
     role: "",
     language: "",
     company: "",
-    status: ""
+    status: "",
+    categoryid:""
 
   })
 
@@ -49,7 +51,8 @@ const User = () => {
     role: "",
     language: "",
     companyid: "",
-    status: ""
+    status: "",
+    categoryid:""
 
   })
 
@@ -200,14 +203,17 @@ const User = () => {
 
     if (!userInputs.license_num) {
       errorMessage("License Required")
+      return
     }
 
     if (!userInputs.role) {
       errorMessage("Role Required")
+      return
     }
 
     if (!userInputs.language) {
       errorMessage("language Required")
+      return
     }
 
     // console.log(userInputs);
@@ -228,6 +234,7 @@ const User = () => {
     fD.append("email", userInputs.email)
     fD.append("companyid", userInputs.company)
     fD.append("status", userInputs.status)
+    fD.append("categoryid", userInputs.categoryid)
 
 
     try {
@@ -273,19 +280,25 @@ const User = () => {
 
     if (!singleInputs.license_num) {
       errorMessage("License Required")
+      return
+
     }
 
     if (!singleInputs.role) {
       errorMessage("Role Required")
+      return
+
     }
 
     if (!singleInputs.language) {
       errorMessage("language Required")
+      return
+
     }
 
     const UpdatedFormData = new FormData()
-    UpdatedFormData.append("firstName", singleInputs.firstName)
-    UpdatedFormData.append("lastName", singleInputs.lastName)
+    // UpdatedFormData.append("firstName", singleInputs.firstName)
+    // UpdatedFormData.append("lastName", singleInputs.lastName)
     UpdatedFormData.append("fullname", singleInputs.fullname)
     UpdatedFormData.append("mobile", singleInputs.mobile)
     UpdatedFormData.append("license_num", singleInputs.license_num)
@@ -295,7 +308,8 @@ const User = () => {
     UpdatedFormData.append("email", singleInputs.email)
     UpdatedFormData.append("course", singleInputs.course)
     UpdatedFormData.append("status", singleInputs.status)
-    UpdatedFormData.append("companyid", singleInputs.company)
+    UpdatedFormData.append("companyid", singleInputs?.companyid)
+    UpdatedFormData.append("categoryid", singleInputs.categoryid)
 
 
     try {
@@ -345,17 +359,19 @@ const User = () => {
   //   // console.log(_id);
   // }
 
-  // const FetchCourse = async () => {
-  //   try {
-  //     setLoader(true)
-  //     const response = await axiosInstance.get("/category/fetch")
-  //     const data = await response.data
-  //     setCourseList(data?.coursewithcategory);
-  //     setLoader(false)
-  //   } catch (error) {
-  //     console.log("error fetching course", error.message);
-  //   }
-  // }
+  const FetchCourse = async () => {
+    try {
+      setLoader(true)
+      const response = await axiosInstance.get("/category/fetch")
+      const data = await response.data
+      setCategoryList(data?.categories);
+      setLoader(false)
+    } catch (error) {
+      setLoader(false)
+      errorMessage(error?.response?.data?.message)
+      console.log("error fetching course", error.message);
+    }
+  }
 
   const getSingleUserById = async (_id) => {
     try {
@@ -372,8 +388,8 @@ const User = () => {
       // console.log("error fetching Single user detials", error.message);
     }
   }
-
-  // console.log(singleInputs);
+  console.log(singleInputs);
+  console.log(singleInputs?.role);
 
   const FetchCompanies = async () => {
     try {
@@ -486,6 +502,7 @@ const User = () => {
     MasterRoles()
     MasterLanguages()
     FetchCompanies()
+    FetchCourse()
     // getSingleUserById()
   }, [])
 
@@ -672,7 +689,7 @@ const User = () => {
 
                           <div className="flex flex-col p-2 gap-3">
                             <label htmlFor="">Role</label>
-                            <select name="role" id="role" className="p-3 border-2 border-gray-600 rounded-lg" value={flag ? userInputs?.role : singleInputs?.role} onChange={handleChange}>
+                            <select name="role" id="role" className="p-3 border-2 border-gray-600 rounded-lg" value={flag ? userInputs?.role : singleInputs?.role?.replace(/\s+/g, "")} onChange={handleChange}>
                               <option value="">Choose Role</option>
                               {
                                 roles?.map((item, index) => {
@@ -719,7 +736,19 @@ const User = () => {
 
                         </div>
 
-
+                        <div className="flex flex-col p-2 gap-3">
+                            <label htmlFor="">Category</label>
+                            <select name="categoryid" id="categoryid" className="p-3 border-2 border-gray-600 rounded-lg" value={flag ? userInputs?.categoryid : singleInputs?.categoryid} onChange={handleChange}>
+                              <option value="Driver">Choose Options</option>
+                              {
+                                categoryList?.map((item, index) => {
+                                  return (
+                                    <option key={index} value={item?._id}>{item?.categories}</option>
+                                  )
+                                })
+                              }
+                            </select>
+                          </div>
 
                         <div className="flex flex-col gap-3 p-2">
                           <label htmlFor="">Status</label>
