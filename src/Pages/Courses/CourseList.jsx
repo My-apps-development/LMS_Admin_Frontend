@@ -167,7 +167,7 @@ const CourseList = () => {
 
 
 
-        flag ? setCourseInputs({ ...CourseInputs, [e.target.name]: e.target.value }) : setSingleCourse({ ...singleCourse, [e.target.name]: e.target.value })
+        isFlag ? setCourseInputs({ ...CourseInputs, [e.target.name]: e.target.value }) : setSingleCourse({ ...singleCourse, [e.target.name]: e.target.value })
     }
 
 
@@ -269,7 +269,7 @@ const CourseList = () => {
 
 
         try {
-            setLoader(true)
+            // setLoader(true)
             const response = await axiosInstance.post("/homepage/addCourse", formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -286,7 +286,8 @@ const CourseList = () => {
             fetchCourses()
             setUploadProgress(0)
             ClearInputs()
-            setLoader(false)
+            setIsFlag(false)
+            // setLoader(false)
         } catch (error) {
             errorMessage(error.response.data.message)
             setLoader(false)
@@ -309,6 +310,9 @@ const CourseList = () => {
             // console.log("error fetching data", error.message);
         }
     }
+
+    console.log(isFlag);
+    
 
     const fetchCourseById = async (_id) => {
         setFlag(false)
@@ -388,7 +392,7 @@ const CourseList = () => {
 
         try {
             if (window.confirm("Are you sure you want to update course?")) {
-                setLoader(true)
+                // setLoader(true)
                 const response = await axiosInstance.patch(`/homepage/updateCourse?courseId=${singleCourse._id}`, UpdatedFormData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
@@ -404,7 +408,7 @@ const CourseList = () => {
                 fetchCourses()
                 setUploadProgress(0)
                 setIsOpen(false)
-                setLoader(false)
+                // setLoader(false)
             }
         } catch (error) {
             setLoader(false)
@@ -470,7 +474,7 @@ const CourseList = () => {
             FetchChapters()
             fetchCourses()
             setUploadProgress(0)
-            ClearInputs()
+            clearChapterInputs()
             setIsSubModalOpen(false)
             setIsOpen(false)
             setUploadProgress(0)
@@ -532,7 +536,7 @@ const CourseList = () => {
 
         try {
             if (window.confirm("Are you sure want to update chapter?")) {
-                setLoader(true)
+                // setLoader(true)
                 const response = await axiosInstance.patch(`/homepage/updateChapters?chapterId=${singleChapter?._id}`, updateChapter, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
@@ -548,7 +552,7 @@ const CourseList = () => {
                 fetchCourses()
 
                 setIsSubModalOpen(false)
-                setLoader(false)
+                // setLoader(false)
             }
         } catch (error) {
             setLoader(false)
@@ -674,6 +678,20 @@ const CourseList = () => {
             setLoader(false)
 
         }
+    }
+
+    const clearChapterInputs = () => {
+        setChapters((prev) => ({
+            ...prev,
+            title: "",
+            description: "",
+            courseId: "",
+            categoryId: "",
+            video_link: "",
+            source: "",
+            language: "",
+            role: ""
+        }))
     }
 
 
@@ -805,7 +823,7 @@ const CourseList = () => {
                                             <h1 className="text-2xl">{isFlag ? "Add Course" : "Updating Course"}</h1>
                                             <button className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-20" onClick={handleCloseModal}>Close</button>
                                         </div>
-                                        <form onSubmit={flag ? PostCourse : UpdateCourse}>
+                                        <form onSubmit={isFlag ? PostCourse : UpdateCourse}>
                                             <div className="grid grid-cols-2 mt-5">
                                                 <div className="flex flex-col p-2 gap-3">
                                                     <label htmlFor="">Course Name</label>
