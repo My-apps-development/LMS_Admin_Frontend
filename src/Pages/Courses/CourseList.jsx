@@ -299,11 +299,11 @@ const CourseList = () => {
     const fetchCourses = async () => {
 
         try {
-            setLoader(true)
+            // setLoader(true)
             const response = await axiosInstance.get("/homepage/courses")
             const data = await response.data
             setCoursesList(data.coursewithcategory);
-            setLoader(false)
+            // setLoader(false)
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
@@ -318,12 +318,12 @@ const CourseList = () => {
         setFlag(false)
 
         try {
-            setLoader(true)
+            // setLoader(true)
             const response = await axiosInstance.get(`https://myappsdevelopment.co.in/homepage/singlecourse?courseid=${_id} `)
             const data = await response?.data
             setSingleCourse(data?.Courses);
             setSelectedSource(data?.Courses?.source)
-            setLoader(false)
+            // setLoader(false)
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
@@ -488,11 +488,11 @@ const CourseList = () => {
     const FetchChapters = async () => {
 
         try {
-            setLoader(true)
+            // setLoader(true)
             const response = await axiosInstance.get("/homepage/fetchChapters")
             const data = await response.data
             setChapterList(data.chapter)
-            setLoader(false)
+            // setLoader(false)
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
