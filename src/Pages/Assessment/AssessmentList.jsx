@@ -296,7 +296,7 @@ const AssessmentList = () => {
     formData.append("marks", singleInputs.marks)
     formData.append("chapterId", singleInputs.chapterId)
     formData.append("courseId", singleInputs.courseId)
-    formData.append("question_image", QuestionFile?.trim())
+    formData.append("question_image", QuestionFile)
 
     try {
       if (window.confirm("Are you sure you want to update question?")) {

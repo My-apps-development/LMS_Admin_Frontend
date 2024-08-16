@@ -167,7 +167,7 @@ const CourseList = () => {
 
 
 
-        flag ? setCourseInputs({ ...CourseInputs, [e.target.name]: e.target.value }) : setSingleCourse({ ...singleCourse, [e.target.name]: e.target.value })
+        isFlag ? setCourseInputs({ ...CourseInputs, [e.target.name]: e.target.value }) : setSingleCourse({ ...singleCourse, [e.target.name]: e.target.value })
     }
 
 
@@ -269,7 +269,7 @@ const CourseList = () => {
 
 
         try {
-            setLoader(true)
+            // setLoader(true)
             const response = await axiosInstance.post("/homepage/addCourse", formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -286,7 +286,8 @@ const CourseList = () => {
             fetchCourses()
             setUploadProgress(0)
             ClearInputs()
-            setLoader(false)
+            setIsFlag(false)
+            // setLoader(false)
         } catch (error) {
             errorMessage(error.response.data.message)
             setLoader(false)
@@ -298,11 +299,11 @@ const CourseList = () => {
     const fetchCourses = async () => {
 
         try {
-            setLoader(true)
+            // setLoader(true)
             const response = await axiosInstance.get("/homepage/courses")
             const data = await response.data
             setCoursesList(data.coursewithcategory);
-            setLoader(false)
+            // setLoader(false)
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
@@ -310,16 +311,19 @@ const CourseList = () => {
         }
     }
 
+    console.log(isFlag);
+    
+
     const fetchCourseById = async (_id) => {
         setFlag(false)
 
         try {
-            setLoader(true)
+            // setLoader(true)
             const response = await axiosInstance.get(`https://myappsdevelopment.co.in/homepage/singlecourse?courseid=${_id} `)
             const data = await response?.data
             setSingleCourse(data?.Courses);
             setSelectedSource(data?.Courses?.source)
-            setLoader(false)
+            // setLoader(false)
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
@@ -388,7 +392,7 @@ const CourseList = () => {
 
         try {
             if (window.confirm("Are you sure you want to update course?")) {
-                setLoader(true)
+                // setLoader(true)
                 const response = await axiosInstance.patch(`/homepage/updateCourse?courseId=${singleCourse._id}`, UpdatedFormData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
@@ -404,7 +408,7 @@ const CourseList = () => {
                 fetchCourses()
                 setUploadProgress(0)
                 setIsOpen(false)
-                setLoader(false)
+                // setLoader(false)
             }
         } catch (error) {
             setLoader(false)
@@ -470,7 +474,7 @@ const CourseList = () => {
             FetchChapters()
             fetchCourses()
             setUploadProgress(0)
-            ClearInputs()
+            clearChapterInputs()
             setIsSubModalOpen(false)
             setIsOpen(false)
             setUploadProgress(0)
@@ -484,11 +488,11 @@ const CourseList = () => {
     const FetchChapters = async () => {
 
         try {
-            setLoader(true)
+            // setLoader(true)
             const response = await axiosInstance.get("/homepage/fetchChapters")
             const data = await response.data
             setChapterList(data.chapter)
-            setLoader(false)
+            // setLoader(false)
         } catch (error) {
             setLoader(false)
             errorMessage(error.response.data.message)
@@ -532,7 +536,7 @@ const CourseList = () => {
 
         try {
             if (window.confirm("Are you sure want to update chapter?")) {
-                setLoader(true)
+                // setLoader(true)
                 const response = await axiosInstance.patch(`/homepage/updateChapters?chapterId=${singleChapter?._id}`, updateChapter, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
@@ -546,9 +550,10 @@ const CourseList = () => {
                 successMessage(data?.message)
                 FetchChapters()
                 fetchCourses()
+                setUploadProgress(0)
 
                 setIsSubModalOpen(false)
-                setLoader(false)
+                // setLoader(false)
             }
         } catch (error) {
             setLoader(false)
@@ -674,6 +679,20 @@ const CourseList = () => {
             setLoader(false)
 
         }
+    }
+
+    const clearChapterInputs = () => {
+        setChapters((prev) => ({
+            ...prev,
+            title: "",
+            description: "",
+            courseId: "",
+            categoryId: "",
+            video_link: "",
+            source: "",
+            language: "",
+            role: ""
+        }))
     }
 
 
@@ -805,7 +824,7 @@ const CourseList = () => {
                                             <h1 className="text-2xl">{isFlag ? "Add Course" : "Updating Course"}</h1>
                                             <button className="border-[#B32073] text-white bg-[#B32073] p-2 rounded-lg w-20" onClick={handleCloseModal}>Close</button>
                                         </div>
-                                        <form onSubmit={flag ? PostCourse : UpdateCourse}>
+                                        <form onSubmit={isFlag ? PostCourse : UpdateCourse}>
                                             <div className="grid grid-cols-2 mt-5">
                                                 <div className="flex flex-col p-2 gap-3">
                                                     <label htmlFor="">Course Name</label>
@@ -1118,7 +1137,7 @@ const CourseList = () => {
                                                         <textarea name="description" id="" cols="10" rows="5" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value={chapterFlag ? chapters?.description : singleChapter?.description}></textarea>
                                                     </div>
                                                     <div className="w-full flex justify-center items-center gap-5 p-2">
-                                                        <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button>
+                                                        
                                                         <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg" type="submit">{chapterFlag ? "Add Chapter" : "Update Chapter"}</button>
                                                     </div>
                                                 </div>

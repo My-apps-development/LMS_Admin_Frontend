@@ -40,6 +40,7 @@ const CompanyLogin = () => {
             localStorage.setItem("token", JSON.stringify(data?.token))
             successMessage(data?.message);
             navigate("/companydashboard")
+            window.location.reload()
         } catch(error){
             // console.log("error sending login credentials", error.message);
             errorMessage(error?.response?.data?.message)
