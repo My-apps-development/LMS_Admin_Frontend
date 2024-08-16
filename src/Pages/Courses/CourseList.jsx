@@ -550,6 +550,7 @@ const CourseList = () => {
                 successMessage(data?.message)
                 FetchChapters()
                 fetchCourses()
+                setUploadProgress(0)
 
                 setIsSubModalOpen(false)
                 // setLoader(false)
@@ -1136,7 +1137,7 @@ const CourseList = () => {
                                                         <textarea name="description" id="" cols="10" rows="5" className="p-3 border-2 border-gray-600 rounded-lg" onChange={handleChangeChapter} value={chapterFlag ? chapters?.description : singleChapter?.description}></textarea>
                                                     </div>
                                                     <div className="w-full flex justify-center items-center gap-5 p-2">
-                                                        <button className="p-2 border-2 border-[#B32073] bg-white text-[#B32073] hover:text-white hover:bg-[#B32073] flex justify-center items-center gap-3 w-32 rounded-lg">Cancel</button>
+                                                        
                                                         <button className="p-2 border-2 border-[#B32073] bg-[#B32073] hover:bg-white hover:text-[#B32073] text-white  flex justify-center items-center gap-3 w-32 rounded-lg" type="submit">{chapterFlag ? "Add Chapter" : "Update Chapter"}</button>
                                                     </div>
                                                 </div>
