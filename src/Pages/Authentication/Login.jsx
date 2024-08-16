@@ -53,6 +53,7 @@ const Login = () => {
         // console.log(data);
         successMessage(data.message)
         navigate("/")
+        window.location.reload()
         clearInputs()
       }
 
